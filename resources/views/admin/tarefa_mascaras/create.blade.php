@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1 class="pull-left">
-            Tarefa Padrão/Máscara Padrão
+            Tarefa padrão/Máscara padrão
         </h1>
 
         <h1 class="pull-right">

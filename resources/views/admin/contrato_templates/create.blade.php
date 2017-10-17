@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Contrato Template
+            Contrato template
         </h1>
     </section>
     <div class="content">

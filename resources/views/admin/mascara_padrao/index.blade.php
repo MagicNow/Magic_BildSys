@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Máscara Padrão
+            Máscara padrão
             <a class="btn btn-primary pull-right"  href="{!! route('admin.mascara_padrao.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>

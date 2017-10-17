@@ -39,6 +39,7 @@ use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use App\Models\Obra;
 use App\Models\Orcamento;
@@ -54,6 +55,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\ObraRepository;
@@ -245,8 +247,9 @@ class OrdemDeCompraController extends AppBaseController
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function detalhe($id)
+    public function detalhe(Request $request, $id)
     {
+//        dd($request->all());
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
 
         // Limpa qualquer notificação que tiver deste item
@@ -435,7 +438,8 @@ class OrdemDeCompraController extends AppBaseController
                 $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
             }
 //            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
-            $itens = $itens->paginate(10);
+            
+            $itens = $itens->paginate($request->perPage ? $request->perPage : 10);
         }
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
@@ -458,6 +462,7 @@ class OrdemDeCompraController extends AppBaseController
             'valor_comprometido_a_gastar',
             'saldo',
             'itens',
+            'itens_paginate',
             'motivos_reprovacao',
             'aprovavelTudo',
             'avaliado_reprovado',

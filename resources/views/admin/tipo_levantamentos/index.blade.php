@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tipo de Levantamentos
+            Tipo de levantamentos
            <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('admin.tipo_levantamentos.create') !!}">
                <i class="fa fa-plus" aria-hidden="true"></i> {{ ucfirst( trans('common.new') )}}
            </a>

@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Tarefa Padrão/Máscara Padrão</h1>
+        <h1 class="pull-left">Tarefa padrão/Máscara padrão</h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>
