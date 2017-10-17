@@ -74,11 +74,12 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('medicao_servicos.show_fields')
-
-                    @include('medicoes.table')
+                    <div class="col-md-12">
+                        @include('medicoes.table')
+                    </div>
 
                 </div>
-                <div class="row">
+                <div class="col-md-12">
                     <a href="{!! route('medicoes.index') !!}" class="btn btn-default">
                         <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
