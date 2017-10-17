@@ -92,7 +92,6 @@ class Planejamento extends Model
         return $this->belongsTo(\App\Models\Obra::class);
     }
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
@@ -101,9 +100,15 @@ class Planejamento extends Model
         return $this->hasMany(\App\Models\PlanejamentoCompra::class);
     }
 
-    public function planejamentoQcAvulsoCarteira(){
+    public function planejamentoQcAvulsoCarteira()
+    {
         return $this->belongsToMany(QcAvulsoCarteira::class,'qc_avulso_carteira_planejamento', 'planejamento_id','qc_avulso_carteira_id')
                 ->withPivot('deleted_at')
                 ->withTimestamps();
+    }
+
+    public function datas()
+    {
+        return $this->hasMany(PlanejamentoData::class, 'planejamento_id');
     }
 }

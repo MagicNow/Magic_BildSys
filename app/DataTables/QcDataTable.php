@@ -6,6 +6,7 @@ use App\Models\Qc;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\QcStatus;
 
 class QcDataTable extends DataTable
 {
@@ -19,6 +20,23 @@ class QcDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
+            ->addColumn('etapa', function($qc) {
+                if($qc->isStatus(QcStatus::EM_APROVACAO)) {
+                    return 'Workflow';
+                }
+
+                if($qc->isStatus(QcStatus::REPROVADO)) {
+                    return 'Workflow (Reprovado)';
+                }
+
+                if($qc->isStatus(QcStatus::EM_CONCORRENCIA)) {
+                    return 'Negociação';
+                }
+
+                if($qc->isStatus(QcStatus::CONCORRENCIA_FINALIZADA)) {
+                    return 'Mobilizaçãi';
+                }
+            })
             ->editColumn('created_at', datatables_format_date('created_at'))
             ->editColumn('valor_pre_orcamento', datatables_float_to_money('valor_pre_orcamento'))
             ->editColumn('valor_orcamento_inicial', datatables_float_to_money('valor_orcamento_inicial'))
@@ -166,6 +184,7 @@ class QcDataTable extends DataTable
     {
         return [
             'id' => ['name' => 'id', 'data' => 'id', 'title' => 'Nro Q.C.'],
+            'etapa' => ['name' => 'etapa', 'title' => 'Etapa'],
             'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],

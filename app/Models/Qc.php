@@ -197,7 +197,7 @@ class Qc extends Model
 
     public function qualObra()
     {
-        return $this->attributes['obra_id'];
+        return null;
     }
 
     public function aprova($isAprovado)
@@ -206,9 +206,14 @@ class Qc extends Model
                 ? QcStatus::EM_CONCORRENCIA
                 : QcStatus::REPROVADO;
 
-        $this->update([
-            'qc_status_id' => $newStatus
-        ]);
+        $this->update(
+            [
+                'qc_status_id' => $newStatus
+            ],
+            [
+                'timestamps' => false
+            ]
+        );
 
         $this->logs()->create([
             'qc_status_id' => QcStatus::APROVADO,
