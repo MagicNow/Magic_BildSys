@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreatePagamentoRequest;
 use App\Http\Requests\UpdatePagamentoRequest;
 use App\Models\Contrato;
+use App\Models\DocumentoFinanceiroTipo;
 use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
 use App\Models\Notafiscal;
@@ -64,8 +65,8 @@ class PagamentoController extends AppBaseController
             'id'
         ])->pluck('nome', 'id')->toArray();
 
-        $documentoTipos = DocumentoTipo::select([
-            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+        $documentoTipos = DocumentoFinanceiroTipo::select([
+            DB::raw("CONCAT(nome,' - ',codigo_mega) as nome"),
             'id'
         ])->pluck('nome', 'id')->toArray();
 
@@ -149,8 +150,8 @@ class PagamentoController extends AppBaseController
             'id'
         ])->pluck('nome', 'id')->toArray();
 
-        $documentoTipos = DocumentoTipo::select([
-            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+        $documentoTipos = DocumentoFinanceiroTipo::select([
+            DB::raw("CONCAT(nome,' - ',codigo_mega) as nome"),
             'id'
         ])->pluck('nome', 'id')->toArray();
 
@@ -260,9 +261,11 @@ class PagamentoController extends AppBaseController
 
         $porta = 306; // Porta de integração de Pagamento.
 
+        $idIntegracao = sprintf("pag-%s-%s", $pagamento->id, date("YmdHis"));
+
         try {
             $sql = "BEGIN
-                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml);
+                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :idIntegracao, :xml);
                     END;";
 
             $pdo = DB::connection('oracle')
@@ -270,10 +273,18 @@ class PagamentoController extends AppBaseController
             $stmt = $pdo->prepare($sql);
 
             $stmt->bindParam(':porta', $porta);
+            $stmt->bindParam(':idIntegracao', $idIntegracao);
             $stmt->bindParam(':xml', $xml);
 
             $result = [];
             $result = $stmt->execute();
+
+            if($result){
+                $pagamento->enviado_integracao = 1;
+                $pagamento->integrado = 0;
+                $pagamento->codigo_integracao = $idIntegracao;
+                $pagamento->save();
+            }
 
             dump($result, $xml);
 

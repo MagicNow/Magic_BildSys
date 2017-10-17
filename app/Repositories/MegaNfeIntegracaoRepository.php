@@ -310,7 +310,7 @@ class MegaNfeIntegracaoRepository
             $idIntegracao = sprintf("nf-%s-%s", $notafiscal->id, date("YmdHis"));
 
             $sql = "BEGIN
-                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml, :idIntegracao);
+                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :idIntegracao, :xml);
                     END;";
 
             $pdo = DB::connection('oracle')
@@ -318,8 +318,8 @@ class MegaNfeIntegracaoRepository
             $stmt = $pdo->prepare($sql);
 
             $stmt->bindParam(':porta', $porta);
-            $stmt->bindParam(':xml', $xml);
             $stmt->bindParam(':idIntegracao', $idIntegracao);
+            $stmt->bindParam(':xml', $xml);
 
             //$result = [];
             $result = $stmt->execute();

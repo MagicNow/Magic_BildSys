@@ -52,12 +52,12 @@ class PagamentoDataTable extends DataTable
                 'obras.nome as obra',
                 'fornecedores.nome as fornecedor',
                 'pagamento_condicoes.codigo',
-                'documento_tipos.sigla',
+                'documento_financeiro_tipos.codigo_mega',
             ])
             ->join('obras','obras.id','pagamentos.obra_id')
             ->join('fornecedores','fornecedores.id','pagamentos.fornecedor_id')
             ->join('pagamento_condicoes','pagamento_condicoes.id','pagamentos.pagamento_condicao_id')
-            ->join('documento_tipos','documento_tipos.id','pagamentos.documento_tipo_id')
+            ->join('documento_financeiro_tipos','documento_financeiro_tipos.id','pagamentos.documento_financeiro_tipo_id')
         ;
 
         return $this->applyScopes($pagamentos);
@@ -157,7 +157,7 @@ class PagamentoDataTable extends DataTable
                 'data_emissão' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
                 'valor' => ['name' => 'valor', 'data' => 'valor'],
                 'condiçõesDePagamento' => ['name' => 'pagamento_condicoes.codigo', 'data' => 'codigo'],
-                'TipoDeDocumento' => ['name' => 'documento_tipos.sigla', 'data' => 'sigla'],
+                'TipoDeDocumento' => ['name' => 'documento_financeiro_tipos.codigo_mega', 'data' => 'codigo_mega'],
 //                'notas_fiscal' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
                 'enviado_mega' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
                 'integrado_mega' => ['name' => 'integrado', 'data' => 'integrado'],
