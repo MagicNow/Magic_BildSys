@@ -5,7 +5,7 @@
         <h1>
             Tipos de Q.C. Avulso
             <a class="btn btn-primary pull-right"  href="{!! route('admin.tipologia.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
-        </h1>
+       </h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>
