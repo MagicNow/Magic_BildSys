@@ -53,7 +53,7 @@
 
 <!-- Notas Fiscal Id Field -->
 <div class="form-group col-sm-6">
-    @if((isset($nota) and $nota != NULL) || $pagamento->notas_fiscal_id > 0)
+    @if((isset($nota) and $nota != NULL) || (isset($pagamento) && $pagamento->notas_fiscal_id > 0) )
     {!! Form::label('notas_fiscal_id', 'Notas Fiscal:') !!}
     <h4><label class="label label-info">{{ isset($nota) ? $nota->codigo : (isset($pagamento) ? $pagamento->notaFiscal->codigo : null) }}</label></h4>
     {!! Form::hidden('notas_fiscal_id', isset($nota) ? $nota->id : (isset($pagamento) ? $pagamento->notas_fiscal_id: null), ['class' => 'form-control']) !!}
