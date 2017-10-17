@@ -1521,7 +1521,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:requisicao.edit');
         $router->delete('requisicao/{requisicao}', ['as' => 'requisicao.destroy', 'uses' => 'RequisicaoController@destroy'])
             ->middleware('needsPermission:requisicao.delete');
-        $router->get('requisicao/{requisicao}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
+        $router->get('requisicao/{requisicao}/update/{update?}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
         $router->get('requisicao/{requisicao}/edit', ['as' => 'requisicao.edit', 'uses' => 'RequisicaoController@edit'])
             ->middleware('needsPermission:requisicao.edit');
 
