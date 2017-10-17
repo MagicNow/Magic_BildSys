@@ -95,8 +95,16 @@ class RequisicaoController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id)
+    public function show($id,$update = false)
     {
+
+        if ($update) {
+
+            $updt['status_id'] = RequisicaoStatus::EM_SEPARACAO;
+
+            $requisicao = $this->requisicaoRepository->update($updt, $id);
+        }
+
         $requisicao = $this->requisicaoRepository->getRequisicao($id);
 
         if (empty($requisicao)) {
@@ -106,6 +114,8 @@ class RequisicaoController extends AppBaseController
         }
 
         $table = $this->requisicaoItemRepository->getRequisicaoItensShow($id);
+
+
 
         return view('requisicao.show', compact('requisicao', 'table'));
     }
@@ -512,17 +522,13 @@ class RequisicaoController extends AppBaseController
                             INNER JOIN
                         estoque_transacao ON estoque_transacao.estoque_id = estoque.id
                             INNER JOIN
-                        nf_se_item ON nf_se_item.id = estoque_transacao.nf_se_item_id
-                            INNER JOIN
-                        solicitacao_entrega_itens ON solicitacao_entrega_itens.id = nf_se_item.solicitacao_entrega_item_id
-                            INNER JOIN
-                        se_apropriacoes ON se_apropriacoes.solicitacao_entrega_item_id = solicitacao_entrega_itens.id
-                            INNER JOIN
-                        contrato_item_apropriacoes ON contrato_item_apropriacoes.id = se_apropriacoes.contrato_item_apropriacao_id
+                        contrato_item_apropriacoes ON contrato_item_apropriacoes.id = estoque_transacao.contrato_item_apropriacao_id
                             INNER JOIN
                         grupos ON grupos.id = contrato_item_apropriacoes.subgrupo3_id
                             INNER JOIN
                         servicos ON servicos.id = contrato_item_apropriacoes.servico_id
+                    WHERE
+                        requisicao_itens.requisicao_id = '.$requisicao->id.'
                 ) as agrupamento'),
             'insumos.nome AS insumo',
             'insumos.unidade_sigla AS unidade_medida',

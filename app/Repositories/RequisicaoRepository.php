@@ -77,8 +77,6 @@ class RequisicaoRepository extends BaseRepository
     {
         $requisicao = $this->find($id);
 
-        DB::beginTransaction();
-
         try {
 
             RequisicaoLog::create([
@@ -94,11 +92,8 @@ class RequisicaoRepository extends BaseRepository
 
         } catch (Exception $e) {
 
-            DB::rollback();
             throw $e;
         }
-
-        DB::commit();
 
         return $requisicao;
     }
