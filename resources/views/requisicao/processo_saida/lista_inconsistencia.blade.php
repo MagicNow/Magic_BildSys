@@ -17,7 +17,7 @@
 
         <div class="form-group col-md-3">
             {!! Form::label('status', 'Status:') !!}
-            <p class="form-control">{!! $requisicao->status !!}</p>
+            <p class="form-control">{!! $requisicao->status->nome !!}</p>
         </div>
 
         <div class="form-group col-md-3">

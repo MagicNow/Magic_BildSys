@@ -1415,6 +1415,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notasfiscais/conciliacao/filtro', ['as' => 'notafiscals.filtro', 'uses' => 'NotafiscalController@filtraFornecedorContratos']);
     $router->get('notasfiscais/pagamentos/filtro/{contrato_id}/{nfe_id}', ['as' => 'notafiscals.pagamentos.filtro', 'uses' => 'NotafiscalController@filtrarPagamentos']);
 
+    $router->get('importaNfe', ['as' => 'nfe.import', 'uses' => 'NotafiscalController@importaNfe']);
+    $router->post('importaNfe', ['as' => 'nfe.store', 'uses' => 'NotafiscalController@postImportaNfe']);
+
+
     $router->get('capturaNfe', 'NotafiscalController@pescadorNfe');
     $router->get('capturaCte', 'NotafiscalController@buscaCTe');
     $router->get('danfe/{id}', 'NotafiscalController@visualizaDanfe');
@@ -1585,7 +1589,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 
-		$insumos = \App\Repositories\ImportacaoRepository::fornecedoresAtualiza();
+		$insumos = \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos();
         dd($insumos);
 
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
