@@ -2,18 +2,13 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\MascaraPadraoInsumo;
+use App\Models\QcAvulsoCarteira;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
-class MascaraPadraoInsumoDataTable extends DataTable
+class QcAvulsoCarteiraDataTable extends DataTable
 {
-    protected $mascara_padrao_id;
-
-    public function mascaraPadrao($id){
-        $this->mascara_padrao_id = $id;
-        return $this;
-    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -22,12 +17,23 @@ class MascaraPadraoInsumoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.mascara_padrao_insumos.datatables_actions')
-            ->editColumn('coeficiente', function ($obj){
-                return $obj->coeficiente;
+            ->editColumn('action', 'admin.qc_avulso_carteiras.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
-            ->editColumn('indireto', function ($obj){
-                return $obj->indireto;
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(qc_avulso_carteiras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('compradores', function($query, $keyword){
+                $query->whereRaw('(
+                    SELECT 
+                        GROUP_CONCAT(users.name SEPARATOR ", ")
+                    FROM
+                        qc_avulso_carteira_users
+                        JOIN users ON qc_avulso_carteira_users.user_id = users.id 
+                    WHERE
+                        qc_avulso_carteira_id = qc_avulso_carteiras.id
+                ) LIKE ?', ['%'.$keyword.'%']);
             })
             ->make(true);
     }
@@ -39,27 +45,26 @@ class MascaraPadraoInsumoDataTable extends DataTable
      */
     public function query()
     {
-        $mascaraPadraoInsumos = MascaraPadraoInsumo::query()
-            ->select([
-                'mascara_padrao_insumos.id',				
-                'mascara_padrao.nome as name',
-                'insumos.nome',
-				'mascara_padrao_insumos.codigo_estruturado',
-				'mascara_padrao_insumos.coeficiente',
-				'mascara_padrao_insumos.indireto',
-                'insumo_grupos.nome as nome_grupo_insumo',
-                'tipo_levantamentos.nome as nome_tipo_levantamento'
-            ])
-        ->join('mascara_padrao_estruturas','mascara_padrao_estruturas.id','=','mascara_padrao_insumos.mascara_padrao_estrutura_id')
-        ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_estruturas.mascara_padrao_id')
-        ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
-        ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id')
-        ->leftJoin('tipo_levantamentos','tipo_levantamentos.id','mascara_padrao_insumos.tipo_levantamento_id');
-        if($this->mascara_padrao_id){
-            $mascaraPadraoInsumos->where('mascara_padrao.id',$this->mascara_padrao_id);
-        }
+        $carteiras = QcAvulsoCarteira::query()
+        ->select([
+            'id',
+            'nome',
+            'sla_start',
+            'sla_negociacao',
+            'sla_mobilizacao',
+            'created_at',
+            DB::raw('(
+                    SELECT 
+                        GROUP_CONCAT(users.name SEPARATOR ", ")
+                    FROM
+                        qc_avulso_carteira_users
+                        JOIN users ON qc_avulso_carteira_users.user_id = users.id 
+                    WHERE
+                        qc_avulso_carteira_id = qc_avulso_carteiras.id
+                ) as compradores')
+        ]);
 
-        return $this->applyScopes($mascaraPadraoInsumos);
+        return $this->applyScopes($carteiras);
     }
 
     /**
@@ -71,6 +76,7 @@ class MascaraPadraoInsumoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'responsive' => 'true',
@@ -121,13 +127,12 @@ class MascaraPadraoInsumoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Máscara Padrão' => ['name' => 'mascara_padrao.nome', 'data' => 'name'],
-            'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
-            'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-            'Código Estruturado' => ['name' => 'mascara_padrao_insumos.codigo_estruturado', 'data' => 'codigo_estruturado'],
-            'Coeficiente' => ['name' => 'mascara_padrao_insumos.coeficiente', 'data' => 'coeficiente'],
-            'Indireto' => ['name' => 'mascara_padrao_insumos.indireto', 'data' => 'indireto'],
-            'TipoLevantamento' => ['name' => 'tipo_levantamentos.nome', 'data' => 'nome_tipo_levantamento'],
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'compradores' => ['name' => 'compradores', 'data' => 'compradores'],
+            'sla_start' => ['name' => 'sla_start', 'data' => 'sla_start', 'width'=>'10%'],
+            'sla_negociação' => ['name' => 'sla_negociacao', 'data' => 'sla_negociacao', 'width'=>'10%'],
+            'sla_mobilização' => ['name' => 'sla_mobilizacao', 'data' => 'sla_mobilizacao', 'width'=>'10%'],
+            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at', 'width'=>'15%'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
@@ -139,6 +144,6 @@ class MascaraPadraoInsumoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'mascaraPadraoInsumos';
+        return 'carteiras';
     }
 }

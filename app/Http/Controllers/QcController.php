@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\DataTables\QcDataTable;
 use App\DataTables\QcAnexosDataTable;
+use App\Models\QcAvulsoCarteira;
 use Illuminate\Http\Request;
 
 use Laracasts\Flash\Flash;
@@ -77,7 +78,7 @@ class QcController extends AppBaseController
     public function create()
     {
         $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
-        $carteiras = Carteira::pluck('nome','id')
+        $carteiras = QcAvulsoCarteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');

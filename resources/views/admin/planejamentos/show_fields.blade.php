@@ -1,23 +1,4 @@
-@section('content')
-    <section class="content-header">
-        <div class="modal-header">
-            <div class="col-md-12">
-                <span class="pull-left title">
-                   <h3>
-                       <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                           <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                       </button>
-                       <span>{{$planejamento->tarefa}}</span>
-                   </h3>
-                </span>
-            </div>
-        </div>
-    </section>
-    <div class="content">
-        <div class="clearfix"></div>
-
-
-        @include('adminlte-templates::common.errors')
+ @include('adminlte-templates::common.errors')
         <style type="text/css">
             #carrinho ul{
                 list-style-type: none;
@@ -124,6 +105,20 @@
         </div>
         <div class="row">
             <div id="carrinho" class="col-md-12">
+                @if(request()->get('carteira_avulsa'))
+                    {!! Form::hidden('carteira_avulsa',1) !!}
+                    <div class="form-group col-sm-12">
+                        {!! Form::label('planejamentoQcAvulsoCarteira', 'Carteiras de Q.C. Avulso:') !!}
+                        <ul class="list-group">
+                            @if($planejamento->planejamentoQcAvulsoCarteira)
+                                @foreach($planejamento->planejamentoQcAvulsoCarteira as $qcAvulsoCarteira)
+                                    <li class="list-group-item">{{ $qcAvulsoCarteira->nome }}</li>
+                                @endforeach
+                            @endif
+                        </ul>
+
+                    </div>
+                @else
                 <ul>
                     @if(count($itens))
                         <?php $servico = null ?>
@@ -180,13 +175,14 @@
                         </div>
                     @endif
                 </ul>
+            @endif
             </div>
         </div>
-    </div>
+
     <div class="pg text-center">
         {{ $itens->links() }}
     </div>
-@endsection
+
 @section('scripts')
     <script type="text/javascript">
         $(function () {

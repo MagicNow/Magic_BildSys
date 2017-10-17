@@ -10,7 +10,7 @@
     $count_subgrupo1 = 0;
     $count_subgrupo2 = 0;
     $count_subgrupo3 = 0;
-    $count = [];
+    $count = [0=> []];
 @endphp
 <div class="form-group col-sm-12">
     @if(count($mascaraPadraoEstruturas))
@@ -44,10 +44,10 @@
             @foreach($subgrupos1 as $subgrupo1)
                 @if($subgrupo1->grupo_id == $grupo->id)
                     @php
-                        if (!isset($count[$count_subgrupo])) {
-                            $count[$count_subgrupo] = [];
+                        if (!isset($count[0][$count_subgrupo])) {
+                            $count[0][$count_subgrupo] = [];
                         } else {
-                            $count[$count_subgrupo][] = [];
+                            $count[0][$count_subgrupo][] = [];
                         }
                     @endphp
                     <li style="list-style-type: none;margin: 0px;" id="subgrupo1_{{$count_subgrupo}}">
@@ -82,10 +82,10 @@
                             @foreach($subgrupos2 as $subgrupo2)
                                 @if($subgrupo2->grupo_id == $subgrupo1->id)
                                     @php
-                                        if (!isset($count[$count_subgrupo][$count_subgrupo1])) {
-                                            $count[$count_subgrupo][$count_subgrupo1] = [];
+                                        if (!isset($count[0][$count_subgrupo][$count_subgrupo1])) {
+                                            $count[0][$count_subgrupo][$count_subgrupo1] = [];
                                         } else {
-                                            $count[$count_subgrupo][$count_subgrupo1][] = [];
+                                            $count[0][$count_subgrupo][$count_subgrupo1][] = [];
                                         }
                                     @endphp
                                     <li style="list-style-type: none;margin: 0px;" id="subgrupo2_{{$count_subgrupo1}}">
@@ -123,10 +123,10 @@
                                             @foreach($subgrupos3 as $subgrupo3)
                                                 @if($subgrupo3->grupo_id == $subgrupo2->id)
                                                     @php
-                                                        if (!isset($count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2])) {
-                                                            $count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2] = [];
+                                                        if (!isset($count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2])) {
+                                                            $count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2] = [];
                                                         } else {
-                                                            $count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2][] = [];
+                                                            $count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2][] = [];
                                                         }
                                                     @endphp
                                                     <li style="list-style-type: none; margin: 0px;"
@@ -163,10 +163,10 @@
                                                             @foreach($servicos as $servico)
                                                                 @if($servico->grupo_id == $subgrupo3->id)
                                                                     @php
-                                                                        if (!isset($count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3])) {
-                                                                            $count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3] = [];
+                                                                        if (!isset($count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3])) {
+                                                                            $count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3] = [];
                                                                         } else {
-                                                                            $count[$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3][] = [];
+                                                                            $count[0][$count_subgrupo][$count_subgrupo1][$count_subgrupo2][$count_subgrupo3][] = [];
                                                                         }
                                                                     @endphp
                                                                     <li style="list-style-type: none; margin: 0px;"
@@ -197,6 +197,7 @@
                                                     </li>
                                                     @php
                                                         $count_subgrupo2++;
+                                                        $count_subgrupo3 = 0;
                                                     @endphp
                                                 @endif
                                             @endforeach
@@ -204,6 +205,8 @@
                                     </li>
                                     @php
                                         $count_subgrupo1++;
+                                        $count_subgrupo2 = 0;
+                                        $count_subgrupo3 = 0;
                                     @endphp
                                 @endif
                             @endforeach
@@ -211,6 +214,9 @@
                     </li>
                     @php
                         $count_subgrupo++;
+                        $count_subgrupo1 = 0;
+                        $count_subgrupo2 = 0;
+                        $count_subgrupo3 = 0;
                     @endphp
                 @endif
             @endforeach
@@ -272,7 +278,7 @@
                                 <span class="input-group-addon">
                                     Codigo estruturado
                                 </span>
-                        <input type="number" class="form-control" id="codigo" name="codigo" maxlength="255">
+                        <input type="text" class="form-control" id="codigo" name="codigo" maxlength="3">
                     </div>
                     <div class="form-group">
                         <label for="nome" class="control-label">Nome:</label>
@@ -307,6 +313,10 @@
                 stopLoading();
                 swal('Existe um bloco em aberto', '', 'error');
             }
+        });
+
+        $("#codigo").keyup(function() {
+            $("#codigo").val(this.value.match(/[0-9]*/));
         });
 
         @if(isset($count))
