@@ -279,7 +279,7 @@
                     };
 
 
-                    return $.ajax('/ordens-de-compra/dispensar-insumo-aprovado', {
+                    return $.ajax('{{ url("ordens-de-compra/dispensar-insumo-aprovado") }}', {
                         data: data
                     }).done(function(retorno) {
                         if (retorno.success) {
