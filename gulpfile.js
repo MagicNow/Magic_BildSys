@@ -139,6 +139,7 @@ elixir(function (mix) {
         paths.bootstrap_calendar + '/css/calendar.css',
         paths.stacktable + 'stacktable.css',
         '../js/datatables/css/buttons.dataTables.min.css',
+        'timeline.css',
         'orange.css',
         'site.css',
     ], 'public/css/site.css');
@@ -197,6 +198,7 @@ elixir(function (mix) {
         paths.bootstrap_calendar + '/css/calendar.css',
         paths.stacktable + 'stacktable.css',
         '../js/datatables/css/buttons.dataTables.min.css',
+        'timeline.css',
         'orange.css',
         'admin.css',
     ], 'public/css/admin.css');
