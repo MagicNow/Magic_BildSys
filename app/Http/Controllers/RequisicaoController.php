@@ -95,8 +95,16 @@ class RequisicaoController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id)
+    public function show($id,$update = false)
     {
+
+        if ($update) {
+
+            $updt['status_id'] = RequisicaoStatus::EM_SEPARACAO;
+
+            $requisicao = $this->requisicaoRepository->update($updt, $id);
+        }
+
         $requisicao = $this->requisicaoRepository->getRequisicao($id);
 
         if (empty($requisicao)) {
@@ -106,6 +114,8 @@ class RequisicaoController extends AppBaseController
         }
 
         $table = $this->requisicaoItemRepository->getRequisicaoItensShow($id);
+
+
 
         return view('requisicao.show', compact('requisicao', 'table'));
     }

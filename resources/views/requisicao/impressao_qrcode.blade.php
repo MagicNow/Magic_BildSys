@@ -9,14 +9,7 @@
 
             <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                {!! QrCode::size(200)->generate('
-                '.$item->insumo.' -  '.$item->qtde.'<br>
-                '.$item->nome.'<br>
-                '.$item->pavimento.' -  '.$item->andar.' Andar<br>
-                '.$item->apartamento.' -  '.$item->comodo.'<br>
-                "Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}'
-                )
-                !!}
+                {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde.'<br>'.$item->nome.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br>"Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
 
                 <br>
 
@@ -38,14 +31,7 @@
 
             <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                {!! QrCode::size(200)->generate('
-                '.$item->insumo.' -  '.$item->qtde.'<br>
-                '.$item->nome.'<br>
-                '.$item->pavimento.' -  '.$item->andar.' Andar<br>
-                '.$item->apartamento.' -  '.$item->comodo.'<br>
-                "Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}'
-                )
-                !!}
+                {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde.'<br>'.$item->nome.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br>"Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
 
                 <br>
 
@@ -65,14 +51,7 @@
 
                 <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                    {!! QrCode::size(200)->generate('
-                '.$item->insumo.' -  '.$item->qtde / $request->query('qtde_qrcodes').'<br>
-                '.$item->nome.'<br>
-                '.$item->pavimento.' -  '.$item->andar.' Andar<br>
-                '.$item->apartamento.' -  '.$item->comodo.'<br>
-                "Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde / $request->query('qtde_qrcodes').'}'
-                )
-                !!}
+                    {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde / $request->query('qtde_qrcodes').'<br>'.$item->nome.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br>"Dados QR Code: "{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde / $request->query('qtde_qrcodes').'}') !!}
 
                     <br>
 
