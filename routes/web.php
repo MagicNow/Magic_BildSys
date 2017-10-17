@@ -1521,7 +1521,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:requisicao.edit');
         $router->delete('requisicao/{requisicao}', ['as' => 'requisicao.destroy', 'uses' => 'RequisicaoController@destroy'])
             ->middleware('needsPermission:requisicao.delete');
-        $router->get('requisicao/{requisicao}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
+        $router->get('requisicao/{requisicao}/update/{update?}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
         $router->get('requisicao/{requisicao}/edit', ['as' => 'requisicao.edit', 'uses' => 'RequisicaoController@edit'])
             ->middleware('needsPermission:requisicao.edit');
 
@@ -1560,6 +1560,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     //Gestão de estoque
     $router->group(['prefix'=>'gestao-de-estoque', 'middleware' => 'needsPermission:gestao_de_estoque.list'], function () use ($router) {
         $router->get('', ['as'=> 'gestaoEstoque.index', 'uses' => 'GestaoEstoqueController@index']);
+        $router->get('/estoque-minimo', ['as'=> 'gestaoEstoque.estoqueMinimo', 'uses' => 'GestaoEstoqueController@estoqueMinimo'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
+        $router->get('/estoque-minimo/salvar', ['as'=> 'gestaoEstoque.estoqueMinimoSalvar', 'uses' => 'GestaoEstoqueController@estoqueMinimoSalvar'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
     });
 
 	$router->get('/testeLpu', function () {

@@ -231,6 +231,7 @@ class RolesAndPermissions extends Seeder
             'requisicao.aplicacao_estoque'   => 'Aplicação de estoque',
 
             'gestao_de_estoque.list'   => 'Gestão de estoque',
+            'estoqueMinimo.manager'   => 'Gerenciar estoque mínimo',
 
             ################# SITE ###################
 

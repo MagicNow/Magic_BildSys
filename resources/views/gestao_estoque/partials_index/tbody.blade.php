@@ -20,8 +20,10 @@
         @else
             <td class="class_visao_E">
                 {{float_to_money($item->qtdEmEstoque(), '')}}
-                <i title="Inserir quantidade mínima" data-toggle="tooltip" class="fa fa-info-circle text-info"
-                   style="font-size: 20px;"></i>
+                <a href="{{route('gestaoEstoque.estoqueMinimo')}}?obra_id={{$item->obra->id}}&insumo_id={{$item->insumo->id}}">
+                    <i title="Inserir quantidade mínima" data-toggle="tooltip" class="fa fa-info-circle text-info"
+                       style="font-size: 20px;"></i>
+                </a>
             </td>
         @endif
         <td class="class_visao_P">{{float_to_money($item->qtdPrevista(), '')}}</td>
