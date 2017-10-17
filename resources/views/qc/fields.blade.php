@@ -4,7 +4,7 @@
 @else
 	<div class="form-group col-sm-6">
 		{!! Form::label('obra_id', 'Obra:') !!}
-		{!! Form::select('obra_id',[''=>'Escolha...']+$obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+		{!! Form::select('obra_id',[''=>'Escolha...'] + $obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 	</div>
 @endif
 
