@@ -87,16 +87,6 @@
         </li>
         @endshield
 
-        @shield('qc.list')
-        <li class="{{ Request::is('qc*') ? 'active' : '' }}">
-            <a href="{{ route('qc.index') }}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Q.C.</span>
-            </a>
-        </li>
-        @endshield
-
-
         <li class="{{ Request::is('condicoes-de-pagamento*') ? 'active' : '' }}">
             <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span style="padding-left:3px;">Condições de Pagamento</span></a>
         </li>
@@ -279,5 +269,33 @@
         </li>
         @endshield
 
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('qc*') || Request::is('qc-avulso-carteiras*') ? 'active' : '' }}">
+
+    <a href="#">
+        <i class="fa fa-briefcase"></i> <span>DocBild</span>
+        <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('qc_avulso_carteiras.list')
+        <li class="{{ Request::is('qc_avulso_carteiras*') ? 'active' : '' }}">
+            <a href="{!! route('admin.qc_avulso_carteiras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Carteiras de Q.C. Avulso</span>
+            </a>
+        </li>
+        @endshield
+        @shield('qc.list')
+        <li class="{{ Request::is('qc*') ? 'active' : '' }}">
+            <a href="{{ route('qc.index') }}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Q.C. Avulso</span>
+            </a>
+        </li>
+        @endshield
     </ul>
 </li>

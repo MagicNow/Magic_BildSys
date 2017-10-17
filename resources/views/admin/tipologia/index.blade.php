@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tipologia
+            Tipos de Q.C. Avulso
             <a class="btn btn-primary pull-right"  href="{!! route('admin.tipologia.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>

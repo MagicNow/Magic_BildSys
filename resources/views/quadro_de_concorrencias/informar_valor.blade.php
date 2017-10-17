@@ -17,7 +17,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             @if(auth()->user()->fornecedor)
-                Enviar Proposta
+                Enviar proposta
             @else
                 Informar valores de fornecedor
             @endif

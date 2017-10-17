@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Selecionar Insumos</h4>
+                <h4 class="modal-title">Selecionar insumos</h4>
             </div>
             <div class="modal-body">
                 <div class="row">

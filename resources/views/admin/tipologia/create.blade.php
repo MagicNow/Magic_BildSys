@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tipologia
+            Tipo de Q.C. Avulso
         </h1>
     </section>
     <div class="content">

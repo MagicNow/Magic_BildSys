@@ -3,24 +3,75 @@
 
 @section('content')
 
-    @foreach($item as $item)
+    @if($request->query('all') == 'true')
 
-        <div class="col-xs-12 col-sm-3 col-md-3 text-center">
+        @foreach($item as $item)
 
-            {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
+            <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-            <br>
+                {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
 
-            <h5>{{ $item->insumo }}</h5>
-            <b>Qtde:</b>  {{ $item->qtde }} <br>
+                <br>
 
-            <b>Obra:</b> {{ $item->nome }} <br>
-            <b>Torre:</b> {{ $item->torre }} / <b>Pavimento:</b> {{ $item->pavimento }} <br>
-            <b>Trecho:</b> {{ $item->trecho }} / <b>Andar:</b> {{ $item->andar }} <br>
-            <b>Apartamento:</b> {{ $item->apartamento }} / <b>Comodo:</b> {{ $item->comodo }}
+                <h5>{{ $item->insumo }}</h5>
+                <b>Qtde:</b>  {{ $item->qtde }} <br>
 
-        </div>
+                <b>Obra:</b> {{ $item->nome }} <br>
+                <b>Torre:</b> {{ $item->torre }} / <b>Pavimento:</b> {{ $item->pavimento }} <br>
+                <b>Trecho:</b> {{ $item->trecho }} / <b>Andar:</b> {{ $item->andar }} <br>
+                <b>Apartamento:</b> {{ $item->apartamento }} / <b>Comodo:</b> {{ $item->comodo }}
 
-    @endforeach
+            </div>
+
+        @endforeach
+
+    @else
+
+        @if($request->query('qtde_qrcodes') == 1)
+
+            <div class="col-xs-12 col-sm-3 col-md-3 text-center">
+
+                {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
+
+                <br>
+
+                <h5>{{ $item->insumo }}</h5>
+                <b>Qtde:</b>  {{ $item->qtde }} <br>
+
+                <b>Obra:</b> {{ $item->nome }} <br>
+                <b>Torre:</b> {{ $item->torre }} / <b>Pavimento:</b> {{ $item->pavimento }} <br>
+                <b>Trecho:</b> {{ $item->trecho }} / <b>Andar:</b> {{ $item->andar }} <br>
+                <b>Apartamento:</b> {{ $item->apartamento }} / <b>Comodo:</b> {{ $item->comodo }}
+
+            </div>
+
+        @elseif($request->query('qtde_qrcodes') > 1)
+
+            @for ($i = 1; $i <= $request->query('qtde_qrcodes'); $i++)
+
+                <div class="col-xs-12 col-sm-3 col-md-3 text-center">
+
+                    {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde / $request->query('qtde_qrcodes').'}') !!}
+
+                    <br>
+
+                    <h5>{{ $item->insumo }}</h5>
+                    <b>Qtde:</b>  {{ $item->qtde / $request->query('qtde_qrcodes') }} <br>
+
+                    <b>Obra:</b> {{ $item->nome }} <br>
+                    <b>Torre:</b> {{ $item->torre }} / <b>Pavimento:</b> {{ $item->pavimento }} <br>
+                    <b>Trecho:</b> {{ $item->trecho }} / <b>Andar:</b> {{ $item->andar }} <br>
+
+                    @if($item->apartamento)
+                        <b>Apartamento:</b> {{ $item->apartamento }} / <b>Comodo:</b> {{ $item->comodo }}
+                    @endif
+
+                </div>
+
+            @endfor
+
+        @endif
+
+    @endif
 
 @endsection

@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Medicão de Serviço {{ $medicaoServico->id . ' - Obra '. $medicaoServico->contratoItemApropriacao->contratoItem->contrato->obra->nome }}
+            Medicão de serviço {{ $medicaoServico->id . ' - Obra '. $medicaoServico->contratoItemApropriacao->contratoItem->contrato->obra->nome }}
 
             @if(!$medicaoServico->finalizado)
             <a class="btn btn-success btn-flat btn-lg pull-right" href="{{ url('/medicoes/create?contrato_item_apropriacao_id='.$medicaoServico->contrato_item_apropriacao_id.'&medicao_servico_id='.$medicaoServico->id) }}">

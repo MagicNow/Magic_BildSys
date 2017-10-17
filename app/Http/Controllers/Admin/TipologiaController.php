@@ -45,7 +45,7 @@ class TipologiaController extends AppBaseController
     }
 
     /**
-     * Store a newly created Tipologia in storage.
+     * Store a newly created Tipo de Q.C. Avulso in storage.
      *
      * @param CreateTipologiaRequest $request
      *
@@ -57,7 +57,7 @@ class TipologiaController extends AppBaseController
 
         $tipologia = $this->tipologiaRepository->create($input);
 
-        Flash::success('Tipologia '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Tipo de Q.C. Avulso '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }
@@ -74,7 +74,7 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error('Tipologia '.trans('common.not-found'));
+            Flash::error('Tipo de Q.C. Avulso '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }
@@ -94,7 +94,7 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error('Tipologia '.trans('common.not-found'));
+            Flash::error('Tipo de Q.C. Avulso '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }    
@@ -103,7 +103,7 @@ class TipologiaController extends AppBaseController
     }
 
     /**
-     * Update the specified Tipologia in storage.
+     * Update the specified Tipo de Q.C. Avulso in storage.
      *
      * @param  int              $id
      * @param UpdateTipologiaRequest $request
@@ -115,20 +115,20 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error('Tipologia '.trans('common.not-found'));
+            Flash::error('Tipo de Q.C. Avulso '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }       
 
         $tipologia = $this->tipologiaRepository->update($request->all(), $id);
 
-        Flash::success('Tipologia '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Tipo de Q.C. Avulso '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }
 
     /**
-     * Remove the specified Tipologia from storage.
+     * Remove the specified Tipo de Q.C. Avulso from storage.
      *
      * @param  int $id
      *
@@ -139,13 +139,13 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error('Tipologia '.trans('common.not-found'));
+            Flash::error('Tipo de Q.C. Avulso '.trans('common.not-found'));
             return redirect(route('admin.tipologia.index'));
         }
 		
         $this->tipologiaRepository->delete($id);
 
-        Flash::success('Tipologia '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Tipo de Q.C. Avulso '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }

@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Memória de Cálculo
+            Memória de cálculo
 
            <a class="btn btn-primary pull-right"  href="{!! route('memoriaCalculos.create') !!}">
             {{ ucfirst( trans('common.new') )}}

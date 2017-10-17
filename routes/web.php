@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +38,8 @@ $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
 $router->get('/buscar/carteiras', 'BuscarController@getCarteiras')
     ->name('buscar.carteiras');
+$router->get('/buscar/qc-avulso-carteiras', 'BuscarController@getQcAvulsoCarteiras')
+    ->name('buscar.qc-avulso-carteiras');
 $router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
     ->name('buscar.fornecedores');
 $router->get('/buscar/tipo-equalizacao-tecnicas', 'BuscarController@getTipoEqualizacaoTecnicas')
@@ -154,6 +156,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
         $router->get('planejamentoOrcamentos/sem-planejamento/view/{obra}', ['as' => 'admin.planejamentoOrcamentos.semplanejamentoview', 'uses' => 'Admin\PlanejamentoOrcamentoController@semPlanejamentoView']);
 
+
+        $router->get('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamento.create-tarefa_carteiras', 'uses' => 'Admin\PlanejamentoController@createTarefaCarteira']);
+        $router->post('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamentos.storeTarefaCarteira', 'uses' => 'Admin\PlanejamentoController@storeTarefaCarteira']);
+        $router->get('atividade-carteiras', ['as' => 'admin.planejamentos.atividade-carteiras', 'uses' => 'Admin\PlanejamentoController@atividadeCarteiras']);
     });
 
 	#Medição Física
@@ -614,6 +620,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('carteiras/{carteiras}/edit', ['as' => 'admin.carteiras.edit', 'uses' => 'Admin\CarteiraController@edit'])
             ->middleware("needsPermission:carteiras.edit");
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
+    });
+
+    # QcAvulsoCarteiras
+    $router->group(['middleware' => 'needsPermission:qc_avulso_carteiras.list', 'prefix'=> 'qc-avulso-carteiras'], function () use ($router) {
+        $router->get('', ['as' => 'admin.qc_avulso_carteiras.index', 'uses' => 'Admin\QcAvulsoCarteiraController@index']);
+        $router->post('', ['as' => 'admin.qc_avulso_carteiras.store', 'uses' => 'Admin\QcAvulsoCarteiraController@store']);
+        $router->get('/create', ['as' => 'admin.qc_avulso_carteiras.create', 'uses' => 'Admin\QcAvulsoCarteiraController@create'])
+            ->middleware("needsPermission:qc_avulso_carteiras.create");;
+        $router->put('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
+        $router->patch('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
+        $router->delete('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.destroy', 'uses' => 'Admin\QcAvulsoCarteiraController@destroy'])
+            ->middleware("needsPermission:qc_avulso_carteiras.delete");;
+        $router->get('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.show', 'uses' => 'Admin\QcAvulsoCarteiraController@show']);
+        $router->get('/{qc_avulso_carteiras}/edit', ['as' => 'admin.qc_avulso_carteiras.edit', 'uses' => 'Admin\QcAvulsoCarteiraController@edit'])
+            ->middleware("needsPermission:qc_avulso_carteiras.edit");
     });
 
 	# Máscara Padrão
@@ -1335,22 +1356,34 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     # DocBild
     $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
-        $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->post('/', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
-        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->post('/{qc}/fechar',['as' => 'qc.fechar', 'uses' => 'QcController@fechar'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->patch('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->put('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
+            ->middleware('needsPermission:qc.edit');
+
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
-        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcSuprimentosController@edit']);
-        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcSuprimentosController@update']);
-        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+
+
+
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
-        // $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
+
         $router->get('/anexos/{qc}',['as' => 'qc.anexos', 'uses' => 'QcController@anexos'])
             ->middleware('needsPermission:qc.anexos.list');
 
         $router->get('/aprovar/{qc}',['as' => 'qc.aprovar.edit', 'uses' => 'QcController@aprovar'])
             ->middleware('needsPermission:qc-aprovar.show');
             $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
+
+        $router->get('/{qc}/cancelar', 'QcController@cancelar')
+            ->middleware("needsPermission:qc.edit");
     });
 
 	# Configuracao Estatica
@@ -1496,7 +1529,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('requisicao/get-trechos-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.trechoObra', 'uses' => 'RequisicaoController@getTrechoByObraTorrePavimento']);
         $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.andarObra', 'uses' => 'RequisicaoController@getAndarByObraTorrePavimento']);
         $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
-        $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
+        $router->get('requisicao/obra/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
         $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
 
         $router->get('requisicao/ler-qr-cod', function() {
@@ -1588,7 +1621,7 @@ $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' 
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/comodo', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
 $router->get('requisicao/modal/impressao-qrcode', ['as' => 'requisicao.modalQrCode', 'uses' => 'RequisicaoController@modalQrCode']);
-$router->get('requisicao/impressao-qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
+$router->get('requisicao/impressao/qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');

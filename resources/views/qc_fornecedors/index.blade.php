@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Qc Fornecedors
+            Qc fornecedor
             <a class="btn btn-primary pull-right"  href="{!! route('qcFornecedors.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>

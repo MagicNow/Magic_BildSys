@@ -35,8 +35,7 @@
 <!-- Telefone Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('telefone', 'Telefone:') !!}
-    <!-- @TODO adicionar classe dadosMega quando o telefone estiver vindo da importação -->
-    {!! Form::text('telefone', null, ['class' => 'form-control telefone']) !!}
+    {!! Form::text('telefone', null, ['class' => 'form-control telefone dadosMega']) !!}
 </div>
 
 <!-- Cep Field -->

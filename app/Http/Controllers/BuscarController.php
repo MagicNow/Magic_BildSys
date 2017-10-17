@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Carteira;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\QcAvulsoCarteira;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fornecedor;
@@ -78,7 +79,21 @@ class BuscarController extends AppBaseController
 
         return $carteiras;
     }
-	
+
+    public function getQcAvulsoCarteiras(Request $request)
+    {
+        $carteiras = QcAvulsoCarteira::select([
+            'id',
+            'nome'
+        ])
+        ->where('nome', 'like', '%'.$request->q.'%')
+        ->whereNotIn('id', $request->ignore ?: [])
+        ->with('tarefas')
+        ->paginate();
+
+        return $carteiras;
+    }
+
 	public function getTipoEqualizacaoTecnicas(Request $request)
     {
         $tipo_equalizacao_tecnicas = TipoEqualizacaoTecnica::select([

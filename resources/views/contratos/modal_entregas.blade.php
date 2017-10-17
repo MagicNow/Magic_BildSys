@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title">Solicitações de Entrega</h4>
+                <h4 class="modal-title">Solicitações de entrega</h4>
             </div>
             <div class="modal-body">
                 @if($contrato->entregas->isNotEmpty())

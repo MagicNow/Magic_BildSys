@@ -28,7 +28,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
      */
     public function index()
     {
-        $planejamentos = Planejamento::pluck('tarefa','id')->toArray();
+        $planejamentos = [];//Planejamento::pluck('tarefa','id')->toArray();
         $obras = Obra::pluck('nome','id')->toArray();
         return view('admin.planejamento_orcamentos.index', compact('planejamentos','obras'));
     }
