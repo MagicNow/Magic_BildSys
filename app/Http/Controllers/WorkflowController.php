@@ -97,10 +97,12 @@ class WorkflowController extends Controller
             'historicos'=>[]
         ];
         $dataUltimoPeriodo = null;
+
         $aprovadores = WorkflowAprovacaoRepository::verificaUsuariosAprovadores(
             WorkflowTipo::find($request->workflowTipo), $obj->qualObra(),
             null,[ $request->id => $request->id ], $tipo
         );
+
         $dataUltimoPeriodo = $obj->dataUltimoPeriodoAprovacao();
         if($aprovadores){
             foreach ($aprovadores as $alcada){
