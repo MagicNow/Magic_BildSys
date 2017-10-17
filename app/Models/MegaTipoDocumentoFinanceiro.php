@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Yajra\Oci8\Eloquent\OracleEloquent as Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 
 class MegaTipoDocumentoFinanceiro extends Eloquent
 {
@@ -33,5 +34,23 @@ class MegaTipoDocumentoFinanceiro extends Eloquent
     }
     public function getRetemImpostosAttribute($value){
         return trim(utf8_encode($value));
+    }
+
+    /**
+     * Adicionando uma condição passada pelo cliente, pois as condições de pagamento à ser utilizadas são apenas as
+     * que o cond_tab_in_codigo é igual à 56
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('tpd_bo_permitidocpa', function (Builder $builder) {
+            $builder->where('tpd_bo_permitidocpa', '=', 'S');
+        });
+        static::addGlobalScope('tpd_bo_permitidocre', function (Builder $builder) {
+            $builder->where('tpd_bo_permitidocre', '=', 'N');
+        });
+        static::addGlobalScope('tpd_bo_permitidomvcre', function (Builder $builder) {
+            $builder->where('tpd_bo_permitidomvcre', '=', 'N');
+        });
     }
 }

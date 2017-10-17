@@ -377,22 +377,18 @@
         <li class="{{ Request::is('gestao-de-estoque*') ? 'active' : '' }}">
             <a href="{!! route('gestaoEstoque.index') !!}">
                 <i class="fa fa-caret-right"></i>
-                <span>Gestão de estoque</span>
+                 <span>Gestão de estoque</span>
             </a>
         </li>
         @endshield
     </ul>
 </li>
 
-
-
-
-
 <li class="treeview {{ Request::is('admin/tipologia*') || Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
 
     <a href="#">
         <i class="fa fa-file-text-o"></i> <span>DocBild</span>
-            <span class="pull-right-container">
+           <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
@@ -402,7 +398,7 @@
             <a href="{!! route('admin.tipologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Tipos de Q.C. Avulso</span>
-            </a>
+           </a>
         </li>
         @endshield
         <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
