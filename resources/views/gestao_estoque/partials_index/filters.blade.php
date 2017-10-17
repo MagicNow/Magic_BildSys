@@ -1,12 +1,17 @@
 <div class="box box-muted">
     <div class="box-body">
         <div class="row">
-            <div class="form-group col-sm-3">
+            <div class="form-group col-sm-2">
                 {!! Form::label('obra_id', 'Obra:') !!}
                 {!! Form::select('obra_id', $obras, null, ['class' => 'form-control select2', 'onchange' => 'filter();']) !!}
             </div>
 
-            <div class="form-group col-sm-3">
+            <div class="form-group col-sm-2">
+                {!! Form::label('insumo_grupo_id', 'Grupo de insumo:') !!}
+                {!! Form::select('insumo_grupo_id', $grupo_insumos, null, ['class' => 'form-control select2', 'onchange' => 'filter();']) !!}
+            </div>
+
+            <div class="form-group col-sm-2">
                 {!! Form::label('insumo_id', 'Insumo:') !!}
                 {!! Form::select('insumo_id', $insumos, null, ['class' => 'form-control select2', 'onchange' => 'filter();']) !!}
             </div>

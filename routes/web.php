@@ -1560,6 +1560,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     //Gestão de estoque
     $router->group(['prefix'=>'gestao-de-estoque', 'middleware' => 'needsPermission:gestao_de_estoque.list'], function () use ($router) {
         $router->get('', ['as'=> 'gestaoEstoque.index', 'uses' => 'GestaoEstoqueController@index']);
+        $router->get('/estoque-minimo', ['as'=> 'gestaoEstoque.estoqueMinimo', 'uses' => 'GestaoEstoqueController@estoqueMinimo'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
+        $router->get('/estoque-minimo/salvar', ['as'=> 'gestaoEstoque.estoqueMinimoSalvar', 'uses' => 'GestaoEstoqueController@estoqueMinimoSalvar'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
     });
 
 	$router->get('/testeLpu', function () {
