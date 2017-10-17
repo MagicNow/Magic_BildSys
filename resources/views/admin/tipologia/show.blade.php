@@ -4,7 +4,7 @@
     <section class="content-header">
         <h1>
             Tipos de Q.C. Avulso
-        </h1>
+       </h1>
     </section>
     <div class="content">
         <div class="box box-primary">
