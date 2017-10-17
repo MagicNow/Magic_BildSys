@@ -171,7 +171,7 @@ class PagamentoDataTable extends DataTable
             'data_emissão' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
             'valor' => ['name' => 'valor', 'data' => 'valor'],
             'condiçõesDePagamento' => ['name' => 'pagamento_condicoes.codigo', 'data' => 'codigo'],
-            'TipoDeDocumento' => ['name' => 'documento_tipos.sigla', 'data' => 'sigla'],
+            'TipoDeDocumento' => ['name' => 'documento_financeiro_tipos.codigo_mega', 'data' => 'codigo_mega'],
             'notas_fiscal' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
             'enviado_mega' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
             'integrado_mega' => ['name' => 'integrado', 'data' => 'integrado'],

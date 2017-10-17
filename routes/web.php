@@ -1589,7 +1589,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 
-		$insumos = \App\Repositories\ImportacaoRepository::fornecedoresAtualiza();
+		$insumos = \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos();
         dd($insumos);
 
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
