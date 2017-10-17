@@ -6,7 +6,7 @@
         <button type="button" class="btn btn-link" onclick="history.go(-1);">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
         </button>
-        Solicitação de Entrega
+        Solicitação de entrega
     </h1>
 </div>
 <div class="content">

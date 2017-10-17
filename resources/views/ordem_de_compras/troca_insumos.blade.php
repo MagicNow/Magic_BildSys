@@ -7,7 +7,7 @@
                 <div class="col-md-8">
                     <span class="pull-left title">
                         <a href="{{ url()->previous()}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                        Trocar Insumos
+                        Trocar insumos
                     </span>
                 </div>
                 <div class="col-md-4 text-right">

@@ -5,7 +5,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <h4 class="modal-title">
-                Detalhes de Aprovações
+                Detalhes de aprovações
                 @if(count($alcadas_aprovacao['historicos']))
                     <button type="button" class="btn btn-xs pull-right btn-info" style="margin-right: 10px;"
                             onclick="$('.antesAlteracao').toggleClass('hidden');">

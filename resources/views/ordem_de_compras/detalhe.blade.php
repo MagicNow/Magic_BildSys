@@ -31,7 +31,7 @@
                             <a href="/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </a>
-                            <span>Detalhe da Ordem de Compra</span>
+                            <span>Detalhe da ordem de compra</span>
                         </h3>
                     </span>
                 </div>

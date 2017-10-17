@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Retroalimentação de Obras
+            Retroalimentação de obras
            <a class="btn btn-primary btn-lg btn-flat pull-right"  href="{!! route('retroalimentacaoObras.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
