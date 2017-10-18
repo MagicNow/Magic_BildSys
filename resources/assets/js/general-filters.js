@@ -40,6 +40,11 @@ $(function() {
   });
 
   table.one('init', function() {
-    setTimeout(filter, 1000);
+    setTimeout(function() {
+      filter();
+      setTimeout(function() {
+        $('.tooltip').remove();
+      }, 500);
+    }, 1000);
   });
 });

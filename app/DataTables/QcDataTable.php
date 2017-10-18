@@ -240,6 +240,6 @@ class QcDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'qc_avulso';
+        return 'qc_avulso_'.date('d_m_Y_h_i_s');
     }
 }

@@ -256,7 +256,9 @@ class Qc extends Model
 
     public function canCancel()
     {
-        return Defender::hasPermission('qc.edit') && $this->qc_status_id !== QcStatus::CANCELADO;
+        return Defender::hasPermission('qc.edit')
+            && $this->qc_status_id !== QcStatus::CANCELADO
+            && $this->qc_status_id !== QcStatus::CONCORRENCIA_FINALIZADA;
     }
 
     public function canSendQcFechado()
