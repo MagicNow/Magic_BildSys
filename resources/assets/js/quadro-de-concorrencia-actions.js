@@ -5,8 +5,21 @@
   const MAX_FILE_SIZE_MB = 20;
 
   $(function () {
+    var obraId = $('#obra_id');
     select2('#carteira_id', {
       url: baseUrl + '/buscar/qc-avulso-carteiras',
+      filter: function(carteira) {
+
+        if(obraId.val()) {
+          var obras = carteira
+            .tarefas
+            .map(_.property('obra_id'));
+
+          return carteira.tarefas.length && obras.includes(parseInt(obraId.val()));
+        }
+
+        return true;
+      }
     });
 
     $attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);
@@ -16,6 +29,10 @@
     $attachments.on('click', '.js-qc-anexos-remover', removeAttachmentRow);
     $attachments.on('change', '.form-control', checkAttachmentTypeExists);
     $attachments.on('change', 'input[type="file"]', checkFileSize);
+
+    obraId.on('change', function(e) {
+      $('#carteira_id').val(null).change();
+    });
   });
 
   function removeAttachmentRow(e) {

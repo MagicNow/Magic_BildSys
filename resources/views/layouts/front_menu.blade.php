@@ -297,5 +297,11 @@
             </a>
         </li>
         @endshield
+        <li class="{{ Request::is('farol-qc*') ? 'active' : '' }}">
+            <a href="{{ route('qc.farol') }}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Farol de Q.C.s Avulsos</span>
+            </a>
+        </li>
     </ul>
 </li>

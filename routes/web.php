@@ -159,8 +159,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
         $router->get('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamento.create-tarefa_carteiras', 'uses' => 'Admin\PlanejamentoController@createTarefaCarteira']);
         $router->post('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamentos.storeTarefaCarteira', 'uses' => 'Admin\PlanejamentoController@storeTarefaCarteira']);
-        $router->get('atividade-carteiras', ['as' => 'admin.planejamentos.atividade-carteiras', 'uses' => 'Admin\PlanejamentoController@atividadeCarteiras']);
+
     });
+    $router->get('atividade-carteiras', ['as' => 'admin.planejamentos.atividade-carteiras', 'uses' => 'Admin\PlanejamentoController@atividadeCarteiras']);
 
 	#Medição Física
     $router->group(['prefix' => 'medicao_fisicas','middleware' => 'needsPermission:medicao_fisicas.list'], function($router) {
@@ -1357,9 +1358,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # DocBild
     $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
         $router->get('/', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/farol', ['as' => 'qc.farol', 'uses' => 'QcController@farol']);
         $router->post('/', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+
         $router->post('/{qc}/fechar',['as' => 'qc.fechar', 'uses' => 'QcController@fechar'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->get('/{qc}/edit',['as' => 'qc.edit', 'uses' => 'QcController@edit'])
             ->middleware('needsPermission:qc.edit');
 
         $router->patch('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
@@ -1384,6 +1390,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
         $router->get('/{qc}/cancelar', 'QcController@cancelar')
             ->middleware("needsPermission:qc.edit");
+
+
     });
 
 	# Configuracao Estatica
@@ -1414,6 +1422,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notasfiscais/{notafiscal}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('notasfiscais/conciliacao/filtro', ['as' => 'notafiscals.filtro', 'uses' => 'NotafiscalController@filtraFornecedorContratos']);
     $router->get('notasfiscais/pagamentos/filtro/{contrato_id}/{nfe_id}', ['as' => 'notafiscals.pagamentos.filtro', 'uses' => 'NotafiscalController@filtrarPagamentos']);
+
+    $router->get('importaNfe', ['as' => 'nfe.import', 'uses' => 'NotafiscalController@importaNfe']);
+    $router->post('importaNfe', ['as' => 'nfe.store', 'uses' => 'NotafiscalController@postImportaNfe']);
+
 
     $router->get('capturaNfe', 'NotafiscalController@pescadorNfe');
     $router->get('capturaCte', 'NotafiscalController@buscaCTe');
@@ -1560,6 +1572,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     //Gestão de estoque
     $router->group(['prefix'=>'gestao-de-estoque', 'middleware' => 'needsPermission:gestao_de_estoque.list'], function () use ($router) {
         $router->get('', ['as'=> 'gestaoEstoque.index', 'uses' => 'GestaoEstoqueController@index']);
+        $router->get('/estoque-minimo', ['as'=> 'gestaoEstoque.estoqueMinimo', 'uses' => 'GestaoEstoqueController@estoqueMinimo'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
+        $router->get('/estoque-minimo/salvar', ['as'=> 'gestaoEstoque.estoqueMinimoSalvar', 'uses' => 'GestaoEstoqueController@estoqueMinimoSalvar'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
     });
 
 	$router->get('/testeLpu', function () {
@@ -1581,7 +1597,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 
-		$insumos = \App\Repositories\ImportacaoRepository::fornecedoresAtualiza();
+		$insumos = \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos();
         dd($insumos);
 
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();

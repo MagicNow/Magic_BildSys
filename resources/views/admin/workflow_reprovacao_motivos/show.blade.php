@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Motivo de Reprovação
+            Motivo de reprovação
         </h1>
     </section>
     <div class="content">

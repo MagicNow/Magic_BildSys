@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Máscara Padrão - {{(isset($mascaraPadrao) ? $mascaraPadrao->nome : $mascaraPadraoEstrutura->nome)}}
+            Máscara padrão - {{(isset($mascaraPadrao) ? $mascaraPadrao->nome : $mascaraPadraoEstrutura->nome)}}
         </h1>
         <h1>
             <a class="btn btn-primary pull-right" style="margin-top: -30px;" href="{{url('/admin/mascara_padrao_insumos/'.(isset($mascaraPadrao) ? $mascaraPadrao->id : $mascaraPadraoEstrutura->mascara_padrao_id).'/index')}}">

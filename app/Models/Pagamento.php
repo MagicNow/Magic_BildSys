@@ -35,7 +35,9 @@ class Pagamento extends Model
         'documento_tipo_id',
         'notas_fiscal_id',
         'enviado_integracao',
-        'integrado'
+        'integrado',
+        'status_integracao',
+        'codigo_integracao'
     ];
 
     /**
@@ -50,8 +52,10 @@ class Pagamento extends Model
         'fornecedor_id' => 'integer',
         'data_emissao' => 'date',
         'pagamento_condicao_id' => 'integer',
-        'documento_tipo_id' => 'integer',
-        'notas_fiscal_id' => 'integer'
+        'documento_financeiro_tipo_id' => 'integer',
+        'notas_fiscal_id' => 'integer',
+        'status_integracao'=> 'string',
+        'codigo_integracao'=> 'string',
     ];
 
     /**
@@ -63,7 +67,7 @@ class Pagamento extends Model
         'contrato_id' => 'required',
         'fornecedor_id' => 'required',
         'pagamento_condicao_id' => 'required',
-        'documento_tipo_id' => 'required',
+        'documento_financeiro_tipo_id' => 'required',
         'data_emissao' => 'required',
     ];
 
@@ -80,7 +84,7 @@ class Pagamento extends Model
      **/
     public function documentoTipo()
     {
-        return $this->belongsTo(DocumentoTipo::class);
+        return $this->belongsTo(DocumentoFinanceiroTipo::class, 'documento_financeiro_tipo_id');
     }
 
     /**

@@ -118,6 +118,7 @@ class LembretesHomeDataTable extends DataTable
                                         WHERE
                                             workflow_alcada_id = workflow_alcadas.id
                                     )
+                                    AND workflow_alcadas.workflow_tipo_id IN (1,2,3,4)
                             ) ,
                             0
                         )
@@ -172,6 +173,7 @@ class LembretesHomeDataTable extends DataTable
                                         WHERE
                                             workflow_alcada_id = workflow_alcadas.id
                                     )
+                                    AND workflow_alcadas.workflow_tipo_id IN (1,2,3,4)
                             ) ,
                             0
                         )

@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Planejamento Orcamento
+            Planejamento orçamento
         </h1>
     </section>
     <div class="content">

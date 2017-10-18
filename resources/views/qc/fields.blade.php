@@ -1,12 +1,8 @@
 <!-- Obra ID Field -->
-@if(request()->has('obra_id'))
-	{!! Form::hidden('obra_id', request('obra_id')) !!}
-@else
-	<div class="form-group col-sm-6">
-		{!! Form::label('obra_id', 'Obra:') !!}
-        {!! Form::select('obra_id', $obras, NULL, ['class' => 'form-control select2', 'required']) !!}
-	</div>
-@endif
+<div class="form-group col-sm-6">
+    {!! Form::label('obra_id', 'Obra:') !!}
+    {!! Form::select('obra_id', $obras, request('obra_id'), ['class' => 'form-control select2']) !!}
+</div>
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
@@ -65,45 +61,47 @@
 	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
-<div class="col-sm-12">
-	<div class="box box-muted">
-        <div class="box-header with-border">
-            <i class="fa fa-paperclip"></i> ANEXOS
+@if(!isset($qc))
+    <div class="col-sm-12">
+        <div class="box box-muted">
+            <div class="box-header with-border">
+                <i class="fa fa-paperclip"></i> ANEXOS
+            </div>
+            <div class="box-body qc-anexos">
+                <div class="form-group row qc-anexos-campos">
+                    <div class="col-sm-5">
+                       {!! Form::label('', 'Descrição:') !!}
+                        {!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="col-sm-3">
+                       {!! Form::label('', 'Tipo do Anexo:') !!}
+                        {!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="col-sm-3">
+                           {!! Form::label('', 'Arquivo:') !!}
+                           {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control')) !!}
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <label>&nbsp;</label>
+                        <div class="center-block">
+                            <button
+                                 type="button"
+                                 class="btn js-qc-anexos-remover btn-warning hidden">
+                                 <i class="fa fa-minus"></i>
+                             </button>
+                            <button
+                                 type="button"
+                                 class="btn js-qc-anexos-novo btn-default"
+                                 disabled="disabled">
+                                 <i class="fa fa-plus"></i>
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-	    <div class="box-body qc-anexos">
-	        <div class="form-group row qc-anexos-campos">
-	        	<div class="col-sm-5">
-                   {!! Form::label('', 'Descrição:') !!}
-	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
-	        	</div>
-	        	<div class="col-sm-3">
-                   {!! Form::label('', 'Tipo do Anexo:') !!}
-	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
-	        	</div>
-	        	<div class="col-sm-3">
-	                   {!! Form::label('', 'Arquivo:') !!}
-	                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control')) !!}
-	        	</div>
-	        	<div class="col-md-1 text-center">
-                    <label>&nbsp;</label>
-	        		<div class="center-block">
-	        		    <button
-                             type="button"
-                             class="btn js-qc-anexos-remover btn-warning hidden">
-                             <i class="fa fa-minus"></i>
-                         </button>
-	        		    <button
-                             type="button"
-                             class="btn js-qc-anexos-novo btn-default"
-                             disabled="disabled">
-                             <i class="fa fa-plus"></i>
-                         </button>
-	        		</div>
-	        	</div>
-	        </div>
-	    </div>
-	</div>
-</div>
+    </div>
+@endif
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
