@@ -42,11 +42,11 @@
                         !!}
                     </div>
                     <div class="col-sm-3 form-group">
-                        {!! Form::label('carteira_id', 'Responsável pela negociação') !!}
+                        {!! Form::label('comprador_id', 'Responsável pela negociação') !!}
                         {!!
                             Form::select(
-                                'carteira_id',
-                                [],
+                                'comprador_id',
+                                $compradores,
                                 null,
                                 [
                                     'class' => 'js-filter select2'

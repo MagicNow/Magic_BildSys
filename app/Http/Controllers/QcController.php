@@ -59,6 +59,11 @@ class QcController extends AppBaseController
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Filtrar por tipologia...', '');
 
+        $compradores = User::whereHas('qcsAvulsosComprador')
+            ->pluck('name', 'id')
+            ->prepend('Sem comprador', '0')
+            ->prepend('Filtrar por comprador...', '');
+
         $status = [
             '' => 'Filtrar por status...',
             QcStatus::EM_APROVACAO => 'Em Validação',
@@ -72,7 +77,7 @@ class QcController extends AppBaseController
 
         return $qcDataTable->render(
             'qc.index',
-            compact('obras', 'tipologias', 'status', 'defaultStatus')
+            compact('obras', 'tipologias', 'status', 'defaultStatus', 'compradores')
         );
     }
 
