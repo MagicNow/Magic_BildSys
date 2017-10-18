@@ -144,6 +144,10 @@ class QcDataTable extends DataTable
             $query->where('carteira_id', $request->carteira_id);
         }
 
+        if($request->has('comprador_id')) {
+            $query->where('comprador_id', $request->comprador_id ? $request->comprador_id : null);
+        }
+
         return $this->applyScopes($query);
     }
 
