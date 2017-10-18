@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tipos de Lembretes
+            Tipos de lembretes
             <a class="btn btn-primary pull-right"  href="{!! route('admin.lembreteTipos.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>

@@ -233,7 +233,7 @@ class OrdemDeCompraItem extends Model
 
     public function codigoServico()
     {
-        return $this->servico->codigo . ' ' . $this->servico->nome;
+        return $this->servico->codigo . ' - ' . $this->servico->nome;
     }
 
     public function reapropriacoes()

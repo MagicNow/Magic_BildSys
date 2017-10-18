@@ -3,7 +3,7 @@
     @include('flash::message')
     <section class="content-header">
         <h1>
-            Máscara Padrão Estrutura
+            Máscara padrão estrutura
         </h1>
     </section>
     <div class="content">

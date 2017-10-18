@@ -78,7 +78,7 @@ class ContratoItemApropriacao extends Model
 
     public function codigoServico($showServico = true)
     {
-       return $this->servico->codigo . ($showServico ? (' ' . $this->servico->nome) : '');
+       return $this->servico->codigo . ($showServico ? (' - ' . $this->servico->nome) : '');
     }
 
     /**

@@ -502,7 +502,7 @@ class PlanejamentoController extends AppBaseController
         $planejamentos = Planejamento::join('planejamento_compras','planejamento_compras.planejamento_id', 'planejamentos.id')
             ->select([
                 'planejamentos.id',
-                'planejamentos.tarefa'
+                DB::raw("CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT(planejamentos.data, '%d/%m/%Y')) as tarefa")
             ])
             ->where('planejamentos.resumo','Sim')
             ->groupBy('planejamentos.id','planejamentos.tarefa');
