@@ -17,15 +17,21 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'qc.datatable_farol_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            ->editColumn('data', function($obj){
+                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
+            })
+            ->editColumn('data_planejada_start', function($obj){
+                return $obj->data_planejada_start ? with(new\Carbon\Carbon($obj->data_planejada_start))->format('d/m/Y') : '';
+            })
+            ->editColumn('data_planejada_workflow_1', function($obj){
+                return $obj->data_planejada_workflow_1 ? with(new\Carbon\Carbon($obj->data_planejada_workflow_1))->format('d/m/Y') : '';
             })
             ->editColumn('farol_start', function($obj){
                 // VERDE ( ATÉ 20% ACIMA DA DATA DE INÍCIO)
                 // AMARELO (ATÉ 60% ACIMA DA DATA DE INÍCIO)
                 // VERMELHO (ATÉ A DATA LIMITE)
                 // PRETO (ACIMA DO LIMITE)
-                $percentual = (($obj->sla_start + $obj->farol_start)*100)/$obj->sla_start;
+                $percentual = (($obj->farol_start)*100)/$obj->sla_start;
                 if($percentual > -20 ){
                     $classe = 'text-success';
                 }elseif($percentual > -60 && $percentual < -20 ){
@@ -36,7 +42,7 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
                     $classe = '';
                 }
 
-                return '<div class="text-center"><i class="fa fa-circle ' .$classe.'" aria-hidden="true"></i></div>';
+                return '<div class="text-center"><i class="fa fa-circle ' .$classe.'" aria-hidden="true" title="'.$obj->farol_start.'"></i></div>';
             })
 //            ->filterColumn('created_at', function ($query, $keyword) {
 //                $query->whereRaw("DATE_FORMAT(qc_avulso_carteiras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
@@ -122,6 +128,38 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
                             AND workflow_alcadas.ordem = 3) dias_prazo_alcada_3'),
                 DB::raw("
                 (
+                        SUBDATE(
+                            planejamentos.`data` , 
+                            INTERVAL(
+                                qc_avulso_carteiras.sla_start + 
+                                qc_avulso_carteiras.sla_negociacao + 
+                                qc_avulso_carteiras.sla_mobilizacao
+                                + IFNULL(
+                                    (
+                                        SELECT
+                                            SUM(dias_prazo) prazo
+                                        FROM
+                                            workflow_alcadas
+                                        WHERE
+                                            EXISTS(
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    workflow_usuarios
+                                                WHERE
+                                                    workflow_alcada_id = workflow_alcadas.id
+                                            )
+                                            AND workflow_alcadas.workflow_tipo_id = 7
+                                            AND workflow_alcadas.deleted_at IS NULL
+                                    ) ,
+                                    0
+                                )
+                            )
+                            DAY
+                        ) 
+                ) as data_planejada_start"),
+                DB::raw("
+                (
                     DATEDIFF(
                         SUBDATE(
                             planejamentos.`data` , 
@@ -155,6 +193,36 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
                         IFNULL(qc.created_at, CURDATE())
                     ) 
                 ) as farol_start"),
+                DB::raw("
+                    SUBDATE(
+                        planejamentos.`data` , 
+                        INTERVAL(
+                            qc_avulso_carteiras.sla_negociacao + 
+                            qc_avulso_carteiras.sla_mobilizacao
+                            + IFNULL(
+                                (
+                                    SELECT
+                                        SUM(dias_prazo) prazo
+                                    FROM
+                                        workflow_alcadas
+                                    WHERE
+                                        EXISTS(
+                                            SELECT
+                                                1
+                                            FROM
+                                                workflow_usuarios
+                                            WHERE
+                                                workflow_alcada_id = workflow_alcadas.id
+                                        )
+                                        AND workflow_alcadas.workflow_tipo_id = 7
+                                        AND workflow_alcadas.deleted_at IS NULL
+                                        AND workflow_alcadas.ordem >= 1
+                                ) ,
+                                0
+                            )
+                        )
+                        DAY
+                    ) as data_planejada_workflow_1"),
                 DB::raw("
                 (
                     DATEDIFF(
@@ -212,6 +280,7 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
                                                 WHERE wapQTD.aprovavel_id = qc.id
                                                     AND wapQTD.aprovavel_type = 'App\\Models\\Qc'
                                                     AND wapQTD.created_at > qc.updated_at
+                                                    AND wapQTD.workflow_alcada_id = wa.id
                                             ) >= (
                                                 SELECT
                                                     COUNT(1)
@@ -258,7 +327,44 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
                             )
                             DAY
                         ) ,
-                        IFNULL(qc.created_at, CURDATE())
+                        IFNULL( 
+                                (
+                                     SELECT MAX(wap.created_at) 
+                                     FROM workflow_aprovacoes wap 
+                                     JOIN workflow_alcadas wa ON wap.workflow_alcada_id = wa.id 
+                                        WHERE
+                                            EXISTS (
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    workflow_usuarios
+                                                WHERE
+                                                    workflow_alcada_id = wa.id
+                                            )
+                                            AND wa.workflow_tipo_id = 7
+                                            AND wa.deleted_at IS NULL
+                                            AND wa.ordem = 2
+                                            AND wap.aprovavel_id = qc.id
+                                            AND wap.aprovavel_type = 'App\\Models\\Qc'
+                                            AND (
+                                                SELECT COUNT(1) 
+                                                FROM workflow_aprovacoes wapQTD
+                                                WHERE 
+                                                    wapQTD.aprovavel_id = qc.id
+                                                    AND wapQTD.aprovavel_type = 'App\\Models\\Qc'
+                                                    AND wapQTD.created_at > qc.updated_at
+                                                    AND wapQTD.workflow_alcada_id = wa.id
+                                            ) >= (
+                                                SELECT
+                                                    COUNT(1)
+                                                FROM
+                                                    workflow_usuarios
+                                                WHERE
+                                                    workflow_alcada_id = wa.id
+                                            )
+                                ), 
+                                SUBDATE(CURDATE(), INTERVAL (qc_avulso_carteiras.sla_start) DAY ) 
+                        )
                     ) 
                 ) as farol_workflow_2"),
                 DB::raw("
@@ -430,11 +536,12 @@ class CarteiraQcAvulsoFarolDataTable extends DataTable
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
             'tarefa_data' => ['name' => 'data', 'data' => 'data'],
-//            'compradores' => ['name' => 'compradores', 'data' => 'compradores'],
-            'início' => ['name' => 'farol_start', 'data' => 'farol_start', 'width'=>'6%'],
-            'WorkFlowAlçada_1' => ['name' => 'farol_workflow_1', 'data' => 'farol_workflow_1', 'width'=>'6%'],
-            'WorkFlowAlçada_2' => ['name' => 'farol_workflow_2', 'data' => 'farol_workflow_2', 'width'=>'6%'],
-            'WorkFlowAlçada_3' => ['name' => 'farol_workflow_3', 'data' => 'farol_workflow_3', 'width'=>'6%'],
+            'inícioDataPlanejada' => ['name' => 'data_planejada_start', 'data' => 'data_planejada_start', 'width'=>'6%'],
+            'inícioFarol' => ['name' => 'farol_start', 'data' => 'farol_start', 'width'=>'6%'],
+            'WorkflowAlçada_1DataPlanejada' => ['name' => 'data_planejada_workflow_1', 'data' => 'data_planejada_workflow_1', 'width'=>'6%'],
+            'WorkFlowAlçada_1' => ['name' => 'farol_workflow_1', 'data' => 'farol_workflow_1', 'width'=>'8%'],
+            'WorkFlowAlçada_2' => ['name' => 'farol_workflow_2', 'data' => 'farol_workflow_2', 'width'=>'8%'],
+            'WorkFlowAlçada_3' => ['name' => 'farol_workflow_3', 'data' => 'farol_workflow_3', 'width'=>'8%'],
             'Negociação' => ['name' => 'farol_negociacao', 'data' => 'farol_negociacao', 'width'=>'6%'],
             'Mobilização' => ['name' => 'farol_mobilizacao', 'data' => 'farol_mobilizacao', 'width'=>'6%'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
