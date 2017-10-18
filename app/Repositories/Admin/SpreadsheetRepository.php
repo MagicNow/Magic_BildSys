@@ -620,7 +620,7 @@ class SpreadsheetRepository
                                   'resumo' => $final['resumo'],
                                   'tarefa' => trim($final['tarefa']),
                                   'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
                                   'data' => $final['data'],
                                   'data_fim' => $final['data_fim'],
                                   'data_upload' => date('Y-m-d'),
@@ -641,7 +641,7 @@ class SpreadsheetRepository
 
                                 $planejamento->update([
                                   'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
                                   'data' => $final['data'],
                                   'data_fim' => $final['data_fim'],
                                   'data_upload' => date('Y-m-d')
