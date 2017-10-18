@@ -64,7 +64,6 @@
                     text: "Não existe parâmetro para leituta do QR Code.",
                     type: "info",
                     confirmButtonColor: "#DD6B55",
-                    closeOnConfirm: false
                 }, function () {
                     $('.app__dialog-close').click();
                 });
