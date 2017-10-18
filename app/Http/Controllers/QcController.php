@@ -60,6 +60,11 @@ class QcController extends AppBaseController
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Filtrar por tipologia...', '');
 
+        $compradores = User::whereHas('qcsAvulsosComprador')
+            ->pluck('name', 'id')
+            ->prepend('Sem comprador', '0')
+            ->prepend('Filtrar por comprador...', '');
+
         $status = [
             '' => 'Filtrar por status...',
             QcStatus::EM_APROVACAO => 'Em Validação',
@@ -73,7 +78,7 @@ class QcController extends AppBaseController
 
         return $qcDataTable->render(
             'qc.index',
-            compact('obras', 'tipologias', 'status', 'defaultStatus')
+            compact('obras', 'tipologias', 'status', 'defaultStatus', 'compradores')
         );
     }
 
@@ -82,11 +87,17 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(ObraRepository $obraRepo)
     {
-        $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
         $carteiras = QcAvulsoCarteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');
 
@@ -140,6 +151,7 @@ class QcController extends AppBaseController
 
         $dataUltimoPeriodo = $qc->dataUltimoPeriodoAprovacao();
 
+
         $emAprovacao = $qc->isStatus(QcStatus::EM_APROVACAO);
         $aprovado = $qc->isStatus(QcStatus::APROVADO);
 
@@ -151,6 +163,8 @@ class QcController extends AppBaseController
             ->orderBy('ordem', 'ASC')
             ->where('created_at', '<=', $dataUltimoPeriodo)
             ->get();
+
+        $alcadas_count = $alcadas->count();
 
         if ($emAprovacao) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
@@ -207,6 +221,8 @@ class QcController extends AppBaseController
 
         $attachments = $qc->anexos->groupBy('tipo');
 
+        $compradores = $qc->carteira->users->pluck('name', 'id');
+
         return view('qc.show', compact(
             'qc',
             'attachments',
@@ -218,7 +234,9 @@ class QcController extends AppBaseController
             'alcadas_count',
             'emAprovacao',
             'oc_status',
-            'timeline'
+            'timeline',
+            'alcadas_count',
+            'compradores'
         ));
     }
 

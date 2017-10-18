@@ -1,5 +1,4 @@
 @extends('layouts.front')
-
 @section('content')
     <section class="content-header">
         <h1>

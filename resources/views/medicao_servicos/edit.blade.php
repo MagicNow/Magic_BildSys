@@ -37,7 +37,10 @@
                         @include('medicao_servicos.fields')
 
                    {!! Form::close() !!}
-                   @include('medicoes.table')
+
+                   <div class="col-md-12">
+                       @include('medicoes.table')
+                   </div>
                </div>
            </div>
        </div>

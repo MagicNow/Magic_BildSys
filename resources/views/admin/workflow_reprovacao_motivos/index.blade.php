@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Motivos de Reprovação
+            Motivos de reprovação
             <a class="btn btn-primary pull-right"  href="{!! route('admin.workflowReprovacaoMotivos.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
