@@ -78,7 +78,7 @@
 
 
 @section('scripts')
-    @parent
+    <script src="{{ asset('js/admin.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function () { window.print(); });
     </script>
