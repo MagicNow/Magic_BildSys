@@ -179,7 +179,7 @@ class QcRepository extends BaseRepository
         $steps = [];
         $qc = $this->find($id);
 
-        if(!$qc->obra_id) {
+        if(!$qc->obra_id || !$qc->cateira) {
             return false;
         }
 
