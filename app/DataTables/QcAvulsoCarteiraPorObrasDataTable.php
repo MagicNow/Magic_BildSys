@@ -25,6 +25,17 @@ class QcAvulsoCarteiraPorObrasDataTable extends DataTable
                     . (with(new Carbon($qc->data_start))->lt($data_inicial) ? 'red' : 'green')
                     . '"></i>';
             })
+            ->editColumn('qc_count', function($model) {
+                return '<a class="btn btn-sm btn-success"
+                           title="Ver detalhes"
+                           data-toggle="tooltip"
+                           data-container="body"
+                           href="'
+                           . route('qc.index', [ 'obra_id' => $model->obra_id, 'carteira_id' => $model->id ])
+                           .'">'
+                           . $model->qc_count
+                           . '</a>';
+            })
             ->editColumn('action', 'admin.qc_avulso_carteiras.lista_por_obras_datatables_actions')
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
