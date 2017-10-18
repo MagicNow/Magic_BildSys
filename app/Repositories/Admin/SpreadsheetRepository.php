@@ -175,6 +175,7 @@ class SpreadsheetRepository
 
     public static function orcamento($planilha){
         $line = 1;
+        $insumo_nao_encontrado = 0;
         $reader = ReaderFactory::create(Type::CSV);
         $reader->setFieldDelimiter(';');
         $reader->setEndOfLineCharacter("\r");
@@ -440,7 +441,7 @@ class SpreadsheetRepository
                                     }
 
                                 } else {
-                                    $erro = 1;
+                                    $insumo_nao_encontrado = 1;
                                     $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                                 }
 
@@ -456,7 +457,9 @@ class SpreadsheetRepository
                                 if ($erro == 0) {
                                     # Valida se o preço unitário do item é maior que 0
                                     if($final['preco_unitario'] > 0) {
-                                        Orcamento::create($final);
+                                        if(!$insumo_nao_encontrado) {
+                                            Orcamento::create($final);
+                                        }
                                     }
                                 } else {
                                     // estourar loop
@@ -617,7 +620,7 @@ class SpreadsheetRepository
                                   'resumo' => $final['resumo'],
                                   'tarefa' => trim($final['tarefa']),
                                   'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
                                   'data' => $final['data'],
                                   'data_fim' => $final['data_fim'],
                                   'data_upload' => date('Y-m-d'),
@@ -638,7 +641,7 @@ class SpreadsheetRepository
 
                                 $planejamento->update([
                                   'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
                                   'data' => $final['data'],
                                   'data_fim' => $final['data_fim'],
                                   'data_upload' => date('Y-m-d')

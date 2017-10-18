@@ -36,7 +36,7 @@ class OrdemDeCompraRepository extends BaseRepository
     {
         return OrdemDeCompra::class;
     }
-    
+
     public static function valorPrevistoOrcamento($ordem_de_compra_id, $obra_id)
     {
         $orcamentos_iniciais = OrdemDeCompraItem::select([
@@ -70,7 +70,7 @@ class OrdemDeCompraRepository extends BaseRepository
                 $join->on('orcamentos.ativo', '=', DB::raw('1'));
             });
         $orcamentoInicial = $orcamentos_iniciais->sum('orcamentos.preco_total');
-        
+
         // Se os itens do orçamento for trocado pega o valor do pai
         $array_orcamentos_substitui = [];
 
@@ -84,7 +84,7 @@ class OrdemDeCompraRepository extends BaseRepository
                 }
             }
         }
-        
+
         return $orcamentoInicial;
     }
 
@@ -121,14 +121,14 @@ class OrdemDeCompraRepository extends BaseRepository
 
         return $saldoDisponivel;
     }
-    
+
     public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null, $ordem_de_compra_ultima_aprovacao = null)
     {
         $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
             'contratos.id as contrato_id',
             DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
-            ])
+        ])
             ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
             ->join('contratos', 'contratos.id' ,'=', 'contrato_itens.contrato_id')
             ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
@@ -215,7 +215,7 @@ class OrdemDeCompraRepository extends BaseRepository
         if($ordem_de_compra_ultima_aprovacao) {
             $qtds_comprometida_a_gastar = $qtds_comprometida_a_gastar->where('contrato_item_apropriacoes.created_at', '<', $ordem_de_compra_ultima_aprovacao);
         }
-        
+
         $qtds_comprometida_a_gastar = $qtds_comprometida_a_gastar->get();
 
         $qtd_comprometida_a_gastar = 0;
@@ -300,12 +300,12 @@ class OrdemDeCompraRepository extends BaseRepository
 
                 if($itens->contrato_itens->isNotEmpty()) {
                     foreach ($itens->contrato_itens as $c_item) {
-                       $contrato_item_apropriacoes = $c_item->apropriacoes
-                           ->where('grupo_id', $grupo_id)
-                           ->where('subgrupo1_id', $subgrupo1_id)
-                           ->where('subgrupo2_id', $subgrupo2_id)
-                           ->where('subgrupo3_id', $subgrupo3_id)
-                           ->where('servico_id', $servico_id);
+                        $contrato_item_apropriacoes = $c_item->apropriacoes
+                            ->where('grupo_id', $grupo_id)
+                            ->where('subgrupo1_id', $subgrupo1_id)
+                            ->where('subgrupo2_id', $subgrupo2_id)
+                            ->where('subgrupo3_id', $subgrupo3_id)
+                            ->where('servico_id', $servico_id);
 
                         if(count($contrato_item_apropriacoes)) {
                             foreach ($contrato_item_apropriacoes as $apropriacao) {
@@ -375,7 +375,7 @@ class OrdemDeCompraRepository extends BaseRepository
 
         return $origem_oc[0]->oc_origem;
     }
-    
+
     public static function calculosDetalhesServicos($obra_id, $servico_id , $oc_id = null)
     {
         // Se alterar, modificar tbm DetalhesServicosDataTable::query
@@ -484,7 +484,7 @@ class OrdemDeCompraRepository extends BaseRepository
         foreach($orcamentos as $orcamento) {
             //valor_previsto
             $valor_previsto += $orcamento->valor_previsto;
-            
+
             //valor_comprometido_a_gastar
             if($oc_id) {
                 $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($oc_id)->dataUltimoPeriodoAprovacao();
@@ -502,17 +502,17 @@ class OrdemDeCompraRepository extends BaseRepository
 
         //saldo_disponivel
         $saldo_disponivel = $saldo_orcamento - $valor_oc;
-        
+
         return [
-                'valor_previsto' => $valor_previsto,
-                'valor_realizado' => $valor_realizado,
-                'valor_comprometido_a_gastar' => $valor_comprometido_a_gastar,
-                'saldo_orcamento' => $saldo_orcamento,
-                'valor_oc' => $valor_oc,
-                'saldo_disponivel' => $saldo_disponivel
+            'valor_previsto' => $valor_previsto,
+            'valor_realizado' => $valor_realizado,
+            'valor_comprometido_a_gastar' => $valor_comprometido_a_gastar,
+            'saldo_orcamento' => $saldo_orcamento,
+            'valor_oc' => $valor_oc,
+            'saldo_disponivel' => $saldo_disponivel
         ];
     }
-    
+
     public static function queryCalendarioLembretes(
         $obra_id,
         $planejamento_id,
@@ -567,7 +567,7 @@ class OrdemDeCompraRepository extends BaseRepository
                         DB::raw($url_dispensar),
                         DB::raw($title),
                         DB::raw("'event-info' as class"),
-                        
+
                         /* inicio */
                         DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                             IFNULL(
@@ -612,7 +612,7 @@ class OrdemDeCompraRepository extends BaseRepository
                             )
                         ) DAY),'%d/%m/%Y') as inicio"),
                         /* inicio */
-                        
+
                         /* start */
                         DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL (
                             IFNULL(
@@ -702,7 +702,7 @@ class OrdemDeCompraRepository extends BaseRepository
                             )
                         ) DAY))*1000 as end"),
                         /* end */
-                        
+
                         /* dias */
                         DB::raw("DATEDIFF(
                             (
@@ -750,7 +750,7 @@ class OrdemDeCompraRepository extends BaseRepository
                             ) DAY)
                         ),CURDATE()) as dias"),
                         /* dias */
-                        
+
                         'carteiras.nome as carteira',
                         'carteiras.id as carteira_id'
                     ]);
@@ -1346,7 +1346,7 @@ class OrdemDeCompraRepository extends BaseRepository
             } else {
                 $query = collect();
             }
-            
+
             return $query;
         } else {
             return collect();
