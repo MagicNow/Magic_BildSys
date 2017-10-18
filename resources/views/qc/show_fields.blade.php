@@ -55,7 +55,7 @@
     </div>
 </div>
 
-@if($qc->isEditable())
+@if($qc->canClose())
     <div class="form-group col-sm-3">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento') !!}
         {!!

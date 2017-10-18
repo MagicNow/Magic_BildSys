@@ -105,6 +105,37 @@ class QcController extends AppBaseController
         return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
     }
 
+    public function edit($id, ObraRepository $obraRepo)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
+
+            return redirect(route('qc.index'));
+        }
+
+        if(!$qc->isEditable()) {
+            Flash::error('Este Q.C. não pode ser editado');
+
+            return redirect(route('qc.index'));
+        }
+
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
+        $carteiras = QcAvulsoCarteira::pluck('nome','id')
+            ->prepend('Escolha a carteira...', '');
+
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Escolha a tipologia...', '');
+
+        return view('qc.edit', compact('obras', 'carteiras', 'tipologias', 'qc'));
+    }
+
     /**
      * Store a newly created Qc in storage.
      *
@@ -249,7 +280,7 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateQcRequest $request)
+    public function update($id, CreateQcRequest $request)
     {
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);
@@ -309,7 +340,7 @@ class QcController extends AppBaseController
         }
     }
 
-    public function fechar($id, Request $request)
+    public function fechar($id, UpdateQcRequest $request)
     {
         $this->qcRepository->fechar($id, $request->all());
 

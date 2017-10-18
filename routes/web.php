@@ -1361,7 +1361,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/farol', ['as' => 'qc.farol', 'uses' => 'QcController@farol']);
         $router->post('/', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+
         $router->post('/{qc}/fechar',['as' => 'qc.fechar', 'uses' => 'QcController@fechar'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->get('/{qc}/edit',['as' => 'qc.edit', 'uses' => 'QcController@edit'])
             ->middleware('needsPermission:qc.edit');
 
         $router->patch('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
