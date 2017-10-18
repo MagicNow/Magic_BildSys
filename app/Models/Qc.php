@@ -116,7 +116,7 @@ class Qc extends Model
 	 **/
 	public function obra()
 	{
-		return $this->belongsTo(\App\Models\Obra::class);
+		return $this->belongsTo(\App\Models\Obra::class)->withTrashed();
 	}
 
 	/**
@@ -132,7 +132,7 @@ class Qc extends Model
 	 **/
 	public function tipologia()
 	{
-		return $this->belongsTo(\App\Models\Tipologia::class);
+		return $this->belongsTo(\App\Models\Tipologia::class)->withTrashed();
 	}
 
 	/**

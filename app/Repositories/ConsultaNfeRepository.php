@@ -86,6 +86,11 @@ class ConsultaNfeRepository
         $notaData = [];
         $arrayNota = json_decode(json_encode((array)$nota), TRUE);
 
+        if (is_null($schema)) {
+            $schema = 'procNFe_v' . $arrayNota["@attributes"]['versao'] . '.xsd';
+        }
+
+
         try {
 
             $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? str_replace('T', ' ', substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'], 0, 19)) : null;
@@ -238,18 +243,18 @@ class ConsultaNfeRepository
 
                                 'valor_ipi' => '',
                                 'aliquota_ipi' => '',
-                                'situacao_tributacao_ipi' => isset($detalhe['imposto']['IPI']['IPINT']['CST']) ? $detalhe['imposto']['IPI']['IPINT']['CST'] : NULL,
+                                'situacao_tributacao_ipi' => isset($detalhe['imposto']['IPI']['IPINT']['CST']) ? $detalhe['imposto']['IPI']['IPINT']['CST'] : 0,
                                 'codigo_enquadramento_ipi' => isset($detalhe['imposto']['IPI']['cEnq']) ? $detalhe['imposto']['IPI']['cEnq'] : NULL,
 
                                 'aliquota_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS'] : 0,
                                 'valor_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS'] : 0,
                                 'base_calculo_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['vBC']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['vBC'] : 0,
-                                'situacao_tributacao_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['CST']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['CST'] : NULL,
+                                'situacao_tributacao_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['CST']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['CST'] : 0,
 
                                 'aliquota_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['pPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['pPIS'] : 0,
                                 'valor_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['vPIS'] : 0,
                                 'base_calculo_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vBC']) ? $detalhe['imposto']['PIS']['PISAliq']['vBC'] : 0,
-                                'situacao_tributacao_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['CST']) ? $detalhe['imposto']['PIS']['PISAliq']['CST'] : NULL,
+                                'situacao_tributacao_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['CST']) ? $detalhe['imposto']['PIS']['PISAliq']['CST'] : 0,
                             ];
 
                             if (isset($detalhe['imposto']['ICMSUFDest'])) {
@@ -484,6 +489,8 @@ class ConsultaNfeRepository
                 $itemObj->save();
             }
         }
+
+        return $nfObj;
     }
 
     /**

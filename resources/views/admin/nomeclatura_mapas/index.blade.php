@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Nomeclatura de Mapas (Memória de cálculo)
+            Nomeclatura de mapas (Memória de cálculo)
 
            <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('admin.nomeclaturaMapas.create') !!}">
             {{ ucfirst( trans('common.new') )}}

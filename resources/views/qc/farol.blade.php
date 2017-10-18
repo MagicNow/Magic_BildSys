@@ -3,15 +3,15 @@
 @section('content')
     <section class="content-header">
         <h1>
-            <a href="/" type="button" class="btn btn-link">
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </a>
-            Lista de Q.C.
+            </button>
+            Lista de Farol de Q.C.s Avulsos
             <a class="btn btn-primary pull-right"  href="{!! route('qc.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
     <div class="clearfix"></div>
-    <div class="col-sm-12">
+    {{--<div class="col-sm-12">
         <div class="box">
             <div class="box-body">
                 <div class="row">
@@ -42,11 +42,11 @@
                         !!}
                     </div>
                     <div class="col-sm-3 form-group">
-                        {!! Form::label('comprador_id', 'Responsável pela negociação') !!}
+                        {!! Form::label('carteira_id', 'Responsável pela negociação') !!}
                         {!!
                             Form::select(
-                                'comprador_id',
-                                $compradores,
+                                'carteira_id',
+                                [],
                                 null,
                                 [
                                     'class' => 'js-filter select2'
@@ -136,7 +136,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>--}}
     <div class="content">
         <div class="clearfix"></div>
         <div class="box box-primary">

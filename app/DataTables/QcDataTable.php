@@ -141,7 +141,7 @@ class QcDataTable extends DataTable
         }
 
         if($request->carteira_id) {
-            $query->where('tipologia_id', $request->tipologia_id);
+            $query->where('carteira_id', $request->carteira_id);
         }
 
         if($request->has('comprador_id')) {
@@ -231,5 +231,15 @@ class QcDataTable extends DataTable
             'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
 			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
+    }
+
+    /**
+     * Get filename for export.
+     *
+     * @return string
+     */
+    protected function filename()
+    {
+        return 'qc_avulso';
     }
 }

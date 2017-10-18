@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\CarteiraQcAvulsoFarolDataTable;
 use Exception;
 use App\DataTables\QcDataTable;
 use App\DataTables\QcAnexosDataTable;
@@ -314,5 +315,33 @@ class QcController extends AppBaseController
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function farol(
+        CarteiraQcAvulsoFarolDataTable $dataTable,
+        ObraRepository $obraRepo
+    ) {
+        $obras = $obraRepo->findByUser(auth()->id())
+            ->pluck('nome','id')
+            ->prepend('Filtrar por obra...', '');
+
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Filtrar por tipologia...', '');
+
+        $status = [
+            '' => 'Filtrar por status...',
+            QcStatus::EM_APROVACAO => 'Em Validação',
+            QcStatus::REPROVADO => 'Reprovado',
+            QcStatus::APROVADO => 'Aprovado',
+            QcStatus::EM_CONCORRENCIA => 'Em Negociação',
+            QcStatus::FINALIZADO => 'Finalizada',
+        ];
+
+        $defaultStatus = QcStatus::EM_APROVACAO;
+
+        return $dataTable->render(
+            'qc.farol',
+            compact('obras', 'tipologias', 'status', 'defaultStatus')
+        );
     }
 }

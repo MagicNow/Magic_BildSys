@@ -13,7 +13,7 @@
 <!-- Data Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('data', 'Data início:') !!}
-    {!! Form::date('data', null, ['class' => 'form-control']) !!}
+    {!! Form::date('data',isset($planejamento)? $planejamento->data->format('Y-m-d') : null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Prazo Field -->
@@ -25,7 +25,7 @@
 <!-- Data Fim Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('data_fim', 'Data Fim:') !!}
-    {!! Form::date('data_fim', null, ['class' => 'form-control']) !!}
+    {!! Form::date('data_fim',isset($planejamento)? $planejamento->data_fim->format('Y-m-d') : null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Resumo Field -->

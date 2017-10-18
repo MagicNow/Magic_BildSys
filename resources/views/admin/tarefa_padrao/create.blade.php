@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tarefa Padrão
+            Tarefa padrão
         </h1>
     </section>
     <div class="content">
