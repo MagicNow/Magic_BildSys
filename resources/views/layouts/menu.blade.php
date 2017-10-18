@@ -384,7 +384,7 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/tipologia*') || Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/tipologia*') || Request::is('admin/atividade-carteiras*') ? 'active' : '' }}">
 
     <a href="#">
         <i class="fa fa-file-text-o"></i> <span>DocBild</span>
@@ -401,7 +401,7 @@
            </a>
         </li>
         @endshield
-        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
+        <li class="{{ Request::is('admin/atividade-carteiras*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentos.atividade-carteiras') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Cronograma/Carteira Q.C. Avulso</span>
