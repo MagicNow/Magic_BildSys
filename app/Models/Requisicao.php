@@ -74,4 +74,12 @@ class Requisicao extends Model
     {
         return $this->hasMany(\App\Models\RequisicaoItem::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function status()
+    {
+        return $this->belongsTo(\App\Models\RequisicaoStatus::class);
+    }
 }

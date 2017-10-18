@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\CarteiraQcAvulsoFarolDataTable;
 use Exception;
 use App\DataTables\QcDataTable;
 use App\DataTables\QcAnexosDataTable;
@@ -29,6 +30,7 @@ use App\Repositories\WorkflowAprovacaoRepository;
 use App\Repositories\NotificationRepository;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\QcStatus;
+use App\Repositories\Admin\ObraRepository;
 
 class QcController extends AppBaseController
 {
@@ -47,11 +49,24 @@ class QcController extends AppBaseController
      * @param QcDataTable $qcDataTable
      * @return Response
      */
-    public function index(QcDataTable $qcDataTable) {
-        $obras = Obra::pluck('nome','id')
-            ->prepend('Filtrar por obra...', '');
+    public function index(
+        QcDataTable $qcDataTable,
+        ObraRepository $obraRepo
+    ) {
+        $obras = $obraRepo->findByUser(auth()->id())
+          ->pluck('nome','id')
+          ->prepend('Filtrar por obra...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Filtrar por tipologia...', '');
+
+        $compradores = User::whereHas('qcsAvulsosComprador')
+            ->pluck('name', 'id')
+            ->prepend('Sem comprador', '0')
+            ->prepend('Filtrar por comprador...', '');
+
+        $carteiras = QcAvulsoCarteira::pluck('nome', 'id')
+            ->prepend('Filtrar por carteira...', '');
 
         $status = [
             '' => 'Filtrar por status...',
@@ -59,14 +74,15 @@ class QcController extends AppBaseController
             QcStatus::REPROVADO => 'Reprovado',
             QcStatus::APROVADO => 'Aprovado',
             QcStatus::EM_CONCORRENCIA => 'Em Negociação',
-            QcStatus::FINALIZADO => 'Finalizada',
+            QcStatus::CONCORRENCIA_FINALIZADA => 'Fechado',
+            QcStatus::CANCELADO => 'Cancelado',
         ];
 
         $defaultStatus = QcStatus::EM_APROVACAO;
 
         return $qcDataTable->render(
             'qc.index',
-            compact('obras', 'tipologias', 'status', 'defaultStatus')
+            compact('obras', 'tipologias', 'status', 'defaultStatus', 'compradores', 'carteiras')
         );
     }
 
@@ -75,15 +91,52 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(ObraRepository $obraRepo)
     {
-        $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
         $carteiras = QcAvulsoCarteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');
 
         return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
+    }
+
+    public function edit($id, ObraRepository $obraRepo)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
+
+            return redirect(route('qc.index'));
+        }
+
+        if(!$qc->isEditable()) {
+            Flash::error('Este Q.C. não pode ser editado');
+
+            return redirect(route('qc.index'));
+        }
+
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
+        $carteiras = QcAvulsoCarteira::pluck('nome','id')
+            ->prepend('Escolha a carteira...', '');
+
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Escolha a tipologia...', '');
+
+        return view('qc.edit', compact('obras', 'carteiras', 'tipologias', 'qc'));
     }
 
     /**
@@ -121,6 +174,8 @@ class QcController extends AppBaseController
 
         NotificationRepository::marcarLido(WorkflowTipo::QC_AVULSO, $qc->id);
 
+        $timeline = $this->qcRepository->timeline($id);
+
         $motivos = (new WorkflowReprovacaoMotivo)
             ->where(function ($query) {
                 $query->where('workflow_tipo_id', 2);
@@ -130,6 +185,7 @@ class QcController extends AppBaseController
             ->toArray();
 
         $dataUltimoPeriodo = $qc->dataUltimoPeriodoAprovacao();
+
 
         $emAprovacao = $qc->isStatus(QcStatus::EM_APROVACAO);
         $aprovado = $qc->isStatus(QcStatus::APROVADO);
@@ -142,6 +198,8 @@ class QcController extends AppBaseController
             ->orderBy('ordem', 'ASC')
             ->where('created_at', '<=', $dataUltimoPeriodo)
             ->get();
+
+        $alcadas_count = $alcadas->count();
 
         if ($emAprovacao) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
@@ -177,11 +235,11 @@ class QcController extends AppBaseController
                 // Data do início da  Alçada
                 if ($alcada->ordem === 1) {
                     $qc_log = $qc->logs()
-                        ->where('qc_status_id', 4)->first();
+                                 ->where('qc_status_id', 4)->first();
 
                     if ($qc_log) {
                         $avaliado_reprovado[$alcada->id] ['data_inicio'] = $qc_log->created_at
-                            ->format('d/m/Y H:i');
+                                                   ->format('d/m/Y H:i');
                     }
                 } else {
                     $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Qc')
@@ -198,6 +256,8 @@ class QcController extends AppBaseController
 
         $attachments = $qc->anexos->groupBy('tipo');
 
+        $compradores = $qc->carteira->users->pluck('name', 'id');
+
         return view('qc.show', compact(
             'qc',
             'attachments',
@@ -208,7 +268,10 @@ class QcController extends AppBaseController
             'qtd_itens',
             'alcadas_count',
             'emAprovacao',
-            'oc_status'
+            'oc_status',
+            'timeline',
+            'alcadas_count',
+            'compradores'
         ));
     }
 
@@ -220,7 +283,7 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateQcRequest $request)
+    public function update($id, CreateQcRequest $request)
     {
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);
@@ -280,12 +343,40 @@ class QcController extends AppBaseController
         }
     }
 
-    public function fechar($id, Request $request)
+    public function fechar($id, UpdateQcRequest $request)
     {
         $this->qcRepository->fechar($id, $request->all());
 
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function farol(
+        CarteiraQcAvulsoFarolDataTable $dataTable,
+        ObraRepository $obraRepo
+    ) {
+        $obras = $obraRepo->findByUser(auth()->id())
+            ->pluck('nome','id')
+            ->prepend('Filtrar por obra...', '');
+
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Filtrar por tipologia...', '');
+
+        $status = [
+            '' => 'Filtrar por status...',
+            QcStatus::EM_APROVACAO => 'Em Validação',
+            QcStatus::REPROVADO => 'Reprovado',
+            QcStatus::APROVADO => 'Aprovado',
+            QcStatus::EM_CONCORRENCIA => 'Em Negociação',
+            QcStatus::FINALIZADO => 'Finalizada',
+        ];
+
+        $defaultStatus = QcStatus::EM_APROVACAO;
+
+        return $dataTable->render(
+            'qc.farol',
+            compact('obras', 'tipologias', 'status', 'defaultStatus')
+        );
     }
 }

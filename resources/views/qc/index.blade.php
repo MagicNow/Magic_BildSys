@@ -3,15 +3,17 @@
 @section('content')
     <section class="content-header">
         <h1>
-            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+            <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
+            </a>
             Lista de Q.C.
-            <a class="btn btn-primary pull-right"  href="{!! route('qc.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
+            <a class="btn btn-primary pull-right"  href="{!! route('qc.create') !!}">
+                {{ ucfirst( trans('common.new') )}}
+            </a>
         </h1>
     </section>
-    <div class="clearfix"></div>
-    <div class="col-sm-12">
+    <div class="content">
+        <div class="clearfix"></div>
         <div class="box">
             <div class="box-body">
                 <div class="row">
@@ -21,7 +23,7 @@
                             Form::select(
                                 'obra_id',
                                 $obras,
-                                null,
+                                request('obra_id'),
                                 [
                                     'class' => 'js-filter select2',
                                 ]
@@ -33,20 +35,20 @@
                         {!!
                             Form::select(
                                 'carteira_id',
-                                [],
-                                null,
+                                $carteiras,
+                                request('carteira_id'),
                                 [
                                     'class' => 'js-filter select2'
                                 ]
                             )
                         !!}
                     </div>
-                    <div class="col-sm-3 form-group">
-                        {!! Form::label('carteira_id', 'Responsável pela negociação') !!}
+                    <div class="col-sm-3 form-group hidden-xs">
+                        {!! Form::label('comprador_id', 'Responsável pela negociação') !!}
                         {!!
                             Form::select(
-                                'carteira_id',
-                                [],
+                                'comprador_id',
+                                $compradores,
                                 null,
                                 [
                                     'class' => 'js-filter select2'
@@ -54,7 +56,7 @@
                             )
                         !!}
                     </div>
-                    <div class="col-sm-3 form-group">
+                    <div class="col-sm-3 form-group hidden-xs">
                         {!! Form::label('fornecedor_id', 'Fornecedor') !!}
                         {!!
                             Form::select(
@@ -69,7 +71,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-3 form-group">
+                    <div class="col-sm-3 form-group hidden-xs">
                         {!! Form::label('acompanhamento', 'Acompanhamento') !!}
                         {!!
                             Form::select(
@@ -88,26 +90,32 @@
                             )
                         !!}
                     </div>
-                    <div class="col-sm-3 form-group">
+                    <div class="col-sm-3 form-group hidden-xs">
                         {!! Form::label('etapa', 'Etapa') !!}
                         {!!
                             Form::select(
                                 'etapa',
-                                [],
+                                [
+                                    'start' => 'Start',
+                                    'workflow' => 'Workflow',
+                                    'negociacao' => 'Negociação',
+                                    'mobilizacao' => 'Mobilização',
+                                ],
                                 null,
                                 [
+                                    'placeholder' => 'Filtrar por etapa...',
                                     'class' => 'js-filter select2'
                                 ]
                             )
                         !!}
                     </div>
-                    <div class="col-sm-3 form-group">
+                    <div class="col-sm-3 form-group hidden-xs">
                         {!! Form::label('qc_status_id', 'Status') !!}
                         {!!
                             Form::select(
                                 'qc_status_id',
                                 $status,
-                                $defaultStatus,
+                                null,
                                 [
                                     'class' => 'js-filter select2'
                                 ]
@@ -130,9 +138,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="content">
-        <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
                 @include('qc.table')
@@ -150,6 +155,18 @@
                 url: '/buscar/fornecedores',
                 placeholder: 'Filtrar por fornecedor...'
             })
+
+        LaravelDataTables.dataTableBuilder
+                .on( 'responsive-display', function (e, datatable, row, showHide, update) {
+                    if(showHide) {
+                        $('table.dataTable > tbody > tr[role="row"].parent')
+                            .each(function(n, el) {
+                                if(!$(el).is($(row.node()))) {
+                                    $(el).removeClass('parent').next().remove();
+                                }
+                            })
+                    }
+                });
         });
     </script>
 @append

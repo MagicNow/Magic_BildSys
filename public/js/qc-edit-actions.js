@@ -3,6 +3,7 @@
   var inputContrato = $('#numero_contrato_mega');
   var inputFornecedor = $('#fornecedor_id');
   var inputQcFile = $('#qc-fechado');
+  var inputComprador = $('#comprador_id');
 
   $(function() {
     $('#fechar-qc').on('click', fecharQcClickHandler);
@@ -10,6 +11,27 @@
     select2('#fornecedor_id', {
       url: '/buscar/fornecedores',
       placeholder: 'Selecionar fornecedor...'
+    });
+
+    var workflowTipo = $('#linhaDoTempo');
+
+    workflowTipo.tooltip({
+      title: 'Clique para ver detalhes',
+      container: document.body
+    });
+
+    workflowTipo.on('click', function(event) {
+      workflowTipo.tooltip('hide');
+      startLoading();
+      $.get('/workflow/detalhes', event.currentTarget.dataset)
+        .always(stopLoading)
+        .done(function(data) {
+          $('#modal-alcadas').html(data);
+          $('#modal-alcadas').modal('show');
+        })
+        .fail(function() {
+          swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
+        });
     });
   });
 
@@ -27,12 +49,16 @@
       validation.errors.push('Preencha o número do contrato MEGA');
     }
 
-    if(!inputQcFile.val()) {
+    if(inputQcFile.length && !inputQcFile.val()) {
       validation.errors.push('Envie o arquivo do Q.C. fechado');
     }
 
     if(!inputFornecedor.val()) {
       validation.errors.push('Selecione o fornecedor do Q.C.');
+    }
+
+    if(!inputComprador.val()) {
+      validation.errors.push('Selecione o comprador do Q.C.');
     }
 
     validation.hasError = !!validation.errors.length;

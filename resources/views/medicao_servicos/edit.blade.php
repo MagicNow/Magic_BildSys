@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Editar Medicão de Serviço {!! $medicaoServico->id . ' - Obra '.
+            Editar medicão de serviço {!! $medicaoServico->id . ' - Obra '.
             $medicaoServico->contratoItemApropriacao->contratoItem->contrato->obra->nome . ' ' .
             !is_null($medicaoServico->aprovado)?($medicaoServico->aprovado?'<span class="label label-success">Aprovado</span>':'<span class="label label-danger">Reprovado</span>'):''  !!}
 
@@ -37,7 +37,10 @@
                         @include('medicao_servicos.fields')
 
                    {!! Form::close() !!}
-                   @include('medicoes.table')
+
+                   <div class="col-md-12">
+                       @include('medicoes.table')
+                   </div>
                </div>
            </div>
        </div>

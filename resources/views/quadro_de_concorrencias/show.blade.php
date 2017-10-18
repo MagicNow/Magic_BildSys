@@ -18,7 +18,7 @@
                 {{ $quadroDeConcorrencia->status->nome }}
             </small>
 
-            @if($quadroDeConcorrencia->qc_status_id==3)
+            @if($quadroDeConcorrencia->qc_status_id==\App\Models\QcStatus::EM_APROVACAO)
                 <?php
                 $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes(
                         'QuadroDeConcorrencia',

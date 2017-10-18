@@ -297,5 +297,7 @@
         <div class="content" style="padding-left: 30px; padding-right: 30px;">
             @yield('content')
         </div>
+
+        @yield('scripts')
     </body>
 </html>

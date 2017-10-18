@@ -85,7 +85,6 @@ class Qc extends Model
 	 * @var array
 	 */
 	public static $rules = [
-		'obra_id' => 'required|integer',
 		'tipologia_id' => 'required|integer',
 		'carteira_id' => 'required|integer',
 		'comprador_id' => 'integer',
@@ -99,7 +98,6 @@ class Qc extends Model
 	];
 
 	public static $messages = [
-        'obra_id.required' => 'Selecione a obra',
         'tipologia_id.required' => 'Selecione a tipologia',
         'carteira_id.required' => 'Selecione a carteira',
         'descricao_id.required' => 'Insira a descrição do Q.C.',
@@ -118,7 +116,7 @@ class Qc extends Model
 	 **/
 	public function obra()
 	{
-		return $this->belongsTo(\App\Models\Obra::class);
+		return $this->belongsTo(\App\Models\Obra::class)->withTrashed();
 	}
 
 	/**
@@ -126,7 +124,7 @@ class Qc extends Model
 	 **/
 	public function carteira()
 	{
-		return $this->belongsTo(\App\Models\Carteira::class);
+		return $this->belongsTo(QcAvulsoCarteira::class)->withTrashed();
 	}
 
 	/**
@@ -134,7 +132,7 @@ class Qc extends Model
 	 **/
 	public function tipologia()
 	{
-		return $this->belongsTo(\App\Models\Tipologia::class);
+		return $this->belongsTo(\App\Models\Tipologia::class)->withTrashed();
 	}
 
 	/**
@@ -148,9 +146,14 @@ class Qc extends Model
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 **/
-	public function comprador()
+	public function user()
 	{
 		return $this->belongsTo(\App\Models\User::class);
+	}
+
+	public function comprador()
+	{
+		return $this->belongsTo(\App\Models\User::class, 'comprador_id');
 	}
 
 	public function fornecedor()
@@ -197,7 +200,7 @@ class Qc extends Model
 
     public function qualObra()
     {
-        return $this->attributes['obra_id'];
+        return null;
     }
 
     public function aprova($isAprovado)
@@ -206,9 +209,14 @@ class Qc extends Model
                 ? QcStatus::EM_CONCORRENCIA
                 : QcStatus::REPROVADO;
 
-        $this->update([
-            'qc_status_id' => $newStatus
-        ]);
+        $this->update(
+            [
+                'qc_status_id' => $newStatus
+            ],
+            [
+                'timestamps' => false
+            ]
+        );
 
         $this->logs()->create([
             'qc_status_id' => QcStatus::APROVADO,
@@ -237,18 +245,20 @@ class Qc extends Model
 
     public function isEditable()
     {
-        return Defender::hasPermission('qc.edit')
-            && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
+        return $this->qc_status_id === QcStatus::REPROVADO;
     }
 
     public function canClose()
     {
-        return Defender::hasPermission('qc.edit') && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
+        return Defender::hasPermission('qc.edit')
+            && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
     }
 
     public function canCancel()
     {
-        return Defender::hasPermission('qc.edit') && $this->qc_status_id !== QcStatus::CANCELADO;
+        return Defender::hasPermission('qc.edit')
+            && $this->qc_status_id !== QcStatus::CANCELADO
+            && $this->qc_status_id !== QcStatus::CONCORRENCIA_FINALIZADA;
     }
 
     public function canSendQcFechado()

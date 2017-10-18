@@ -6,8 +6,8 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Quadro De Concorrencia {{ $quadroDeConcorrencia->id }} -
-            Gerar Contrato{{ count($fornecedores) > 1 ?'s': '' }}
+            Quadro de concorrência {{ $quadroDeConcorrencia->id }} -
+            Gerar contrato{{ count($fornecedores) > 1 ?'s': '' }}
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}

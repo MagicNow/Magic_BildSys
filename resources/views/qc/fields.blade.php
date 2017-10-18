@@ -1,23 +1,19 @@
 <!-- Obra ID Field -->
-@if(Request::get('obra_id'))
-	{!! Form::hidden('obra_id', Request::get('obra_id')) !!}
-@else
-	<div class="form-group col-sm-6">
-		{!! Form::label('obra_id', 'Obra:') !!}
-		{!! Form::select('obra_id', $obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
-	</div>
-@endif
+<div class="form-group col-sm-6">
+    {!! Form::label('obra_id', 'Obra:') !!}
+    {!! Form::select('obra_id', $obras, request('obra_id'), ['class' => 'form-control select2', 'required']) !!}
+</div>
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia_id', $tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::label('tipologia', 'Tipo de Q.C.:') !!}
+	{!! Form::select('tipologia_id', $tipologias, null, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', $carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
+	{!! Form::select('carteira_id', $carteiras, request('carteira_id'), ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Descrição Field -->
@@ -44,44 +40,76 @@
 	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
-<fieldset class="col-sm-12 qc-anexos">
-	<legend>Anexos</legend>
-	<div class="row">
-		<div class="col-sm-3">
-			<h5 style="color:#000000">Arquivo:</h5>
-		</div>
-		<div class="col-sm-3">
-			<h5 style="color:#000000">Tipo:</h5>
-		</div>
-		<div class="col-sm-5">
-			<h5 style="color:#000000">Descrição:</h5>
-		</div>
-		<div class="col-md-1">
-			<h5>&nbsp;</h5>
-		</div>
-	</div>
-	<div class="form-group row qc-anexos-campos">
-		<div class="col-sm-3">
-			<div class="{{ $errors->has('anexo_arquivo') ? 'has-error' : '' }}">
-				{!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
-			</div>
-		</div>
-		<div class="col-sm-3">
-			{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-sm-5">
-			{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-md-1 text-center">
-			<button type="button" class="fa fa-plus btn qc-anexos-novo" disabled="disabled"></button>
-		</div>
-	</div>
-</fieldset>
+<div class="col-sm-12">
+    <div class="box box-solid box-info">
+        <div class="box-header">
+            <h3 class="box-title">
+                <i class="fa fa-paperclip"></i> ANEXAR Q.C.
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="form-group row qc-anexos-campos">
+               {!! Form::hidden('anexo_tipo[]', 'Quadro de concorrência') !!}
+                <div class="col-sm-6">
+                   {!! Form::label('', 'Descrição') !!}
+                   {!! Form::text('anexo_descricao[]', null, [ 'class' => 'form-control' ] ) !!}
+                </div>
+                <div class="col-sm-6">
+                   {!! Form::label('', 'Arquivo') !!}
+                   {!! Form::file('anexo_arquivo[]', ['id' => 'qc-obrigatorio', 'class' => 'form-control']) !!}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12">
+    <div class="box box-muted">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-paperclip"></i> OUTROS ANEXOS
+            </h3>
+        </div>
+        <div class="box-body qc-anexos">
+            <div class="form-group row qc-anexos-campos">
+                <div class="col-sm-5">
+                   {!! Form::label('', 'Descrição:') !!}
+                    {!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
+                </div>
+                <div class="col-sm-3">
+                   {!! Form::label('', 'Tipo do Anexo:') !!}
+                    {!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
+                </div>
+                <div class="col-sm-3">
+                       {!! Form::label('', 'Arquivo:') !!}
+                       {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control')) !!}
+                </div>
+                <div class="col-md-1 text-center">
+                    <label>&nbsp;</label>
+                    <div class="center-block">
+                        <button
+                             type="button"
+                             class="btn js-qc-anexos-remover btn-warning hidden">
+                             <i class="fa fa-minus"></i>
+                         </button>
+                        <button
+                             type="button"
+                             class="btn js-qc-anexos-novo btn-default"
+                             disabled="disabled">
+                             <i class="fa fa-plus"></i>
+                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-	{!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-	<a href="{!! route('qc.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+	{!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ),
+    ['class' => 'btn btn-success pull-right', 'type'=>'submit', 'id' => 'save-qc', 'disabled']) !!}
+	<a href="{!! route('qc.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')

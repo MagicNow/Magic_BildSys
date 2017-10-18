@@ -13,6 +13,7 @@ use App\Models\Insumo;
 use App\Models\InsumoServico;
 use App\Models\Orcamento;
 use App\Models\Planejamento;
+use App\Models\PlanejamentoData;
 use App\Models\CronogramaFisico;
 use App\Models\Levantamento;
 use App\Models\Planilha;
@@ -97,7 +98,7 @@ class SpreadsheetRepository
                         $reader->setEncoding('UTF-8');
                     }
                 }
-				
+
                 $reader->open(str_replace('public','storage/app/',public_path()).$destinationPath);
 
                 $folha = 0;
@@ -174,6 +175,7 @@ class SpreadsheetRepository
 
     public static function orcamento($planilha){
         $line = 1;
+        $insumo_nao_encontrado = 0;
         $reader = ReaderFactory::create(Type::CSV);
         $reader->setFieldDelimiter(';');
         $reader->setEndOfLineCharacter("\r");
@@ -439,7 +441,7 @@ class SpreadsheetRepository
                                     }
 
                                 } else {
-                                    $erro = 1;
+                                    $insumo_nao_encontrado = 1;
                                     $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                                 }
 
@@ -455,7 +457,9 @@ class SpreadsheetRepository
                                 if ($erro == 0) {
                                     # Valida se o preço unitário do item é maior que 0
                                     if($final['preco_unitario'] > 0) {
-                                        Orcamento::create($final);
+                                        if(!$insumo_nao_encontrado) {
+                                            Orcamento::create($final);
+                                        }
                                     }
                                 } else {
                                     // estourar loop
@@ -603,21 +607,46 @@ class SpreadsheetRepository
 
                         # save data table budget
                         if($erro == 0) {
-                            Planejamento::updateOrCreate(
-                              [
+                            $planejamento = Planejamento::where([
+                                'obra_id' => $final['obra_id'],
+                                'resumo' => $final['resumo'],
+                                'tarefa' => trim($final['tarefa'])
+                            ])
+                            ->first();
+
+                            if(!$planejamento) {
+                                Planejamento::create([
                                   'obra_id' => $final['obra_id'],
                                   'resumo' => $final['resumo'],
-                                  'tarefa' => trim($final['tarefa'])
-                              ],
-                              [
+                                  'tarefa' => trim($final['tarefa']),
                                   'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
+                                  'data' => $final['data'],
+                                  'data_fim' => $final['data_fim'],
+                                  'data_upload' => date('Y-m-d'),
+                                ]);
+                            } else {
+                                $hasQc = $planejamento
+                                    ->planejamentoQcAvulsoCarteira()
+                                    ->whereHas('qcs')
+                                    ->count();
+
+                                if($hasQc) {
+                                    PlanejamentoData::create([
+                                        'planejamento_id' => $planejamento->id,
+                                        'data_fim' => $planejamento->data_fim,
+                                        'data' => $planejamento->data,
+                                    ]);
+                                }
+
+                                $planejamento->update([
+                                  'user_id' => $final['user_id'],
+                                  'prazo' => (isset($final['prazo']) ? $final['prazo'] : null),
                                   'data' => $final['data'],
                                   'data_fim' => $final['data_fim'],
                                   'data_upload' => date('Y-m-d')
-                              ]
-                            );
-//                            Planejamento::create($final);
+                                ]);
+                            }
                         }else{
                             // estourar loop
                             $erro = 1;
@@ -643,7 +672,7 @@ class SpreadsheetRepository
             if(count($mensagens_erro)){
                 $erros_txt = implode('<br>', $mensagens_erro);
             }
-            
+
             $user->notify(new PlanilhaProcessamento([
                 'message'=>!count($mensagens_erro)?
                     'Planilha '.$planilha->id.'Importada com sucesso'
@@ -654,9 +683,9 @@ class SpreadsheetRepository
                 'link'=>'#']));
         }
     }
-	
+
 	public static function cronogramaFisico($planilha){
-		
+
         $line = 1;
         if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
             $reader = ReaderFactory::create(Type::CSV);
@@ -730,7 +759,7 @@ class SpreadsheetRepository
                                                 }
                                             }
                                             break;
-											
+
                                         case 'date' :
                                             $data_array = explode('/',$row[$chave]);
                                             if(count($data_array)==3){
@@ -755,41 +784,41 @@ class SpreadsheetRepository
                                 $final[$indice] = $valor;
                             }
 
-                        }						
+                        }
 
                         # save data table budget
                         if($erro == 0) {
-							
+
 							//Se a variavel nao existe coloca vazio
 							if(empty($final['torre'])){
 								$final['torre'] = "";
 							}
-							
+
 							if(empty($final['pavimento'])){
 								$final['pavimento'] = "";
 							}
-							
+
 							if(empty($final['custo'])){
 								$final['custo'] = 0;
 							}
-							
+
 							if(empty($final['concluida'])){
 								$final['concluida'] = 0;
 							}
-							
+
                             CronogramaFisico::updateOrCreate(
-                              [								
+                              [
 								#restritos
                                   'obra_id' => $final['obra_id'],
-								  'resumo' => $final['resumo'],                                  
+								  'resumo' => $final['resumo'],
 								  'torre' => $final['torre'],
-								  'pavimento' => $final['pavimento'],								  
+								  'pavimento' => $final['pavimento'],
 								  'tarefa' => $final['tarefa'],
 								  'template_id' => $final['template_id']
                               ],
                               [
 								#variaveis
-                                  'user_id' => $final['user_id'], 								  
+                                  'user_id' => $final['user_id'],
 								  'custo' => $final['custo'],
 								  'critica' => $final['critica'],
 								  'concluida' => $final['concluida']*100,
@@ -824,9 +853,9 @@ class SpreadsheetRepository
             $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
         }
 	}
-	
+
 	public static function levantamento($planilha){
-		
+
         $line = 1;
         if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
             $reader = ReaderFactory::create(Type::CSV);
@@ -923,17 +952,17 @@ class SpreadsheetRepository
                                 $final[$indice] = $valor;
                             }
 
-                        }		
+                        }
 
                         # save data table budget
-                        if($erro == 0) {							
+                        if($erro == 0) {
                             Levantamento::updateOrCreate(
-                              [								
+                              [
 								#restritos
                                   'obra_id' => $final['obra_id'],
-								  'apropriacao' => $final['apropriacao'],                                  
+								  'apropriacao' => $final['apropriacao'],
 								  'insumo' => $final['insumo'],
-								  'torre' => $final['torre'],								  
+								  'torre' => $final['torre'],
 								  'andar' => $final['andar'],
 								  'pavimento' => $final['pavimento'],
 								  'trecho' => $final['trecho'],
@@ -942,12 +971,12 @@ class SpreadsheetRepository
 								  'parede' => $final['parede'],
 								  'trecho_parede' => $final['trecho_parede'],
 								  'personalizavel' => $final['personalizavel'],
-								  'planta' => $final['planta'],								  
+								  'planta' => $final['planta'],
 								  'planta_opcao' => $final['planta_opcao'],
                               ],
                               [
 								#variaveis
-                                  'user_id' => $final['user_id'], 								  								  
+                                  'user_id' => $final['user_id'],
 								  'quantidade' => $final['quantidade'],
 								  'perda' => $final['perda'],
                                   'data_upload' => date('Y-m-d')

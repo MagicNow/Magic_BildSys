@@ -7,7 +7,6 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Pagamentos
-
         </h1>
     </section>
     <div class="content">

@@ -1,18 +1,18 @@
 <div class="form-group col-sm-6">
     {!! Form::label('tipologia_id', 'Tipologia') !!}
-    <p class="form-control">{!! $qc->tipologia->nome !!}</p>
+    <p class="form-control">{!! $qc->tipologia ? $qc->tipologia->nome : null !!}</p>
 </div>
 
 <!-- Carteira Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('carteira_id', 'Carteira') !!}
-    <p class="form-control">{!! isset($qc->carteira) ? $qc->carteira->nome : NULL !!}</p>
+    <p class="form-control">{!! $qc->carteira ? $qc->carteira->nome : NULL !!}</p>
 </div>
 
 <!-- Pbta Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obra_id', 'Obra') !!}
-    <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
+    <p class="form-control">{!! $qc->obra ? $qc->obra->nome : 'Sem obra vinculada' !!}</p>
 </div>
 
 <!-- Pbta Field -->
@@ -55,8 +55,8 @@
     </div>
 </div>
 
-@if($qc->isEditable())
-    <div class="form-group col-sm-4">
+@if($qc->canClose())
+    <div class="form-group col-sm-3">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento') !!}
         {!!
             Form::text(
@@ -66,11 +66,11 @@
             )
         !!}
     </div>
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('numero_contrato_mega', 'Número do Contrato (MEGA)') !!}
         {!! Form::number('numero_contrato_mega', null, [ 'class' => 'form-control' ]) !!}
     </div>
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('fornecedor_id', 'Fornecedor') !!}
         {!!
             Form::select(
@@ -84,39 +84,48 @@
             )
         !!}
     </div>
-    @if($qc->canSendQcFechado())
-        <div class="col-sm-12">
-            <div class="box box-muted">
-                <div class="box-header with-border">
-                    <i class="fa fa-paperclip"></i> ANEXO: Q.C. Fechado
-                </div>
-                <div class="box-body">
-                    <div class="form-group row qc-anexos-campos">
-                        <div class="col-sm-4">
-                           {!! Form::label('', 'Descrição') !!}
-                           {!! Form::hidden('anexo_descricao[]', 'Q.C. Fechado') !!}
-                           <p class="form-control">
-                                Q.C. Fechado
-                           </p>
-                        </div>
-                        <div class="col-sm-4">
-                           {!! Form::label('', 'Tipo') !!}
-                           {!! Form::hidden('anexo_tipo[]', 'Quadro de concorrência') !!}
-                           <p class="form-control">
-                                Quadro de concorrência
-                           </p>
-                        </div>
-                        <div class="col-sm-4">
-                           {!! Form::label('', 'Arquivo') !!}
-                           {!! Form::file('anexo_arquivo[]', ['id' => 'qc-fechado', 'class' => 'form-control']) !!}
-                        </div>
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Comprador') !!}
+        {!!
+            Form::select(
+                'comprador_id',
+                $compradores,
+                null,
+                [
+                    'class' => 'form-control select2',
+                    'id' => 'comprador_id',
+                    'placeholder' => 'Selecione o comprador...'
+                ]
+            )
+        !!}
+    </div>
+    <div class="col-sm-12">
+        <div class="box box-solid box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fa fa-paperclip"></i> ANEXAR Q.C FECHADO
+                </h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group row qc-anexos-campos">
+                    <div class="col-sm-6">
+                       {!! Form::label('', 'Descrição') !!}
+                       {!! Form::hidden('anexo_descricao[]', 'Q.C. Fechado') !!}
+                       <p class="form-control">
+                            Q.C. Fechado
+                       </p>
+                    </div>
+                   {!! Form::hidden('anexo_tipo[]', 'Quadro de concorrência') !!}
+                    <div class="col-sm-6">
+                       {!! Form::label('', 'Arquivo') !!}
+                       {!! Form::file('anexo_arquivo[]', ['id' => 'qc-fechado', 'class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
         </div>
-    @endif
+    </div>
 @else
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento') !!}
         <p class="form-control">
             {{
@@ -127,7 +136,7 @@
         </p>
     </div>
 
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('numero_contrato_mega', 'Número do Contrato (MEGA)') !!}
         <p class="form-control">
             {{
@@ -138,12 +147,23 @@
         </p>
     </div>
 
-    <div class="form-group col-sm-4">
-        {!! Form::label('fornecedor_id', 'Fornecedor') !!}
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Fornecedor') !!}
         <p class="form-control">
             {{
                 $qc->fornecedor
                     ? $qc->fornecedor->nome
+                    : 'Dados não apresentados'
+            }}
+        </p>
+    </div>
+
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Comprador') !!}
+        <p class="form-control">
+            {{
+                $qc->comprador
+                    ? $qc->comprador->name
                     : 'Dados não apresentados'
             }}
         </p>
@@ -153,7 +173,9 @@
 <div class="col-sm-12">
     <div class="box box-muted">
         <div class="box-header with-border">
-            <i class="fa fa-paperclip"></i> ANEXOS
+            <h3 class="box-title">
+                <i class="fa fa-paperclip"></i> ANEXOS
+            </h3>
         </div>
         <div class="box-body">
             @if(count($attachments))

@@ -45,11 +45,13 @@ class RequisicaoItemRepository extends BaseRepository
             ri.requisicao_id,
             ri.apartamento,
             ri.comodo,
+            rs.nome status,
             ri.id'));
 
         $r->leftJoin('requisicao as r','ri.requisicao_id', '=', 'r.id');
         $r->leftJoin('estoque as e','ri.estoque_id', '=', 'e.id');
         $r->leftJoin('insumos as i','e.insumo_id', '=', 'i.id');
+        $r->leftJoin('requisicao_status as rs','ri.status_id', '=', 'rs.id');
         $r->where('ri.requisicao_id',$id);
 
         $r->groupBy('ri.estoque_id');
@@ -58,7 +60,6 @@ class RequisicaoItemRepository extends BaseRepository
         $insumos = $r->get();
 
         $requisicao = Requisicao::where('id',$id)->first();
-
 
         $html = '';
 
@@ -77,7 +78,7 @@ class RequisicaoItemRepository extends BaseRepository
             $html .= '<td id="disponivel-' . $insumo->insumo_id . '">' . $qtde_disponivel . '</td>';
             $html .= '<td id="estoque-' . $insumo->insumo_id . '">' . $insumo->estoque . '</td>';
             $html .= '<td><input type="number" min="0" step=".01" class="form-control js-input-qtde" value="' . $insumo->qtde_requisicao . '" name="' . $insumo->insumo_id . '" id="' . $insumo->insumo_id . '" data-estoque="' . $insumo->estoque_id . '"  data-id="' . $insumo->id . '"></td>';
-            $html .= '<td>status</td>';
+            $html .= '<td>'.$insumo->status.'</td>';
 
 
             if ($insumo->temComodo == 'true') {

@@ -20,7 +20,7 @@
                 <div class="col-md-6">
                     <h3 class="pull-left title">
                         <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                        Ordem de Compra
+                        Ordem de compra
                         {{isset($ordemDeCompra->obra->nome) ? ' - ' . $ordemDeCompra->obra->nome : null}}
                         <?php $ordemCompraSession = \Session::has('ordemCompra'); ?>
                         {{isset($ordemCompraSession) ? '- O.C: ' . \Session::get('ordemCompra') : null}}

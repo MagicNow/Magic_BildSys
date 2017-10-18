@@ -7,9 +7,9 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             @if($isEmAprovacao)
-                Aprovação de Contrato
+                Aprovação de contrato
             @else
-                Detalhes do Contrato
+                Detalhes do contrato
                 <button class="btn btn-flat btn-info btn-lg"
                     data-toggle="modal"
                     data-target="#modal-impostos">

@@ -124,7 +124,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <h4>Grupos de Insumos</h4>
+                        <h4>Grupos de insumos</h4>
                         <div class="js-datatable-filter-form">
                             @if(count($insumoGrupos))
                                 {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [

@@ -23,18 +23,14 @@
 @stop
 @section('content')
     <section class="content-header">
-       
-           
                 <div class="col-md-6">
-               <section class="content-header">
+                    <section class="content-header">
                         <h1>
                             <a href="/Clientes/Mazzatech/BildSys/public/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </a>
                             <span>Detalhe da Ordem de Compra</span>
                         </h1>
-                    
-                       
                     </section>
                 </div>
                 <div class="col-md-6 text-right">
@@ -279,6 +275,8 @@
         <div class="panel panel-default">
             <div class="panel-body" style="padding:0px;">
                 <div class="col-md-12 table-responsive margem-topo">
+                    {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}
+                    {!! Form::label('perPage', ' RESULTADOS POR PÁGINA') !!}
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
@@ -622,17 +620,22 @@
                     @endforeach
                     </tbody>
                 </table>
+                    <div class="text-center">
+                        {{ $itens->links() }}
+                    </div>
             </div>
         </div>
-    <div class="pg text-center">
-            {{ $itens->links() }}
-    </div>
 </div>
         <div class="modal fade" id="modal-alcadas" tabindex="-1" role="dialog"></div>
 @endsection
 @section('scripts')
     @parent
 <script type="text/javascript">
+    function perPage(number){
+        history.pushState("", document.title, location.pathname+ '?perPage='+number);
+        location.reload();
+    }
+
     <?php
             $options_motivos = "<option value=''>Escolha...</option>";
             foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){

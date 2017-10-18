@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Tipologia
@@ -11,39 +12,41 @@ use Eloquent as Model;
  */
 class Tipologia extends Model
 {
-	public $table = 'tipologias';
+  use SoftDeletes;
 
-	const CREATED_AT = 'created_at';
-	const UPDATED_AT = 'updated_at';
+  public $table = 'tipologias';
+
+  const CREATED_AT = 'created_at';
+  const UPDATED_AT = 'updated_at';
 
 
-	protected $dates = ['deleted_at'];
+  protected $dates = ['deleted_at'];
 
 
-	public $fillable = [
-		'nome',
-	];
+  public $fillable = [
+    'nome',
+  ];
 
-	public static $campos = [
-		'nome',        
-	];
+  public static $campos = [
+    'nome',        
+  ];
 
-	/**
-	 * The attributes that should be casted to native types.
-	 *
-	 * @var array
-	 */
-	protected $casts = [
-		'id' => 'integer',
-		'nome' => 'string',        
-	];
+  /**
+   * The attributes that should be casted to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'id' => 'integer',
+    'nome' => 'string',        
+  ];
 
-	/**
-	 * Validation rules
-	 *
-	 * @var array
-	 */
-	public static $rules = [
-		'nome' => 'required'
-	];
+  /**
+   * Validation rules
+   *
+   * @var array
+   */
+  public static $rules = [
+    'nome' => 'required'
+  ];
 }

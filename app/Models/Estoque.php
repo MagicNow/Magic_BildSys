@@ -51,8 +51,12 @@ class Estoque extends Model
      **/
     public function farolQtdEmEstoque()
     {
+        $qtd_minima = QtdMinima::where('insumo_id', $this->insumo->id)
+            ->where('obra_id', $this->obra->id)
+            ->first();
+
         $qtd_em_estoque = $this->qtdEmEstoque();
-        $insumo_qtd_minima = $this->insumo->qtd_minima;
+        $insumo_qtd_minima = $qtd_minima ? $qtd_minima->qtd : null;
         $porcentagem = null;
         $cor = null;
 
@@ -119,7 +123,11 @@ class Estoque extends Model
 
         foreach($this->estoqueTransacao as $transacao) {
             $requisicao = Requisicao::find($transacao->requisicao_id);
-            $qtd_requisitada += $requisicao->requisicaoItens->where('status_id', RequisicaoStatus::NOVA)->sum('qtde');
+            if($requisicao) {
+                if($requisicao->requisicaoItens) {
+                    $qtd_requisitada += $requisicao->requisicaoItens->where('status_id', RequisicaoStatus::NOVA)->sum('qtde');
+                }
+            }
         }
 
         return $qtd_requisitada;

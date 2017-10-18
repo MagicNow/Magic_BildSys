@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Medicão de Serviço {{ $medicaoServico->id . ' - Obra '. $medicaoServico->contratoItemApropriacao->contratoItem->contrato->obra->nome }}
+            Medicão de serviço {{ $medicaoServico->id . ' - Obra '. $medicaoServico->contratoItemApropriacao->contratoItem->contrato->obra->nome }}
 
             @if(!$medicaoServico->finalizado)
             <a class="btn btn-success btn-flat btn-lg pull-right" href="{{ url('/medicoes/create?contrato_item_apropriacao_id='.$medicaoServico->contrato_item_apropriacao_id.'&medicao_servico_id='.$medicaoServico->id) }}">
@@ -74,11 +74,12 @@
             <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('medicao_servicos.show_fields')
-<div style="clear:both;"></div>
-                    @include('medicoes.table')
-
+                    <div style="clear:both;"></div>
+                    <div class="col-md-12">
+                        @include('medicoes.table')
+                    </div>
                 </div>
-                <div class="row">
+                <div class="col-md-12">
                     <a href="{!! route('medicoes.index') !!}" class="btn btn-warning">
                         <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>

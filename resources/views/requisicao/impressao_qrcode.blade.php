@@ -9,7 +9,7 @@
 
             <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
+                {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde.'<br>'.$item->nome.'<br>'.$item->torre.' -  '.$item->trecho.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br><span style="display:none">Dados QR Code: {"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}</span>') !!}
 
                 <br>
 
@@ -31,7 +31,7 @@
 
             <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}') !!}
+                {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde.'<br>'.$item->nome.'<br>'.$item->torre.' -  '.$item->trecho.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br><span style="display:none">Dados QR Code: {"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde.'}</span>') !!}
 
                 <br>
 
@@ -51,7 +51,7 @@
 
                 <div class="col-xs-12 col-sm-3 col-md-3 text-center">
 
-                    {!! QrCode::size(200)->generate('{"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde / $request->query('qtde_qrcodes').'}') !!}
+                    {!! QrCode::size(200)->generate(''.$item->insumo.' -  '.$item->qtde / $request->query('qtde_qrcodes').'<br>'.$item->nome.'<br>'.$item->torre.' -  '.$item->trecho.'<br>'.$item->pavimento.' -  '.$item->andar.' Andar<br>'.$item->apartamento.' -  '.$item->comodo.'<br><span style="display:none">Dados QR Code: {"requisicao_item_id": '.$item->id.', "qtd_lida":'.$item->qtde / $request->query('qtde_qrcodes').'}</span>') !!}
 
                     <br>
 
@@ -75,3 +75,12 @@
     @endif
 
 @endsection
+
+
+@section('scripts')
+    <script src="{{ asset('js/admin.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () { window.print(); });
+    </script>
+@endsection
+

@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Cronograma de Obra
+            Cronograma de obra
         </h1>
    </section>
    <div class="content">

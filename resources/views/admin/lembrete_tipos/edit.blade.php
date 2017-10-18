@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Lembrete Tipo
+            Lembrete tipo
         </h1>
    </section>
    <div class="content">

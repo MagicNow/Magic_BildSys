@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Carteira
@@ -11,14 +12,14 @@ use Eloquent as Model;
  */
 class QcAvulsoCarteira extends Model
 {
+    use SoftDeletes;
+
     public $table = 'qc_avulso_carteiras';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'nome',
@@ -72,12 +73,17 @@ class QcAvulsoCarteira extends Model
             ->withTimestamps();
     }
 
+    public function qcs()
+    {
+        return $this->hasMany(Qc::class, 'carteira_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
     public function tarefas()
     {
-        return $this->belongsToMany(Insumo::class, 'qc_avulso_carteira_planejamento', 'qc_avulso_carteira_id', 'planejamento_id')
+        return $this->belongsToMany(Planejamento::class, 'qc_avulso_carteira_planejamento', 'qc_avulso_carteira_id', 'planejamento_id')
             ->withPivot('deleted_at')
             ->withTimestamps();
     }

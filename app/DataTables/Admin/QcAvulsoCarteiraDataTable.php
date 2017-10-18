@@ -26,11 +26,11 @@ class QcAvulsoCarteiraDataTable extends DataTable
             })
             ->filterColumn('compradores', function($query, $keyword){
                 $query->whereRaw('(
-                    SELECT 
+                    SELECT
                         GROUP_CONCAT(users.name SEPARATOR ", ")
                     FROM
                         qc_avulso_carteira_users
-                        JOIN users ON qc_avulso_carteira_users.user_id = users.id 
+                        JOIN users ON qc_avulso_carteira_users.user_id = users.id
                     WHERE
                         qc_avulso_carteira_id = qc_avulso_carteiras.id
                 ) LIKE ?', ['%'.$keyword.'%']);
@@ -54,11 +54,11 @@ class QcAvulsoCarteiraDataTable extends DataTable
             'sla_mobilizacao',
             'created_at',
             DB::raw('(
-                    SELECT 
+                    SELECT
                         GROUP_CONCAT(users.name SEPARATOR ", ")
                     FROM
                         qc_avulso_carteira_users
-                        JOIN users ON qc_avulso_carteira_users.user_id = users.id 
+                        JOIN users ON qc_avulso_carteira_users.user_id = users.id
                     WHERE
                         qc_avulso_carteira_id = qc_avulso_carteiras.id
                 ) as compradores')
