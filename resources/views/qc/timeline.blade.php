@@ -11,6 +11,7 @@
             </small>
         </h3>
         <ul class="new-timeline">
+          @if($timeline['steps'] != null)
             @foreach($timeline['steps'] as $name => $step)
                 <li class="new-timeline__item {{ $step['is_started'] ? 'new-timeline__item--complete' : '' }}">
                     <div class="new-timeline__timestamp">
@@ -83,6 +84,7 @@
                     @endforeach
                 @endif
             @endforeach
+          @endif
         </ul>
     </div>
 </div>
