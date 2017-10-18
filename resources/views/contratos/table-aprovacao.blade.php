@@ -8,39 +8,36 @@
     }
 </style>
 
-<hr>
-<div class="row total-header">
-    <div class="col-sm-3 text-right borda-direita">
-        <h5>Valor previsto no orçamento</h5>
-        <h4>
-            <small class="pull-left">R$</small>
+<div class="row total-header" style="margin-left: 5px;">
+    <div class="col-sm-3 text-left">
+        <h3 class="fs18">Valor previsto no orçamento</h3>
+      
+        <h3 class="fs18" style="margin-top: -8px;">
+            R$
             {{ number_format($orcamentoInicial,2,',','.') }}
-        </h4>
+        </h3>
     </div>
-    <div class="col-sm-3 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-        <h5>Valor comprometido realizado</h5>
-        <h4>
-            <small class="pull-left">R$</small>0,00
+    <div class="col-sm-3 text-left" title="Até o momento em todos os itens desta O.C.">
+        <h3 class="fs18">Valor comprometido realizado</h3>
+         <h3 class="fs18" style="margin-top: -8px;">R$ 0,00
             {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
             {{--                    {{ number_format($realizado,2,',','.') }}--}}
-        </h4>
+        </h3>
     </div>
-    <div class="col-sm-3 text-right borda-direita" title="Nos itens desta O.C.">
-        <h5>Valor comprometido à gastar</h5>
-        <h4>
-            <small class="pull-left">R$</small>
+    <div class="col-sm-3 text-left" title="Nos itens desta O.C." style="margin-left: 10px;">
+        <h3 class="fs18">Valor comprometido à gastar</h3>
+         <h3 class="fs18" style="margin-top: -8px;">R$
             {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
             <span id="valor_comprometido_a_gastar_total"></span>
-        </h4>
+        </h3>
     </div>
-    <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
-        <h5>SALDO DE ORÇAMENTO</h5>
-        <h4>
-            <small class="pull-left">R$</small>
+    <div class="col-sm-3 text-left" title="Restante do Orçamento Inicial em relação aos itens desta O.C." style="width:170px;margin-left: 5px;">
+       <h3 class="fs18">SALDO DE ORÇAMENTO</h3>
+        <h3 class="fs18" style="margin-top: -8px;">R$
             <span id="saldo_de_orcamento_total"></span>
             {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
             {{--{{ number_format($saldo,2,',','.') }}--}}
-        </h4>
+        </h3>
     </div>
 </div>
 

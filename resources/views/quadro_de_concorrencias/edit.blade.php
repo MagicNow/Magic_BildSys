@@ -84,7 +84,7 @@
                         {!! Form::open(['route' => ['quadroDeConcorrencias.destroy', $quadroDeConcorrencia->id], 'id'=>'formDelete'.$quadroDeConcorrencia->id, 'method' => 'delete']) !!}
                         {!! Form::button('<i class="fa fa-times"></i> cancelar', [
                                 'type' => 'button',
-                                'class' => 'btn btn-default btn-flat btn-lg',
+                                'class' => 'btn btn-danger btn-flat btn-lg',
                                 'onclick' => "confirmDelete('formDelete".$quadroDeConcorrencia->id."');",
                                 'title' => ucfirst(trans('common.delete'))
                             ]) !!}

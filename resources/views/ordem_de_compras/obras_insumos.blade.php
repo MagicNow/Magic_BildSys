@@ -8,13 +8,17 @@
 @stop
 
 @section('content')
-    <section class="content-header">
+    <section class="content-header obras-insumos">
         <div class="modal-header">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <h3 class="pull-left title">
-                        <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
-                    </h3>
+            <div class="col-md-12" style="padding-left:0px;">
+                <div class="col-md-6" style="padding-left:0px;">
+                    <h1>
+
+                        <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+                         Comprar Insumos
+                    </h1>
                 </div>
                 <div class="col-md-6 text-right">
                     <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">
@@ -27,7 +31,7 @@
             </div>
         </div>
     </section>
-    <div class="content">
+    <div class="content obras-insumos">
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-12 thumbnail">
@@ -146,7 +150,7 @@
                                             'onchange'=>'filtroQueryString("carteira_id", this.value)'
                                             ]) !!}
                                     </div>
-                                </div>													
+                                </div>
 
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
@@ -164,7 +168,7 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content obras-insumos">
             @include('ordem_de_compras.obras-insumos-table')
     </div>
 

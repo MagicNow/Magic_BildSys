@@ -4,12 +4,42 @@
         overflow-y: scroll;
         border: solid 2px #474747;
         background-color: #fff;
-        font-size: 12px;
+        font-size: 17px;
     }
+.dataTables_length {
+    float: left;
+    margin-top: -10px;
+ font-weight: 600;
+    margin-left: -185px;
+    padding-top: 10px;
 
+}
     .list-group-item {
         border-radius: 0px !important;
     }
+    .sorting_disabled{min-width:60px;}
+    .select2-dropdown{    margin-top: -111px !important;
+    margin-left: -61px;
+    max-width: 277px;}
+    body{
+            font-size: 18px;
+    }
+    textarea.form-control {
+    height: auto;
+    font-size: 16px;
+}
+td {font-size:17px;}
+.table > tfoot > tr > th {
+    padding: 4px 2px!important;
+}
+  table.dataTable thead > tr > th {
+    padding-left: 13px;
+    padding-right: 13px;
+    font-size: 16px !important;
+}
+th .form-control{
+height: 36px;font-size:17px;
+}
 </style>
 <!-- Fornecedores Field -->
 <div class="form-group col-sm-6">
@@ -84,9 +114,7 @@
 <div class="form-group col-sm-6">
     <div class="row">
         <div class="col-md-5">
-            <a href="/tipoEqualizacaoTecnicas" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-            </a>
+           
             {!! Form::label('tiposEqualizacaoTecnicas', 'Equalização Técnica') !!}
             @if(count(\App\Models\TipoEqualizacaoTecnica::count()))
                 <ul class="list-group bloco_filtro tiposEqT">
@@ -106,8 +134,8 @@
                 </ul>
             @endif
         </div>
-        <div class="col-md-7">
-            <label>
+        <div class="col-md-7" style="margin-top: -11px;">
+            <label style="margin-top: 10px;">
                Itens Equalização Técnica
             </label>
             <button type="button" class="btn btn-flat btn-primary btn-xs pull-right" onclick="addEQitem();"
@@ -214,12 +242,12 @@
     {!! Form::textarea('obrigacoes_bild', null, ['class' => 'form-control', 'rows'=>3]) !!}
 </div>
 
-<div class="row text-right form-inline">
-    <div class="col-sm-12">
+<div class="row text-right form-inline" style="margin-top: 10px;margin-bottom: 10px;">
+    <div class="col-sm-4 text-left" style="margin-top: 10px;margin-bottom: 10px;">
         <span class="col-md-4">
            <label>Template de Minuta</label>
         </span>
-        <span class="col-md-8 text-left">
+        <span class="col-md-8 text-left" style="padding: 0px;">
             {!! Form::select('contrato_template_id',[''=>'Selecione...']+
             \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
             'class'=>'form-control select2 contratoTemplate',
@@ -319,7 +347,7 @@
 </div>
 
 <div class="col-md-12">
-    <h3 class="pull-left">
+    <h3 class="pull-left" style="margin-top:50px;">
         Itens
         {!! Form::button( '<i class="fa fa-plus"></i> Adicionar insumos', [
                                 'class' => 'btn btn-primary btn-sm btn-flat',

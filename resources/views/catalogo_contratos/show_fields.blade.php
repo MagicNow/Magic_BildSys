@@ -58,11 +58,11 @@
                         <td class="text-center">
                             <label for="{{ $v_tag }}">{{ $valor->nome }}</label>
                         </td>
-                        <td>
+                        <td style="max-width:300px;">
                             <p class="form-control">{{ isset($valores_campos_extras_minutas->$tag)?$valores_campos_extras_minutas->$tag:null }}</p>
                         </td>
-                        <td class="text-center">
-                            <label for="{{ $v_tag }}">{{ $valor->tipo }}</label>
+                        <td class="text-center" >
+                            <label for="{{ $v_tag }}" >{{ $valor->tipo }}</label>
                         </td>
                     </tr>
                 @endforeach
@@ -101,11 +101,11 @@
                         <td class="text-center">
                             <label for="{{ $v_tag }}">{{ $valor->nome }}</label>
                         </td>
-                        <td>
+                        <td style="max-width:300px;">
                             <p class="form-control">{{ isset($valores_campos_extras_contratos->$tag)?$valores_campos_extras_contratos->$tag:null }}</p>
                         </td>
-                        <td class="text-center">
-                            <label for="{{ $v_tag }}">{{ $valor->tipo }}</label>
+                        <td class="text-center" >
+                            <label for="{{ $v_tag }}" >{{ $valor->tipo }}</label>
                         </td>
                     </tr>
                 @endforeach

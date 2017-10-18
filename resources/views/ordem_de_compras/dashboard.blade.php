@@ -49,8 +49,8 @@
             {!! Form::label('data_termino', 'Data término:') !!}
             {!! Form::date('data_termino', \Illuminate\Support\Facades\Input::get('data_termino'), ['class' => 'form-control', 'onchange' => 'filters();']) !!}
         </div>
-
-        <div class="box-body" id="app">
+<div style="clear:both;"></div>
+        <div class="box-body" id="app" style="margin-top:10px;">
             <div class="row">
                 <div class="col-xs-12">
                     @php

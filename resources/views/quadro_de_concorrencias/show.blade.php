@@ -127,7 +127,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('quadro_de_concorrencias.show_fields')
-                    <a href="{!! route('quadroDeConcorrencias.index') !!}" class="btn btn-default">
+                    <a href="{!! route('quadroDeConcorrencias.index') !!}" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

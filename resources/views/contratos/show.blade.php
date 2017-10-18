@@ -170,7 +170,7 @@
             </div>
         </div>
         @endif
-        <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
+        <a href="{!! route('contratos.index') !!}" class="btn btn-warning btn-flat btn-lg">
             <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
         </a>
     </div>

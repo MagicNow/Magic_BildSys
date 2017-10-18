@@ -14,7 +14,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('retroalimentacao_obras.show_fields')
-                    <a href="{!! route('retroalimentacaoObras.index') !!}" class="btn btn-default btn-flat btn-lg">
+                    <a href="{!! route('retroalimentacaoObras.index') !!}" class="btn btn-warning btn-flat btn-lg">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

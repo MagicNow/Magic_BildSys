@@ -35,7 +35,7 @@
                 <div class="row" style="padding-left: 20px;padding-right: 20px;">
                     @include('catalogo_contratos.show_fields')
 
-                    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default" style="margin-top: 10px;">
+                    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-warning" style="margin-top: 10px;">
                         <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

@@ -23,20 +23,22 @@
 @stop
 @section('content')
     <section class="content-header">
-        <div class="modal-header">
-            <div class="col-md-12">
+       
+           
                 <div class="col-md-6">
-                    <span class="pull-left title">
-                        <h3>
-                            <a href="/ordens-de-compra" class="btn btn-link">
+               <section class="content-header">
+                        <h1>
+                            <a href="/Clientes/Mazzatech/BildSys/public/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </a>
                             <span>Detalhe da Ordem de Compra</span>
-                        </h3>
-                    </span>
+                        </h1>
+                    
+                       
+                    </section>
                 </div>
                 <div class="col-md-6 text-right">
-                    <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat">
+                    <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat" style="padding-top: 2px;padding-bottom: 3px;">
                         Retroalimentação
                     </a>
                     @if(!is_null($ordemDeCompra->aprovado))
@@ -89,11 +91,12 @@
                         @endif
                     @endif
                 </div>
-            </div>
-        </div>
+            
+     
     </section>
+    <div style="clear:both"></div>
     <div class="content">
-        <h6>Dados Informativos</h6>
+        <h3 class="fs18">Dados Informativos</h6>
         <div class="row">
             <div class="col-md-2 form-group">
                 {!! Form::label('id', 'Código da O.C.') !!}
@@ -114,21 +117,21 @@
             </div>
 
             <div class="col-md-12">
-                <div class="panel panel-default panel-body">
+                <div class="panel panel-default panel-body" style="padding-bottom:0px;padding-top: 5px;margin-bottom: 0px;">
                     <h4 class="highlight">Timeline</h4>
                     @if($alcadas_count)
                         @php $col_md = 12 / ($alcadas_count + 1); @endphp
-                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                             <span>
                                 Criação
-                                <small>{{ $ordemDeCompra->created_at->format('d/m/Y H:i') }}</small>
+                                {{ $ordemDeCompra->created_at->format('d/m/Y H:i') }}
                             </span>
                             <div class="progress">
                                 <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                                     100%
                                 </div>
                             </div>
-                        </h4>
+                        </h3>
                         @if(count($avaliado_reprovado))
                             @php
                                 $count = 0;
@@ -164,7 +167,7 @@
                                             }
                                         @endphp
 
-                                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                                             <span>
                                                 {{$count}}ª alçada
                                                 @if(isset($alcada['data_inicio']))
@@ -179,9 +182,9 @@
                                                     {{$percentual}}%
                                                 </div>
                                             </div>
-                                        </h4>
+                                        </h3>
                                     @else
-                                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                                             <span>{{$count}}ª alçada</span>
                                             @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
@@ -191,7 +194,7 @@
                                                     0%
                                                 </div>
                                             </div>
-                                        </h4>
+                                        </h3>
                                     @endif
                                 @else
                                     <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
@@ -229,57 +232,52 @@
                 </div>
             </div>
         </div>
-        <hr>
-        <div class="row" id="totalInsumos">
-            <div class="col-md-2 text-right borda-direita">
-                <h5>Valor previsto no orçamento</h5>
-                <h4>
-                    <small class="pull-left">R$</small>
+        <hr style="margin:0px;">
+        <div class="row" id="totalInsumos" style="margin-left:5px;">
+            <div class="col-md-2 text-left">
+                <h3 class="fs18">Valor previsto no orçamento</h3>
+                <h3 class="fs18" style="margin-top: -8px;">R$
                     {{ number_format($orcamentoInicial,2,',','.') }}
-                </h4>
+                </h3>
             </div>
-            <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5>Valor comprometido realizado</h5>
-                <h4>
-                    <small class="pull-left">R$</small>0,00
+            <div class="col-md-2 text-left" title="Até o momento em todos os itens desta O.C.">
+                <h3 class="fs18">Valor comprometido realizado</h3>
+                <h3 class="fs18" style="margin-top: -8px;">
+                    R$ 0,00
                     {{---  @TODO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
                     {{--                    {{ number_format($realizado,2,',','.') }}--}}
-                </h4>
+                </h3>
             </div>
-            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5>Valor comprometido à gastar</h5>
-                <h4>
-                    <small class="pull-left">R$</small>
+            <div class="col-md-2 text-left " title="Nos itens desta O.C." style="margin-left:10px;">
+                <h3 class="fs18">Valor comprometido à gastar</h3>
+                <h3 class="fs18" style="margin-top: -8px;">R$
                     {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
                     {{ number_format(floatval($valor_comprometido_a_gastar),2,',','.') }}
-                </h4>
+                </h3>
             </div>
-            <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
-                <h5>SALDO DE ORÇAMENTO</h5>
-                <h4>
-                    <small class="pull-left">R$</small>
+            <div  style="width: 170px;margin-left:5px;" class="col-md-2 text-left " title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+                <h3 class="fs18">SALDO DE ORÇAMENTO</h3>
+                <h3 class="fs18" style="margin-top: -8px;">R$
                     {{ number_format($orcamentoInicial - floatval($valor_comprometido_a_gastar),2,',','.') }}
                     {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
                     {{--{{ number_format($saldo,2,',','.') }}--}}
-                </h4>
+                </h3>
             </div>
-            <div class="col-md-2 text-right borda-direita">
-                <h5>VALOR DA OC</h5>
-                <h4>
-                    <small class="pull-left">R$</small>
+            <div class="col-md-2 text-left" style="width: 110px;">
+                <h3 class="fs18">VALOR DA OC</h3>
+                <h3 class="fs18" style="margin-top: -8px;">R$
                     {{ number_format($totalSolicitado,2,',','.') }}
-                </h4>
+                </h3>
             </div>
-            <div class="col-md-2 text-right">
-                <h5>SALDO DISPONÍVEL APÓS O.C</h5>
-                <h4>
-                    <small class="pull-left">R$</small>
+            <div class="col-md-2 text-left " style="margin-left:5px;">
+                <h3 class="fs18">SALDO DISPONÍVEL APÓS O.C</h3>
+                <h3 class="fs18" style="margin-top: -8px;">R$
                     {{ number_format(($orcamentoInicial - floatval($valor_comprometido_a_gastar) - $totalSolicitado),2,',','.') }}
-                </h4>
+                </h3>
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-body">
+            <div class="panel-body" style="padding:0px;">
                 <div class="col-md-12 table-responsive margem-topo">
                     <table class="table table-bordered table-striped">
                         <thead>
@@ -430,7 +428,7 @@
                                             </span>
                                         @endif
                                     @else
-                                        <button type="button" title="Ver detalhes de aprovação"
+                                        <button style="line-height:0px;padding: 4px 6px;" type="button" title="Ver detalhes de aprovação"
                                                 class="btn btn-sm btn-default btn-flat ocItemTimeline"
                                                 data-id="{{ $item->id }}" data-workflow-tipo="1">
                                             <i class="fa fa-fw fa-hourglass-half"></i>
@@ -465,7 +463,7 @@
                                                     @endif
                                                 @else
                                                     {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                                    <button type="button" title="{{ $workflowAprovacao['msg'] }}"
+                                                    <button style="line-height:0px;padding: 4px 10px;" type="button" title="{{ $workflowAprovacao['msg'] }}"
                                                             onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
                                                             class="btn btn-default btn-sm btn-flat">
                                                         <i class="fa fa-info" aria-hidden="true"></i>
@@ -474,7 +472,7 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <button type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
+                                    <button style="line-height:0px;padding: 4px 10px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
                                              onclick="showHideInfoExtra({{ $item->id }})">
                                         <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                     </button>

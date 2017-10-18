@@ -13,7 +13,7 @@
         @include('adminlte-templates::common.errors')
         <div class="box box-primary">
 
-            <div class="box-body">
+            <div class="box-body for-compra">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group js-datatable-filter-form">
