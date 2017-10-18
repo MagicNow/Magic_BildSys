@@ -7,13 +7,13 @@
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('tipologia', 'Tipo de Q.C.:') !!}
-	{!! Form::select('tipologia_id', $tipologias, NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
+	{!! Form::select('tipologia_id', $tipologias, null, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', $carteiras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::select('carteira_id', $carteiras, request('carteira_id'), ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->

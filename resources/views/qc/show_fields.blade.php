@@ -12,7 +12,7 @@
 <!-- Pbta Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obra_id', 'Obra') !!}
-    <p class="form-control">{!! $qc->obra ? $qc->obra->nome : NULL !!}</p>
+    <p class="form-control">{!! $qc->obra ? $qc->obra->nome : 'Sem obra vinculada' !!}</p>
 </div>
 
 <!-- Pbta Field -->
