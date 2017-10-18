@@ -298,8 +298,6 @@
             @yield('content')
         </div>
 
-        <script src="{{ asset('js/admin.js') }}" type="text/javascript"></script>
-
         @yield('scripts')
     </body>
 </html>
