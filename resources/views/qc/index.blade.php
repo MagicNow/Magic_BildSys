@@ -3,9 +3,9 @@
 @section('content')
     <section class="content-header">
         <h1>
-            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+            <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
+            </a>
             Lista de Q.C.
             <a class="btn btn-primary pull-right"  href="{!! route('qc.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
