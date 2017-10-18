@@ -17,13 +17,13 @@
         <div class="box">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-sm-3 form-group hidden-xs">
+                    <div class="col-sm-3 form-group">
                         {!! Form::label('obra_id', 'Obras') !!}
                         {!!
                             Form::select(
                                 'obra_id',
                                 $obras,
-                                null,
+                                request('obra_id'),
                                 [
                                     'class' => 'js-filter select2',
                                 ]
@@ -35,8 +35,8 @@
                         {!!
                             Form::select(
                                 'carteira_id',
-                                [],
-                                null,
+                                $carteiras,
+                                request('carteira_id'),
                                 [
                                     'class' => 'js-filter select2'
                                 ]
@@ -155,10 +155,18 @@
                 url: '/buscar/fornecedores',
                 placeholder: 'Filtrar por fornecedor...'
             })
-            select2('.js-filter[name=carteira_id]', {
-                url: '/buscar/qc-avulso-carteiras',
-                placeholder: 'Filtrar por carteira...'
-            })
+
+        LaravelDataTables.dataTableBuilder
+                .on( 'responsive-display', function (e, datatable, row, showHide, update) {
+                    if(showHide) {
+                        $('table.dataTable > tbody > tr[role="row"].parent')
+                            .each(function(n, el) {
+                                if(!$(el).is($(row.node()))) {
+                                    $(el).removeClass('parent').next().remove();
+                                }
+                            })
+                    }
+                });
         });
     </script>
 @append

@@ -39480,4 +39480,25 @@ input[type="file"][readonly] {
   touch-action: none;
 }
 
+.odd + .child .dtr-details {
+  background-color: #f5f5f5;
+  padding: 10px;
+}
+
+.even + .child .dtr-details {
+  background-color: #FFF;
+  padding: 10px;
+}
+
+table.dataTable.dtr-inline.collapsed> tbody> tr> td.child {
+  padding: 0 !important;
+}
+
+table.dataTable.dtr-inline.collapsed> tbody> tr[role="row"]> td:first-child:before,
+table.dataTable.dtr-inline.collapsed> tbody> tr[role="row"]> th:first-child:before {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 /*# sourceMappingURL=admin.css.map */

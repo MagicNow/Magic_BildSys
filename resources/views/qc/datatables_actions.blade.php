@@ -2,13 +2,13 @@
     title="Abrir Q.C. # {{ $qc->id }}"
     data-toggle="tooltip"
     data-container="body"
-    class='btn btn-default'>
+    class='btn btn-xs btn-default'>
     <i class="glyphicon glyphicon-eye-open"></i>
 </a>
 @if($qc->canCancel())
     <button
         type="button"
-        class="btn btn-danger"
+        class="btn btn-xs btn-danger"
         onclick="cancelarQC({{$qc->id}});"
         data-toggle="tooltip"
         data-container="body"

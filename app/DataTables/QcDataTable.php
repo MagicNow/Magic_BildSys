@@ -133,7 +133,7 @@ class QcDataTable extends DataTable
         $request = $this->request();
 
         if($request->obra_id) {
-            $query->where('obra_id', $request->obra_id);
+            $query->where('qc.obra_id', $request->obra_id);
         }
 
         if($request->qc_status_id) {
