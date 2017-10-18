@@ -297,5 +297,9 @@
         <div class="content" style="padding-left: 30px; padding-right: 30px;">
             @yield('content')
         </div>
+
+        <script src="{{ asset('js/admin.js') }}" type="text/javascript"></script>
+
+        @yield('scripts')
     </body>
 </html>
