@@ -123,7 +123,11 @@ class Estoque extends Model
 
         foreach($this->estoqueTransacao as $transacao) {
             $requisicao = Requisicao::find($transacao->requisicao_id);
-            $qtd_requisitada += $requisicao->requisicaoItens->where('status_id', RequisicaoStatus::NOVA)->sum('qtde');
+            if($requisicao) {
+                if($requisicao->requisicaoItens) {
+                    $qtd_requisitada += $requisicao->requisicaoItens->where('status_id', RequisicaoStatus::NOVA)->sum('qtde');
+                }
+            }
         }
 
         return $qtd_requisitada;
