@@ -156,7 +156,7 @@ if (! function_exists('datatables_format_date')) {
                 return $model->{$column}->format('d/m/Y');
             }
 
-            return $model->{$column};
+            return with(new Carbon($model->{$column}))->format('d/m/Y');
         };
     }
 }
@@ -170,6 +170,15 @@ if (! function_exists('datatables_float_to_money')) {
             }
 
             return float_to_money($model->{$column});
+        };
+    }
+}
+
+if(! function_exists('datatables_empty_column')) {
+    function datatables_empty_column($column, $msg = 'Sem dados')
+    {
+        return function($model) use ($msg, $column) {
+            return $model->{$column} ?: $msg;
         };
     }
 }

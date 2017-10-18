@@ -12,7 +12,7 @@
 <!-- Pbta Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obra_id', 'Obra') !!}
-    <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
+    <p class="form-control">{!! $qc->obra ? $qc->obra->nome : 'Sem obra vinculada' !!}</p>
 </div>
 
 <!-- Pbta Field -->
@@ -56,7 +56,7 @@
 </div>
 
 @if($qc->isEditable())
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento') !!}
         {!!
             Form::text(
@@ -66,11 +66,11 @@
             )
         !!}
     </div>
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('numero_contrato_mega', 'Número do Contrato (MEGA)') !!}
         {!! Form::number('numero_contrato_mega', null, [ 'class' => 'form-control' ]) !!}
     </div>
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('fornecedor_id', 'Fornecedor') !!}
         {!!
             Form::select(
@@ -80,6 +80,21 @@
                 [
                     'class' => 'form-control',
                     'id' => 'fornecedor_id'
+                ]
+            )
+        !!}
+    </div>
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Comprador') !!}
+        {!!
+            Form::select(
+                'comprador_id',
+                $compradores,
+                null,
+                [
+                    'class' => 'form-control select2',
+                    'id' => 'comprador_id',
+                    'placeholder' => 'Selecione o comprador...'
                 ]
             )
         !!}
@@ -116,7 +131,7 @@
         </div>
     @endif
 @else
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento') !!}
         <p class="form-control">
             {{
@@ -127,7 +142,7 @@
         </p>
     </div>
 
-    <div class="form-group col-sm-4">
+    <div class="form-group col-sm-3">
         {!! Form::label('numero_contrato_mega', 'Número do Contrato (MEGA)') !!}
         <p class="form-control">
             {{
@@ -138,12 +153,23 @@
         </p>
     </div>
 
-    <div class="form-group col-sm-4">
-        {!! Form::label('fornecedor_id', 'Fornecedor') !!}
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Fornecedor') !!}
         <p class="form-control">
             {{
                 $qc->fornecedor
                     ? $qc->fornecedor->nome
+                    : 'Dados não apresentados'
+            }}
+        </p>
+    </div>
+
+    <div class="form-group col-sm-3">
+        {!! Form::label('comprador_id', 'Comprador') !!}
+        <p class="form-control">
+            {{
+                $qc->comprador
+                    ? $qc->comprador->name
                     : 'Dados não apresentados'
             }}
         </p>

@@ -151,6 +151,11 @@ class Qc extends Model
 		return $this->belongsTo(\App\Models\User::class);
 	}
 
+	public function comprador()
+	{
+		return $this->belongsTo(\App\Models\User::class, 'comprador_id');
+	}
+
 	public function fornecedor()
 	{
 		return $this->belongsTo(\App\Models\Fornecedor::class, 'fornecedor_id');

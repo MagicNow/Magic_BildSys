@@ -3,6 +3,7 @@
   var inputContrato = $('#numero_contrato_mega');
   var inputFornecedor = $('#fornecedor_id');
   var inputQcFile = $('#qc-fechado');
+  var inputComprador = $('#comprador_id');
 
   $(function() {
     $('#fechar-qc').on('click', fecharQcClickHandler);
@@ -48,12 +49,16 @@
       validation.errors.push('Preencha o número do contrato MEGA');
     }
 
-    if(!inputQcFile.val()) {
+    if(inputQcFile.length && !inputQcFile.val()) {
       validation.errors.push('Envie o arquivo do Q.C. fechado');
     }
 
     if(!inputFornecedor.val()) {
       validation.errors.push('Selecione o fornecedor do Q.C.');
+    }
+
+    if(!inputComprador.val()) {
+      validation.errors.push('Selecione o comprador do Q.C.');
     }
 
     validation.hasError = !!validation.errors.length;

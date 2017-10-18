@@ -215,6 +215,8 @@ class QcController extends AppBaseController
 
         $attachments = $qc->anexos->groupBy('tipo');
 
+        $compradores = $qc->carteira->users->pluck('name', 'id');
+
         return view('qc.show', compact(
             'qc',
             'attachments',
@@ -227,7 +229,8 @@ class QcController extends AppBaseController
             'emAprovacao',
             'oc_status',
             'timeline',
-            'alcadas_count'
+            'alcadas_count',
+            'compradores'
         ));
     }
 
