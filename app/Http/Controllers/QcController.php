@@ -81,11 +81,17 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(ObraRepository $obraRepo)
     {
-        $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
         $carteiras = QcAvulsoCarteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');
 
@@ -209,6 +215,8 @@ class QcController extends AppBaseController
 
         $attachments = $qc->anexos->groupBy('tipo');
 
+        $compradores = $qc->carteira->users->pluck('name', 'id');
+
         return view('qc.show', compact(
             'qc',
             'attachments',
@@ -221,7 +229,8 @@ class QcController extends AppBaseController
             'emAprovacao',
             'oc_status',
             'timeline',
-            'alcadas_count'
+            'alcadas_count',
+            'compradores'
         ));
     }
 
