@@ -75,3 +75,12 @@
     @endif
 
 @endsection
+
+
+@section('scripts')
+    @parent
+    <script type="text/javascript">
+        $(document).ready(function () { window.print(); });
+    </script>
+@endsection
+
