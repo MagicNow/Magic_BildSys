@@ -34,8 +34,8 @@ class QcAvulsoCarteiraRepository extends BaseRepository
         ->orderBy('nome','ASC')
         ->get();
     }
-	
-	
+
+
 	public function comTarefasObra($obra_id)
     {
         return $this->model
@@ -47,5 +47,14 @@ class QcAvulsoCarteiraRepository extends BaseRepository
             ->orderBy('nome','ASC')
             ->get();
     }
-	
+
+    public function todasComObraVinculada()
+    {
+        return $this->model->whereHas('tarefas', function($query) {
+            $query
+                ->join('obras', 'planejamentos.obra_id', 'obras.id')
+                ->join('obra_users', 'obra_users.obra_id', 'obras.id')
+                ->where('obra_users.user_id', auth()->id());
+        })->get();
+    }
 }

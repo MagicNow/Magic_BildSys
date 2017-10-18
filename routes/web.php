@@ -628,11 +628,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('', ['as' => 'admin.qc_avulso_carteiras.index', 'uses' => 'Admin\QcAvulsoCarteiraController@index']);
         $router->post('', ['as' => 'admin.qc_avulso_carteiras.store', 'uses' => 'Admin\QcAvulsoCarteiraController@store']);
         $router->get('/create', ['as' => 'admin.qc_avulso_carteiras.create', 'uses' => 'Admin\QcAvulsoCarteiraController@create'])
-            ->middleware("needsPermission:qc_avulso_carteiras.create");;
+            ->middleware("needsPermission:qc_avulso_carteiras.create");
+        $router->get('/lista-por-obras', ['as' => 'admin.qc_avulso_carteiras.lista-por-obras', 'uses' => 'Admin\QcAvulsoCarteiraController@listaPorObras'])
+            ->middleware("needsPermission:qc_avulso_carteiras.list");
         $router->put('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
         $router->patch('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
         $router->delete('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.destroy', 'uses' => 'Admin\QcAvulsoCarteiraController@destroy'])
-            ->middleware("needsPermission:qc_avulso_carteiras.delete");;
+            ->middleware("needsPermission:qc_avulso_carteiras.delete");
         $router->get('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.show', 'uses' => 'Admin\QcAvulsoCarteiraController@show']);
         $router->get('/{qc_avulso_carteiras}/edit', ['as' => 'admin.qc_avulso_carteiras.edit', 'uses' => 'Admin\QcAvulsoCarteiraController@edit'])
             ->middleware("needsPermission:qc_avulso_carteiras.edit");

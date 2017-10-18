@@ -289,6 +289,14 @@
             </a>
         </li>
         @endshield
+        @shield('qc_avulso_carteiras.list')
+        <li class="{{ Request::is('qc_avulso_carteiras/lista-por-obras') ? 'active' : '' }}">
+            <a href="{!! route('admin.qc_avulso_carteiras.lista-por-obras') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Lista de Carteiras x Obras</span>
+            </a>
+        </li>
+        @endshield
         @shield('qc.list')
         <li class="{{ Request::is('qc*') ? 'active' : '' }}">
             <a href="{{ route('qc.index') }}">
