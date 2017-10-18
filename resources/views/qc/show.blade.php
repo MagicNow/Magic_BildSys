@@ -30,6 +30,11 @@
                    {{ ucfirst(trans('common.back')) }}
                 </a>
                 <div class="pull-right">
+                    @if($qc->isEditable())
+                        <a class="btn btn-success" href="{{ route('qc.edit', $qc->id) }}">
+                            <i class="fa fa-floppy-o"></i> Editar Q. C.
+                        </a>
+                    @endif
                     @if($qc->canClose())
                         <button class="btn btn-info"
                             type="button"

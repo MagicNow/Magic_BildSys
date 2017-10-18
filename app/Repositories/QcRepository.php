@@ -63,15 +63,20 @@ class QcRepository extends BaseRepository
     {
         $qc = $this->find($id);
 
-        $attributes['valor_fechamento'] = money_to_float(
-            $attributes['valor_fechamento']
-        );
+        $attributes['qc_status_id'] = QcStatus::EM_APROVACAO;
+        $attributes['obra_id'] = $attributes['obra_id'] ?: null;
 
         DB::beginTransaction();
 
         try {
-            $qc->update($attributes, ['timestamps' => false]);
-            $anexos = $this->saveAttachments($attributes, $qc);
+            $qc->update($attributes);
+
+            QcAvulsoStatusLog::create([
+                'user_id' => auth()->id(),
+                'qc_status_id' => QcStatus::EM_APROVACAO,
+                'qc_id' => $qc->id,
+            ]);
+
         } catch (Exception $e) {
             DB::rollback();
             throw $e;

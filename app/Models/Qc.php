@@ -245,13 +245,13 @@ class Qc extends Model
 
     public function isEditable()
     {
-        return Defender::hasPermission('qc.edit')
-            && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
+        return $this->qc_status_id === QcStatus::REPROVADO;
     }
 
     public function canClose()
     {
-        return Defender::hasPermission('qc.edit') && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
+        return Defender::hasPermission('qc.edit')
+            && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
     }
 
     public function canCancel()
