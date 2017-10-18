@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\QcAvulsoCarteiraDataTable;
+use App\DataTables\QcAvulsoCarteiraPorObrasDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateQcAvulsoCarteiraRequest;
 use App\Http\Requests\Admin\UpdateQcAvulsoCarteiraRequest;
@@ -17,6 +18,7 @@ use Response;
 use DB;
 use App\Repositories\Admin\UserRepository;
 use App\Repositories\Admin\TipoEqualizacaoTecnicaRepository;
+use App\Repositories\Admin\ObraRepository;
 
 class QcAvulsoCarteiraController extends AppBaseController
 {
@@ -123,7 +125,7 @@ class QcAvulsoCarteiraController extends AppBaseController
 
         $usuarios = $this->userRepository->getUsersByType(2)->pluck('name', 'id')->toArray(); // suprimentos
 
-        
+
         return view('admin.qc_avulso_carteiras.edit', compact('carteira', 'relacionadoUsers', 'carteiraUsers', 'usuarios'));
     }
 
@@ -195,5 +197,23 @@ class QcAvulsoCarteiraController extends AppBaseController
         Flash::success('Carteira de Q.C. Avulso '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.qc_avulso_carteiras.index'));
+    }
+
+    public function listaPorObras(
+        QcAvulsoCarteiraPorObrasDataTable $dt,
+        ObraRepository $obraRepo,
+        QcAvulsoCarteiraRepository $carteiraRepo
+    ) {
+        $obras = $obraRepo
+            ->findByUser(auth()->id())
+            ->pluck('nome', 'id');
+
+        $carteiras = $carteiraRepo->todasComObraVinculada()
+            ->pluck('nome', 'id');
+
+        return $dt->render(
+            'admin.qc_avulso_carteiras.lista_por_obras',
+            compact('obras', 'carteiras')
+        );
     }
 }

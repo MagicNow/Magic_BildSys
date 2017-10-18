@@ -124,6 +124,10 @@ class QcDataTable extends DataTable
         ->leftJoin('qc_status', 'qc_status.id', 'qc.qc_status_id')
         ->leftJoin('users as comprador', 'comprador.id', 'qc.comprador_id')
         ->leftJoin('fornecedores', 'fornecedores.id', 'fornecedor_id')
+        ->join('obra_users', function($join) {
+            $join->on('obras.id', 'obra_users.obra_id')
+                ->where('obra_users.user_id', auth()->id());
+        })
         ->groupBy('qc.id');
 
         $request = $this->request();

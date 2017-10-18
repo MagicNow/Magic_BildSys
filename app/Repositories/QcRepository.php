@@ -77,6 +77,7 @@ class QcRepository extends BaseRepository
                 'qc_id' => $qc->id,
             ]);
 
+            $anexos = $this->saveAttachments($attributes, $qc);
         } catch (Exception $e) {
             DB::rollback();
             throw $e;
