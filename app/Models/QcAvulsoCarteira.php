@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class QcAvulsoCarteira extends Model
 {
     use SoftDeletes;
-    
+
     public $table = 'qc_avulso_carteiras';
 
     const CREATED_AT = 'created_at';

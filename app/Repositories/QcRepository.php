@@ -36,6 +36,7 @@ class QcRepository extends BaseRepository
         $attributes['valor_gerencial'] = money_to_float($attributes{'valor_gerencial'});
         $attributes['qc_status_id'] = QcStatus::EM_APROVACAO;
         $attributes['user_id'] = auth()->id();
+        $attributes['obra_id'] = $attributes['obra_id'] ?: null;
 
         DB::beginTransaction();
         try {
@@ -92,6 +93,8 @@ class QcRepository extends BaseRepository
                 'fornecedor_id' => $attr['fornecedor_id'],
                 'numero_contrato_mega' => $attr['numero_contrato_mega'],
                 'valor_fechamento' => money_to_float($attr['valor_fechamento']),
+                'comprador_id' => $attr['comprador_id'],
+                'data_fechamento' => Carbon::today(),
             ]);
 
             QcAvulsoStatusLog::create([

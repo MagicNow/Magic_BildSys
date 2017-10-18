@@ -379,6 +379,11 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('qc.list'));
         $roles[1]->attachPermission(Defender::findPermission('qc.create'));
         $roles[1]->attachPermission(Defender::findPermission('qc.show'));
+        $roles[1]->attachPermission(Defender::findPermission('qc_avulso_carteiras.list'));
+        $roles[1]->attachPermission(Defender::findPermission('qc_avulso_carteiras.create'));
+        $roles[1]->attachPermission(Defender::findPermission('qc_avulso_carteiras.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('qc_avulso_carteiras.delete'));
+        $roles[1]->attachPermission(Defender::findPermission('qc_avulso_carteiras.view'));
 
         // Permissões para Fornecedor
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
@@ -428,6 +433,11 @@ class RolesAndPermissions extends Seeder
         $roles[4]->attachPermission(Defender::findPermission('qc.show'));
         $roles[4]->attachPermission(Defender::findPermission('qc.delete'));
         $roles[4]->attachPermission(Defender::findPermission('qc.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('qc_avulso_carteiras.list'));
+        $roles[4]->attachPermission(Defender::findPermission('qc_avulso_carteiras.create'));
+        $roles[4]->attachPermission(Defender::findPermission('qc_avulso_carteiras.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('qc_avulso_carteiras.delete'));
+        $roles[4]->attachPermission(Defender::findPermission('qc_avulso_carteiras.view'));
 
         Schema::enableForeignKeyConstraints();
     }

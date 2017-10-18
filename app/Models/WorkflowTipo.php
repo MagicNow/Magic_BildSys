@@ -43,6 +43,9 @@ class WorkflowTipo extends Model
             case 6:
                 return 'Medicao';
                 break;
+            case 7:
+                return 'Qc';
+                break;
         }
     }
 
