@@ -6,8 +6,7 @@
 
   $(function () {
     var obraId = $('#obra_id');
-    select2('#carteira_id', {
-      url: baseUrl + '/buscar/qc-avulso-carteiras',
+    select2('#carteira_id', { url: baseUrl + '/buscar/qc-avulso-carteiras',
       filter: function(carteira) {
 
         if(obraId.val()) {
@@ -33,6 +32,20 @@
     obraId.on('change', function(e) {
       $('#carteira_id').val(null).change();
     });
+
+    $('#save-qc').on('click', function(event) {
+      var $qcObrigatorio = $('#qc-obrigatorio');
+
+      if(!$qcObrigatorio.val()) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        swal('Atenção!', 'É obrigatório anexar um arquivo de Q.C.', 'warning');
+      }
+
+    });
+
+    $('button[type=submit]').prop('disabled', false);
   });
 
   function removeAttachmentRow(e) {
