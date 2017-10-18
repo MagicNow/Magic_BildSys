@@ -71,7 +71,8 @@ class QcController extends AppBaseController
             QcStatus::REPROVADO => 'Reprovado',
             QcStatus::APROVADO => 'Aprovado',
             QcStatus::EM_CONCORRENCIA => 'Em Negociação',
-            QcStatus::FINALIZADO => 'Finalizada',
+            QcStatus::CONCORRENCIA_FINALIZADA => 'Fechado',
+            QcStatus::CANCELADO => 'Cancelado',
         ];
 
         $defaultStatus = QcStatus::EM_APROVACAO;

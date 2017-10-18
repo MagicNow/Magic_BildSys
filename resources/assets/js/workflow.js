@@ -1,5 +1,23 @@
 var obsAprovador = document.getElementById('obs-aprovador');
 
+// call this before showing SweetAlert:
+function fixBootstrapModal() {
+  var modalNode = document.querySelector('.modal[tabindex="-1"]');
+  if (!modalNode) return;
+
+  modalNode.removeAttribute('tabindex');
+  modalNode.classList.add('js-swal-fixed');
+}
+
+// call this before hiding SweetAlert (inside done callback):
+function restoreBootstrapModal() {
+  var modalNode = document.querySelector('.modal.js-swal-fixed');
+  if (!modalNode) return;
+
+  modalNode.setAttribute('tabindex', '-1');
+  modalNode.classList.remove('js-swal-fixed');
+}
+
 if(obsAprovador) {
     //var contrato_id = document.getElementById('contrato_id');
     //var user_id = document.getElementById('user_id');
@@ -116,6 +134,7 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
 var options_motivos = '';
 
 function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_id, pai_obj, filhos_metodo, shouldReload) {
+  fixBootstrapModal();
   if (!aprovou) {
     swal({
         title: "Reprovar " + nome + "?",
@@ -148,6 +167,7 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         }
 
         workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo, shouldReload)
+        restoreBootstrapModal();
       });
 
   } else {
@@ -164,6 +184,7 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
       },
       function() {
         workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
+        restoreBootstrapModal();
       });
   }
 }
