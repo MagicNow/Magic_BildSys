@@ -3,9 +3,13 @@
 @section('content')
     <section class="content-header">
         <h1>
+            <a href="/" type="button" class="btn btn-link">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
             Carteira de Q.C. Avulso
         </h1>
     </section>
+
     <div class="content">
         @include('adminlte-templates::common.errors')
         <div class="box box-primary">

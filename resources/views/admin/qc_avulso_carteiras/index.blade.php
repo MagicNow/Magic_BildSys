@@ -2,18 +2,15 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">
-            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+        <h1>
+            <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
+            </a>
             Carteiras de Q.C. Avulso
-        </h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.qc_avulso_carteiras.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
-           </a>
+            <a class="btn btn-primary pull-right" href="{!! route('admin.qc_avulso_carteiras.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
+
     <div class="content">
         <div class="clearfix"></div>
         <div class="box box-primary">
