@@ -201,6 +201,11 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .form-group {
   margin-bottom: 8px;
 }
+
+.form-group .form-control {
+  margin-bottom: 0;
+}
+
 .form-control {
   font-family: 'Abel', sans-serif;
   font-size: 12px;
