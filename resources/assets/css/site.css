@@ -1279,3 +1279,13 @@ input[type="file"].form-control {
   display: table-cell;
   vertical-align: middle;
 }
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 0;
+    display: inline-block;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    float: right;
+    display: inline-block;
+}
