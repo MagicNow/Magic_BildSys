@@ -1280,6 +1280,11 @@ input[type="file"].form-control {
   vertical-align: middle;
 }
 
+.btn-comprar-saldo {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
 div.dataTables_wrapper div.dataTables_info {
     padding-top: 6px;
     display: inline-block;
