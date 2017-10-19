@@ -201,6 +201,33 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .form-group {
   margin-bottom: 8px;
 }
+
+.form-group .form-control {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  margin-bottom: 0;
+}
+
+table .icheckbox_square-green, table .iradio_square-green {
+  width: 15px;
+  height: 15px;
+  -webkit-background-size: 160px 16px;
+  background-size: 160px 16px;
+}
+
+table .icheckbox_square-green.checked {
+    background-position: -32px 0;
+}
+
+@media not all, (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+  table .icheckbox_square-green, table .iradio_square-green {
+    -webkit-background-size: 160px 16px;
+    background-size: 160px 16px;
+  }
+}
+
 .form-control {
   font-family: 'Abel', sans-serif;
   font-size: 12px;
@@ -328,8 +355,15 @@ select.input-sm {
 .btn, .btn-lg {
   padding: 5px 15px;
 }
-form .btn {
-  padding: 6px;
+table .btn {
+  padding: 1px 3px;
+  margin-left: 4px;
+}
+table .btn-group .btn {
+  font-size: 12px;
+}
+table .btn-group .btn + .btn {
+  margin-left: 4px;
 }
 .zoom-1 {
   zoom: 100%;
@@ -1084,6 +1118,8 @@ td> .table {
   padding-left: 0;
 }
 
+
+
 .label {
   font-weight: normal;
 }
@@ -1242,4 +1278,14 @@ input[type="file"].form-control {
 .carrinho-codigo {
   display: table-cell;
   vertical-align: middle;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 6px;
+    display: inline-block;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    float: right;
+    display: inline-block;
 }
