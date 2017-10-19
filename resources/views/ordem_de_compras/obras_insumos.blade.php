@@ -8,29 +8,17 @@
 @stop
 
 @section('content')
-    <section class="content-header obras-insumos">
-        <div class="modal-header">
-            <div class="col-md-12" style="padding-left:0px;">
-                <div class="col-md-6" style="padding-left:0px;">
-                    <h1>
-
-                        <button type="button" class="btn btn-link" onclick="history.go(-1);">
+    <section class="content-header">
+        <h1>
+            <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
-                         Comprar Insumos
-                    </h1>
-                </div>
-                <div class="col-md-6 text-right">
-                    <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">
-                        Incluir insumo no orçamento
-                    </a>
-                    <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-success btn-lg btn-flat">
-                        Visualizar OC
-                    </a>
-                </div>
-            </div>
-        </div>
+            </a>
+            Comprar Insumos
+            <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">Incluir insumo no orçamento</a>
+            <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-primary btn-lg btn-flat">Visualizar OC</a>
+        </h1>
     </section>
+
     <div class="content obras-insumos">
         <div class="row">
             <div class="col-md-12">
@@ -152,6 +140,10 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group col-sm-12 col-20">
+                                    <button class="btn btn-info btn-lg btn-flat pull-right" onclick="getQueryDataTable();">Comprar saldo de todos os insumos</button>
+                                </div>
+
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
                                 <div class="col-md-12" id="list-insumos"></div>
@@ -159,10 +151,6 @@
                         </div>
                     </div>
                 </div>
-
-                <button class="btn btn-info btn-lg btn-flat pull-right" onclick="getQueryDataTable();">
-                    Comprar saldo de todos os insumos
-                </button>
             </div>
             @include('adminlte-templates::common.errors')
         </div>
