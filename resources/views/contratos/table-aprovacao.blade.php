@@ -26,7 +26,7 @@
     </div>
     <div class="col-sm-3 text-left" title="Nos itens desta O.C." style="margin-left: 10px;">
         <h3 class="fs18">Valor comprometido à gastar</h3>
-         <h3 class="fs18" style="margin-top: -8px;">R$
+         <h3 class="fs18" style="margin-top: -8px;">
             {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
             <span id="valor_comprometido_a_gastar_total"></span>
         </h3>

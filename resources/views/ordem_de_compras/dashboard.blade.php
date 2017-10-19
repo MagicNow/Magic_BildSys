@@ -31,22 +31,22 @@
             </h1>
         </section>
 
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-3">
             {!! Form::label('obra_id', 'Obra:') !!}
             {!! Form::select('obra_id', $obras, \Illuminate\Support\Facades\Input::get('obra_id'), ['class' => 'form-control select2', 'onchange' => 'filters();']) !!}
         </div>
 
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-3">
             {!! Form::label('user_id', 'Usuário:') !!}
             {!! Form::select('user_id', $users, \Illuminate\Support\Facades\Input::get('user_id'), ['class' => 'form-control select2', 'onchange' => 'filters();']) !!}
         </div>
 
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-3">
             {!! Form::label('data_inicio', 'Data início:') !!}
             {!! Form::date('data_inicio', \Illuminate\Support\Facades\Input::get('data_inicio'), ['class' => 'form-control', 'onchange' => 'filters();']) !!}
         </div>
 
-        <div class="form-group col-sm-6">
+        <div class="form-group col-sm-3">
             {!! Form::label('data_termino', 'Data término:') !!}
             {!! Form::date('data_termino', \Illuminate\Support\Facades\Input::get('data_termino'), ['class' => 'form-control', 'onchange' => 'filters();']) !!}
         </div>

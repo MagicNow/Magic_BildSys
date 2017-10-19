@@ -1,6 +1,9 @@
 @extends('layouts.front')
 
 @section('content')
+<style>
+table{margin-top:10px;}
+</style>
     <section class="content-header">
         <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
@@ -53,7 +56,7 @@
             </div>
             <div class="box-footer">
 
-                <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
+                <a href="{!! route('contratos.index') !!}" class="btn btn-warning btn-flat btn-lg">
                     <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
                 </a>
                 <button type="submit" class="btn btn-success btn-flat btn-lg pull-right">
