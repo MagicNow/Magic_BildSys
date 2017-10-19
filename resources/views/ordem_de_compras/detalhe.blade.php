@@ -22,7 +22,7 @@
     </style>
 @stop
 @section('content')
-    <section class="content-header">
+    <section class="content-header ">
         <h1>
             <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -86,7 +86,7 @@
     </section>
 
     <div style="clear:both"></div>
-    <div class="content">
+    <div class="content detalhes">
         <h3 class="fs18">Dados Informativos</h6>
         <div class="row">
             <div class="col-md-2 form-group">
@@ -223,7 +223,7 @@
                 </div>
             </div>
         </div>
-        <hr style="margin:0px;">
+       
         <div class="row" id="totalInsumos" style="margin-left:5px;">
             <div class="col-md-2 text-left">
                 <h3 class="fs18">Valor previsto no orçamento</h3>
