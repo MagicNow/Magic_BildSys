@@ -213,6 +213,8 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 table .icheckbox_square-green, table .iradio_square-green {
   width: 15px;
   height: 15px;
+  -webkit-background-size: 160px 16px;
+  background-size: 160px 16px;
 }
 
 table .icheckbox_square-green.checked {
