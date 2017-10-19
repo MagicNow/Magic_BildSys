@@ -1,5 +1,5 @@
 @if($contrato->contrato_status_id==1||$contrato->contrato_status_id==3)
-<div class="panel panel-default panel-body" id="linhaDoTempo" data-id="{{ $contrato->id }}" data-workflow-tipo="3">
+<div class="panel panel-default panel-body mb0 pt0" id="linhaDoTempo" data-id="{{ $contrato->id }}" data-workflow-tipo="3">
     <h4 class="highlight">
         Timeline
         <i class="fa fa-info-circle text-info"></i>
