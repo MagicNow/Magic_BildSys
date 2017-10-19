@@ -1,16 +1,31 @@
 @extends('layouts.front')
 @section('content')
 <style type="text/css">
+.content-header .pull-right{
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+.content-header .label-default{
+    display: inline-block;
+    padding: 6px 6px 4px 6px!important;
+}
 .modal-header{
     padding:15px 15px 0!important;
     margin-bottom:4px!important
 }
-
 .border-separation{
     margin:4px 0!important;
 }
 .bloco_insumos_id_4{
     margin-bottom:0!important;
+}
+.bloco_insumos_id_4 .pull-right{
+    margin:5px 15px 0 0!important;
+}
+.overflowH{
+    overflow:hidden;
 }
 </style>
     <section class="content-header">
