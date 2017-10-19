@@ -163,7 +163,7 @@
                 </a>
                 @endshield
             </div>
-            <div class="box-body pt0 contratos-table">
+            <div class="box-body contratos-table pt0">
                 @include('pagamentos.table')
             </div>
         </div>
