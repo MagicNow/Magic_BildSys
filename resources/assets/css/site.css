@@ -57,6 +57,22 @@ label {
   padding-bottom: 0 !important;
 }
 
+.pt0 {
+  padding-top: 0;
+}
+
+.mb6 {
+  margin-bottom: 6px;
+}
+
+.mt6 {
+  margin-top: 6px;
+}
+
+.mt10 {
+  margin-top: 10px;
+}
+
 .both {
   clear: both;
 }
@@ -1100,9 +1116,9 @@ td> .table {
     font-size: 22px;
 }
 
-.total-header {
-    margin-bottom: 20px;
-}
+// .total-header {
+//     margin-bottom: 20px;
+// }
 
 .form-control .radio-inline {
   text-transform: inherit;

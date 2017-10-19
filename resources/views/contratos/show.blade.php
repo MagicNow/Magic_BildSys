@@ -76,7 +76,7 @@
             @endif
 		@endif
         <section>
-            <h6>Dados Informativos</h6>
+            <h6 class="mb6 mt6">Dados Informativos</h6>
             <div class="row">
                 <div class="col-md-2 form-group">
                     {!! Form::label('id', 'Número do Contrato') !!}
@@ -104,7 +104,7 @@
             </div>
         </section>
         <section>
-            <h6>Dados do Fornecedor</h6>
+            <h6 class="mb6 mt6">Dados do Fornecedor</h6>
             <div class="row">
                 <div class="col-md-4 form-group">
                     <label>Nome</label>

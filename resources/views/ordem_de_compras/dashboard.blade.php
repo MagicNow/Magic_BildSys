@@ -18,15 +18,18 @@
             height: 300px;
             padding: 15px;
             background-color: white;
+        }   
+        .container .form-group{
+            margin-top:16px!important;
         }
     </style>
 
     <div class="container">
         <section class="content-header">
             <h1>
-                <a href="/" type="button" class="btn btn-link">
+                <button type="button" class="btn btn-link" onclick="history.go(-1);">
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                </a>
+                </button>
                 Dashboard
             </h1>
         </section>
