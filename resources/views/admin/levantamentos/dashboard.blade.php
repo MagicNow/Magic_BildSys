@@ -23,16 +23,15 @@
 
     <div class="container">
         <section class="content-header">
-            <div class="modal-header">
-                <div class="col-md-12">
-                    <div class="col-md-9">
-                        <h3 class="pull-left title">
-                            <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
-                        </h3>
-                    </div>
-                </div>
-            </div>
+            <h1>
+                <a href="/" type="button" class="btn btn-link">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </a>
+                Dashboard
+            </h1>
         </section>
+
+
         {{--@include('layouts.filters')--}}
         <div class="box-body" id="app">
             <div class="row">

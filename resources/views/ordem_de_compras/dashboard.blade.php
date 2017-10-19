@@ -23,11 +23,12 @@
 
     <div class="container">
         <section class="content-header">
-            <div class="modal-header">
-                <h3 class="pull-left title">
-                    <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
-                </h3>
-            </div>
+            <h1>
+                <a href="/" type="button" class="btn btn-link">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </a>
+                Dashboard
+            </h1>
         </section>
 
         <div class="form-group col-sm-6">

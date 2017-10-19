@@ -3,23 +3,15 @@
 @section('content')
     <section class="content-header">
         <h1>
-            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+            <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            </button>
-           <a class="btn btn-primary pull-right"
-              style="margin-top: -10px;margin-bottom: 5px"
-              href="{!! route('notafiscals.filtro') !!}">
-                Conciliar Nota Fiscal
-           </a>
-
-            <a class="btn btn-primary pull-right"
-               style="margin-top: -10px;margin-bottom: 5px;margin-right:5px;"
-               href="{!! route('nfe.import') !!}">
-                Importar XML Nota Fiscal
             </a>
-
+            Notas Fiscais
+            <a class="btn btn-primary pull-right" href="{!! route('notafiscals.filtro') !!}">Conciliar Nota Fiscal</a>
+            <a class="btn btn-primary pull-right" style="margin-right:5px;" href="{!! route('nfe.import') !!}">Importar XML Nota Fiscal</a>
         </h1>
     </section>
+
     <div class="content">
         <div class="clearfix"></div>
 
