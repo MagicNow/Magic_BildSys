@@ -6,7 +6,7 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
-  var workflowTipo = $('#linhaDoTempo, .modificacaoContratoItemTimeline');
+  var workflowTipo = $('#linhaDoTempo .progress-bar-warning, .modificacaoContratoItemTimeline');
 
   workflowTipo.tooltip({
     title: 'Clique para ver detalhes',
