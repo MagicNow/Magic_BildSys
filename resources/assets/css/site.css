@@ -206,7 +206,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
   margin-bottom: 0;
 }
 
-.form-group label + p, .form-group label + input, .form-group label + select, .form-group label + textarea {
+.form-group label {
   margin-bottom: 0;
 }
 
