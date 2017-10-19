@@ -1215,3 +1215,8 @@ input[type="file"].form-control {
 .dtr-details {
   background-color: #f5f5f5;
 }
+
+.calendar-month {
+  display: inline-block;
+  margin: 0 0 0 10px;
+}

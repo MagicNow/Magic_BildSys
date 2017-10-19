@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <div class="page-header">
-                            <div class="text-left form-inline zoom-1">
+                            <div class="text-left form-inline zoom-1 pull-left">
                                 <div class="btn-group">
                                     <button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
                                     <button class="btn btn-default" data-calendar-nav="today">Hoje</button>
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <h3 class="fs18"></h3>
+                            <h3 class="fs18 calendar-month"></h3>
                         </div>
 
                         <div id="calendar"></div>
