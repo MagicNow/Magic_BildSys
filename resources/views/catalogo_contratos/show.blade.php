@@ -13,19 +13,36 @@
 }
 .modal-header{
     padding:15px 15px 0!important;
-    margin-bottom:4px!important
+    border:0!important;
+    margin-bottom: -21px!important;
+    display: inline-block;
+    margin-top: -42px;
 }
 .border-separation{
     margin:4px 0!important;
 }
-.bloco_insumos_id_4{
-    margin-bottom:0!important;
+.input-group-addon{
+    padding:5px 12px!important;
 }
-.bloco_insumos_id_4 .pull-right{
-    margin:5px 15px 0 0!important;
+.border-separation{
+    border-bottom: 1px solid #d2d6de; 
+}
+.border-separation:first-child{
+    border-bottom:0!important;
+}
+.textAtualiza{
+    display: table;
+    padding: 13px 0 0 30px;
 }
 .overflowH{
     overflow:hidden;
+}
+.insumo:first-child{
+    margin-top:12px!important;
+}
+.bloco .border-separation{
+    border-bottom: 1px solid #d2d6de!important;
+    margin-bottom:20px;
 }
 </style>
     <section class="content-header">
@@ -52,7 +69,6 @@
                         <i class="fa fa-print"></i> Imprimir Minuta
                     </a>
                 @endif
-
             </span>
         </h1>
     </section>
@@ -60,8 +76,9 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px;padding-right: 20px;">
-                    @include('catalogo_contratos.show_fields')
-
+                    <div style="display:inline-block">
+                        @include('catalogo_contratos.show_fields')
+                    </div>
                     <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-warning" style="margin-top: 10px;">
                         <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
                     </a>
