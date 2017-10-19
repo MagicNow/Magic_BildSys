@@ -14,8 +14,8 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
             Comprar Insumos
-            <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">Incluir insumo no orçamento</a>
-            <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-primary btn-lg btn-flat">Visualizar OC</a>
+            <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-primary btn-lg btn-flat pull-right">Visualizar OC</a>
+            <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat pull-right">Incluir insumo no orçamento</a>
         </h1>
     </section>
 
@@ -141,7 +141,8 @@
                                 </div>
 
                                 <div class="form-group col-sm-12 col-20">
-                                    <button class="btn btn-info btn-lg btn-flat pull-right" onclick="getQueryDataTable();">Comprar saldo de todos os insumos</button>
+                                    <label>&nbsp;</label>
+                                    <button class="btn btn-info btn-lg btn-flat full-width" onclick="getQueryDataTable();">Comprar saldo de todos os insumos</button>
                                 </div>
 
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
