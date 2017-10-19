@@ -86,7 +86,7 @@
         <i class="fa fa-download"></i>
     </a>
 @endif
-<small class="label label-default pull-right margin10">
+<small class="label label-default pull-right margin10 btn-contrato-aprovacao">
     <i class="fa fa-circle"
         aria-hidden="true"
         style="color:{{ $contrato->status->cor }}"></i>
