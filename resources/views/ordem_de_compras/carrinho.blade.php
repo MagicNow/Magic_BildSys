@@ -161,7 +161,7 @@
                                 }
                             @endphp
                             <div class="row">
-                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita carrinho-codigo-container" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="
                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
@@ -172,8 +172,10 @@
                                                 <br/><i class='fa fa-exchange'></i> {{$item->substitui}}
                                         @endif
                                       ">
-                                    <strong class="visible-xs pull-left">Insumo:</strong>
-                                    {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->unidade_sigla }}
+                                    <div class="carrinho-codigo">
+                                        <strong class="visible-xs pull-left">Insumo:</strong>
+                                        {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->unidade_sigla }}
+                                    </div>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Qtde:</strong>

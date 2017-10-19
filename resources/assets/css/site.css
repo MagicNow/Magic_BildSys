@@ -1232,3 +1232,14 @@ input[type="file"].form-control {
   display: inline-block;
   margin: 0 0 0 10px;
 }
+
+.carrinho-codigo-container {
+  display: table;
+  vertical-align: middle;
+  height: 56px;
+}
+
+.carrinho-codigo {
+  display: table-cell;
+  vertical-align: middle;
+}

@@ -28,7 +28,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
             Detalhe da Ordem de Compra
-            <div class="pull-rigth text-right">
+            <div class="pull-right text-right">
                 <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat" style="padding-top: 2px;padding-bottom: 3px;">
                     Retroalimentação
                 </a>
