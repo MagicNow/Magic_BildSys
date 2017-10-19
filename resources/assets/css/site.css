@@ -1335,6 +1335,6 @@ div.dataTables_wrapper div.dataTables_paginate {
   padding-top: 5px;
 }
 
-.contratos-table .dataTableBuilder_filter .form-control {
+.contratos-table .dataTables_filter .form-control {
   height: 24px;
 }
