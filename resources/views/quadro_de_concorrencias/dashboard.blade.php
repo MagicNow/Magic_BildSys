@@ -19,12 +19,15 @@
             padding: 15px;
             background-color: white;
         }
+        .dash{
+            zoom:normal!important;
+        }
     </style>
 
     <div class="container dash" >
         <section class="content-header">
             <h1>
-                <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
+                <a href="#" onclick="history.go(-1);" class="btn btn-link"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
             </h1>
         </section>
         <div class="box-body" id="app">

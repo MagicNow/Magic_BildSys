@@ -4,6 +4,26 @@
     .dataTables_length{
         float: right;
     }
+    .col-md-7 button{
+        margin:0 0 4px 4px;
+    }
+    .tiposEqT .list-group-item a.btn{
+        padding:2px 3px;
+    }
+    .form-group .btn-default{
+        background-color:#dd4b39;
+        border-color:#d73925;
+        color:#FFF;
+    }
+    .form-group .btn-success:first-child{
+        background-color:#3c8dbc;
+        border-color:#367fa9;
+        color:#FFF;
+    }
+    .form-group .btn-success:last-child{
+        background-color: #f39c12;
+        border-color: #e08e0b;
+    }
 </style>
 @stop
 @section('content')
