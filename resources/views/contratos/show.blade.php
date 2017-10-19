@@ -155,9 +155,7 @@
         @if($contrato->pagamentos)
         <div class="box box-muted">
             <div class="box-header">
-                <h3 class="box-title">
-                    Pagamentos
-                </h3>
+                <h3 class="box-title">Pagamentos</h3>
                 @shield('pagamentos.create')
                 <a class="btn btn-flat bg-olive btn-xs pull-right"
                    href="{!! route('pagamentos.create').'?contrato_id='.$contrato->id !!}">

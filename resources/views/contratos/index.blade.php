@@ -18,7 +18,7 @@
   <div class="content" style="clear: both">
     @if(!isset($isModal) || !$isModal)
     <div class="box box-muted">
-      <div class="box-body">
+      <div class="box-body pt0 contratos-table">
         @include('partials.grupos-de-orcamento')
         <div class="row">
           <div class="col-sm-3">
@@ -52,7 +52,7 @@
     </div>
     @endif
     <div class="box box-muted">
-      <div class="box-body">
+      <div class="box-body pt0 contratos-table">
         {!! $dataTable->table(['width' => '100%','class'=>'table table-striped table-hover'],true) !!}
       </div>
     </div>
