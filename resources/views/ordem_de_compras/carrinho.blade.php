@@ -226,7 +226,7 @@
                                     <label for="anexos_{{ $item->id }}" id="label_btn_anexo_{{ $item->id }}" class="btn btn-flat btn-sm btn-default margem-botao label-input-file">
                                         <span>Selecionar</span>
                                     </label>
-                                    <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao" title="Enviar">
+                                    <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao btn-carrinho-enviar" title="Enviar">
                                         <i class="fa fa-upload" aria-hidden="true"></i>
                                     </button>
                                     {!! Form::close() !!}
