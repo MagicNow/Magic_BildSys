@@ -223,10 +223,10 @@
                                     <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
                                     <input type="file" multiple data-multiple-caption="{count} arquivos escolhidos"
                                            class="inputfile" id="anexos_{{ $item->id }}" name="anexos[]" />
-                                    <label for="anexos_{{ $item->id }}" id="label_btn_anexo_{{ $item->id }}" class="btn btn-flat btn-sm btn-default margem-botao label-input-file">
+                                    <label for="anexos_{{ $item->id }}" id="label_btn_anexo_{{ $item->id }}" class="btn btn-flat btn-sm btn-default margem-botao label-input-file btn-carrinho-enviar">
                                         <span>Selecionar</span>
                                     </label>
-                                    <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao" title="Enviar">
+                                    <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao btn-carrinho-enviar" title="Enviar">
                                         <i class="fa fa-upload" aria-hidden="true"></i>
                                     </button>
                                     {!! Form::close() !!}

@@ -1279,3 +1279,26 @@ input[type="file"].form-control {
   display: table-cell;
   vertical-align: middle;
 }
+
+.btn-comprar-saldo {
+  padding: 2px 0;
+}
+
+.btn-carrinho-enviar {
+  padding: 5px;
+}
+
+.btn-contrato-aprovacao {
+  padding: 0;
+  margin: 7px;
+}
+
+div.dataTables_wrapper div.dataTables_info {
+    padding-top: 6px;
+    display: inline-block;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    float: right;
+    display: inline-block;
+}
