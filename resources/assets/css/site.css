@@ -21,8 +21,16 @@ label {
  *     typeahead.js v0.11.1 - twitter bootstrap v3.3.5    *
  **********************************************************/
 
+.fs15 {
+  font-size: 15px !important;
+}
+
 .fs16 {
   font-size: 16px !important;
+}
+
+.fs17 {
+  font-size: 17px !important;
 }
 
 .fs18 {
@@ -55,6 +63,26 @@ label {
 
 .pb0 {
   padding-bottom: 0 !important;
+}
+
+.pt0 {
+  padding-top: 0;
+}
+
+.mb6 {
+  margin-bottom: 6px;
+}
+
+.mt0 {
+  margin-top: 0;
+}
+
+.mt6 {
+  margin-top: 6px;
+}
+
+.mt10 {
+  margin-top: 10px;
 }
 
 .both {
@@ -1100,9 +1128,9 @@ td> .table {
     font-size: 22px;
 }
 
-.total-header {
-    margin-bottom: 20px;
-}
+// .total-header {
+//     margin-bottom: 20px;
+// }
 
 .form-control .radio-inline {
   text-transform: inherit;
