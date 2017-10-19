@@ -14,15 +14,15 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
             Comprar Insumos
-            <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-primary btn-lg btn-flat pull-right">Visualizar OC</a>
+            <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-primary btn-lg btn-flat pull-right" style="margin-left: 10px;">Visualizar OC</a>
             <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat pull-right">Incluir insumo no orçamento</a>
         </h1>
     </section>
 
-    <div class="content obras-insumos">
+    <div class="content obras-insumos pb0">
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-12 thumbnail">
+                <div class="col-md-12 thumbnail mb0">
                     <div class="col-md-12">
                         <div class="caption">
                             <div class="card-description">
@@ -106,7 +106,7 @@
                                             ]) !!}
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-12 col-20">
+                                <div class="form-group col-sm-12 col-20 both">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('planejamento_id', 'Tarefa:') !!}
                                         {!!

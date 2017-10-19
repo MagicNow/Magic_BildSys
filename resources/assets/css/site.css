@@ -49,6 +49,18 @@ label {
   font-size: 23px !important;
 }
 
+.mb0 {
+  margin-bottom: 0 !important;
+}
+
+.pb0 {
+  padding-bottom: 0 !important;
+}
+
+.both {
+  clear: both;
+}
+
 /*root typeahead class*/
 
 .twitter-typeahead {
