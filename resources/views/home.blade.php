@@ -13,6 +13,10 @@
             max-height: 420px;
             overflow-y: scroll;
         }
+
+        body {
+            overflow-y: hidden;
+        }
     </style>
     <div class="content" id="homeDiv">
         <div class="row">
