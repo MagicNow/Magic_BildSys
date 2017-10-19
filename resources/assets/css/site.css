@@ -329,7 +329,14 @@ select.input-sm {
   padding: 5px 15px;
 }
 form .btn {
-  padding: 6px;
+  padding: 1px 3px;
+  margin-left: 4px;
+}
+form .btn-group .btn {
+  font-size: 12px;
+}
+form .btn-group .btn + .btn {
+  margin-left: 4px;
 }
 .zoom-1 {
   zoom: 100%;
