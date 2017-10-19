@@ -37,169 +37,162 @@
 @stop
 @section('content')
     <section class="content-header">
-        <div class="modal-header">
-            <div class="row">
-                <div class="col-md-12">
-                    <span class="pull-left title">
-                        <h3>
-                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            </button>
-                            <span>Lista de OC/Insumos aprovados</span>
-                        </h3>
-                    </span>
+        <h1>
+            <a href="/" type="button" class="btn btn-link">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            Lista de OC/Insumos aprovados
+        </h1>
+    </section>
+
+    <div class="content">
+        <div class="row">
+            <div class="col-md-3">
+                <h4>Regionais</h4>
+
+                <div class="js-datatable-filter-form">
+                    @if(count($regionais))
+                    {!! Form::select('regionais[]',$regionais, null, [
+                        'class'=>'form-control select2',
+                        'multiple'=>'multiple',
+                        ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
                 </div>
 
-                <div class="row">
-                    <div class="col-md-3">
-                        <h4>Regionais</h4>
+            </div>
 
-                        <div class="js-datatable-filter-form">
-                            @if(count($regionais))
-                            {!! Form::select('regionais[]',$regionais, null, [
-                                'class'=>'form-control select2',
-                                'multiple'=>'multiple',
-                                ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Padrões de empreendimento</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($padroes_empreendimento))
-                                {!! Form::select('padroes_empreendimento[]',$padroes_empreendimento, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Obras</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($padroes_empreendimento))
-                                {!! Form::select('obras[]',$obras, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Compradores</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($compradores))
-                                {!! Form::select('compradores[]',$compradores, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Cidades</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($cidades))
-                                {!! Form::select('cidades[]',$cidades, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Grupos de insumos</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($insumoGrupos))
-                                {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <h4>Insumos</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($insumos))
-                                {!! Form::select('insumos[]',$insumos, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-					
-					<div class="col-md-3">
-                        <h4>Carteiras</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($carteiras))
-                                {!! Form::select('carteiras[]',$carteiras, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="clearfix"></div>
-
-                    <div class="col-md-1">
-                        <h4>O.C.s</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($OCs))
-                                {!! Form::select('ocs[]',$OCs, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <h4>SLA</h4>
-                        <div class="js-datatable-filter-form">
-                            @if(count($farol))
-                                {!! Form::select('farol[]',$farol, null, [
-                                    'class'=>'form-control select2',
-                                    'multiple'=>'multiple',
-                                    ]) !!}
-                            @else
-                                Sem registros vinculados
-                            @endif
-                        </div>
-                    </div>
-
+            <div class="col-md-3">
+                <h4>Padrões de empreendimento</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($padroes_empreendimento))
+                        {!! Form::select('padroes_empreendimento[]',$padroes_empreendimento, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
                 </div>
             </div>
+
+            <div class="col-md-3">
+                <h4>Obras</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($padroes_empreendimento))
+                        {!! Form::select('obras[]',$obras, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <h4>Compradores</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($compradores))
+                        {!! Form::select('compradores[]',$compradores, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <h4>Cidades</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($cidades))
+                        {!! Form::select('cidades[]',$cidades, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <h4>Grupos de insumos</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($insumoGrupos))
+                        {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <h4>Insumos</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($insumos))
+                        {!! Form::select('insumos[]',$insumos, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+			
+			<div class="col-md-3">
+                <h4>Carteiras</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($carteiras))
+                        {!! Form::select('carteiras[]',$carteiras, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="col-md-1">
+                <h4>O.C.s</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($OCs))
+                        {!! Form::select('ocs[]',$OCs, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <h4>SLA</h4>
+                <div class="js-datatable-filter-form">
+                    @if(count($farol))
+                        {!! Form::select('farol[]',$farol, null, [
+                            'class'=>'form-control select2',
+                            'multiple'=>'multiple',
+                            ]) !!}
+                    @else
+                        Sem registros vinculados
+                    @endif
+                </div>
+            </div>
+
         </div>
-    </section>
-    <div class="content">
+
         @include('adminlte-templates::common.errors')
         {!! Form::open(['url'=>(Request::has('qc')? '/quadro-de-concorrencia/'.Request::get('qc').'/adicionar' : '/quadro-de-concorrencia/criar'),'method'=>'post']) !!}
         @include('ordem_de_compras.insumos-aprovados-table')
