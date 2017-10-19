@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Fornecedores
-            <button onclick="sincronizaFornecedor({{ $fornecedores->id }});" class="btn btn-warning pull-right btn-sm">
+            <button onclick="sincronizaFornecedor({{ $fornecedores->id }});" class="btn btn-primary pull-right btn-sm">
                 <i class="fa fa-refresh"></i>
                 Sincronizar com Mega (Re-Importar)
             </button>

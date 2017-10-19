@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
            </button>
            Ordens de compra
-            <a href="{{ url('compras') }}" type="button" class="btn btn-success btn-lg btn-flat pull-right" data-dismiss="modal">
+            <a href="{{ url('compras') }}" type="button" class="btn btn-primary btn-lg btn-flat pull-right" data-dismiss="modal">
                 <i class="fa fa-shopping-cart"></i>
                 Calendário de compra
             </a>
