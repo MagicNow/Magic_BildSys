@@ -65,6 +65,10 @@ label {
   margin-bottom: 6px;
 }
 
+.mt0 {
+  margin-top: 0;
+}
+
 .mt6 {
   margin-top: 6px;
 }
