@@ -1,5 +1,18 @@
 @extends('layouts.front')
 @section('content')
+<style type="text/css">
+.modal-header{
+    padding:15px 15px 0!important;
+    margin-bottom:4px!important
+}
+
+.border-separation{
+    margin:4px 0!important;
+}
+.bloco_insumos_id_4{
+    margin-bottom:0!important;
+}
+</style>
     <section class="content-header">
         <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
