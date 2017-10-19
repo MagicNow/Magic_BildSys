@@ -23,73 +23,68 @@
 @stop
 @section('content')
     <section class="content-header">
-                <div class="col-md-6">
-                    <section class="content-header">
-                        <h1>
-                            <a href="/Clientes/Mazzatech/BildSys/public/ordens-de-compra" class="btn btn-link">
-                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            </a>
-                            <span>Detalhe da Ordem de Compra</span>
-                        </h1>
-                    </section>
-                </div>
-                <div class="col-md-6 text-right">
-                    <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat" style="padding-top: 2px;padding-bottom: 3px;">
-                        Retroalimentação
-                    </a>
-                    @if(!is_null($ordemDeCompra->aprovado))
-                        @if($ordemDeCompra->aprovado)
-                            <span class="btn-lg btn-flat text-success" title="Aprovado">
-                                <i class="fa fa-check" aria-hidden="true"></i>
-                            </span>
-                        @else
-                            <span class="text-danger btn-lg btn-flat" title="Reprovado">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </span>
-                        @endif
+        <h1>
+            <a href="/" type="button" class="btn btn-link">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            Detalhe da Ordem de Compra
+            <div class="pull-rigth text-right">
+                <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat" style="padding-top: 2px;padding-bottom: 3px;">
+                    Retroalimentação
+                </a>
+                @if(!is_null($ordemDeCompra->aprovado))
+                    @if($ordemDeCompra->aprovado)
+                        <span class="btn-lg btn-flat text-success" title="Aprovado">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </span>
                     @else
-                        @if($aprovavelTudo['podeAprovar'])
-                            @if($aprovavelTudo['iraAprovar'])
-                                <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
-                                    <button type="button" title="Aprovar todos os itens"
-                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-success btn-lg btn-flat">
-                                        Aprovar
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" title="Reprovar todos os itens"
-                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-danger btn-lg btn-flat">
-                                        Reprovar
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            @else
-                                @if($aprovavelTudo['jaAprovou'])
-                                    @if($aprovavelTudo['aprovacao'])
-                                        <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
-                                            </span>
-                                    @else
-                                        <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </span>
-                                    @endif
+                        <span class="text-danger btn-lg btn-flat" title="Reprovado">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                    @endif
+                @else
+                    @if($aprovavelTudo['podeAprovar'])
+                        @if($aprovavelTudo['iraAprovar'])
+                            <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
+                                <button type="button" title="Aprovar todos os itens"
+                                        onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
+                                        class="btn btn-success btn-lg btn-flat">
+                                    Aprovar
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" title="Reprovar todos os itens"
+                                        onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
+                                        class="btn btn-danger btn-lg btn-flat">
+                                    Reprovar
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        @else
+                            @if($aprovavelTudo['jaAprovou'])
+                                @if($aprovavelTudo['aprovacao'])
+                                    <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </span>
                                 @else
-                                    {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                    <button type="button" title="{{ $aprovavelTudo['msg'] }}"
-                                            onclick="swal('{{ $aprovavelTudo['msg'] }}','','info');"
-                                            class="btn btn-default btn-lg btn-flat">
-                                        <i class="fa fa-info" aria-hidden="true"></i>
-                                    </button>
+                                    <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </span>
                                 @endif
+                            @else
+                                {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+                                <button type="button" title="{{ $aprovavelTudo['msg'] }}"
+                                        onclick="swal('{{ $aprovavelTudo['msg'] }}','','info');"
+                                        class="btn btn-default btn-lg btn-flat">
+                                    <i class="fa fa-info" aria-hidden="true"></i>
+                                </button>
                             @endif
                         @endif
                     @endif
-                </div>
-            
-     
+                @endif
+            </div>
+        </h1>
     </section>
+
     <div style="clear:both"></div>
     <div class="content">
         <h3 class="fs18">Dados Informativos</h6>
