@@ -142,7 +142,7 @@
 
                                 <div class="form-group col-sm-12 col-20">
                                     <label>&nbsp;</label>
-                                    <button class="btn btn-info btn-lg btn-flat full-width" onclick="getQueryDataTable();">Comprar saldo de todos os insumos</button>
+                                    <button class="btn btn-info btn-lg btn-comprar-saldo full-width" onclick="getQueryDataTable();">Comprar saldo de todos os insumos</button>
                                 </div>
 
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
