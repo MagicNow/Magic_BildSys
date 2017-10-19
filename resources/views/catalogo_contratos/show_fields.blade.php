@@ -139,7 +139,7 @@ $count_insumos = 0;
 ?>
 <div>
 
-    <div class="modal-header" style="border-bottom: 2px solid #ccc !important;margin-bottom: 20px;">
+    <div class="modal-header">
         <div class="col-md-12">
             <h2>Insumos</h2>
         </div>
@@ -161,22 +161,20 @@ $count_insumos = 0;
                         $podeEditar = true;
                     }
                 @endphp
-                <div class="form-group col-md-12 bloco_insumos_id_{{$item->insumo_id}}">
-
-                    @if(count($array_insumos))
-                        <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
-                        @if(@isset(array_count_values($array_insumos)[$item->insumo_id]) && $botao_insumo_id != $item->insumo_id)
-                            @php
-                                $botao_insumo_id = $item->insumo_id;
-                            @endphp
-                            <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes">
-                                <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i> Mostrar/Ocultar todos os reajustes
-                            </button>
-                        @endif
+                @if(count($array_insumos))
+                    <div class="col-md-6 border-separation pull-right" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
+                    @if(@isset(array_count_values($array_insumos)[$item->insumo_id]) && $botao_insumo_id != $item->insumo_id)
+                        @php
+                            $botao_insumo_id = $item->insumo_id;
+                        @endphp
+                        <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes" style="margin:-35px 30px 0 0;">
+                            <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i> Mostrar/Ocultar todos os reajustes
+                        </button>
                     @endif
+                @endif
+                <div class="form-group col-md-12 bloco_insumos_id_{{$item->insumo_id}}" style="margin-top:-7px">
 
-
-                    <div class="col-md-12" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
+                    <div class="insumo col-md-12" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                         <label>Insumo:</label>
                         <div class="form-control overflowH">
                             {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
@@ -185,15 +183,9 @@ $count_insumos = 0;
 
                     <div id="reajuste_{{$item->insumo_id}}"></div>
 
-                    <div {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none; class=bloco_mostrar_reajustes_'.$item->insumo_id : ''}}>
+                    <div class="bloco {{in_array($item->insumo_id, $array_insumos) ? 'hidden form-group bloco_mostrar_reajustes_'.$item->insumo_id : ''}}">
 
-                        <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
-
-                        <div class="col-md-12">
-                            <p class="pull-right">
-                                {{count($insumo) > 1 ? 'Alterado' : 'Criado'}} por {{$item->user ? $item->user->name : null}} em {{$item->created_at->format('d/m/Y H:i')}}
-                            </p>
-                        </div>
+                        <div class="col-md-12 {{in_array($item->insumo_id, $array_insumos) ? 'border-separation bloco_mostrar_reajustes_'.$item->insumo_id : ''}}" style="margin-bottom:20px;"></div>
 
                         <div class="col-md-3">
                             <label>Valor unitário:</label>
@@ -218,7 +210,13 @@ $count_insumos = 0;
                             <label>Período término:</label>
                             <div class="form-control overflowH">{{$item->periodo_termino ? $item->periodo_termino->format('d/m/Y') : null}}</div>
                         </div>
+                        
                     </div>
+                </div>
+                <div class="textAtualiza {{in_array($item->insumo_id, $array_insumos) ? 'hidden bloco_mostrar_reajustes_'.$item->insumo_id : ''}}">
+                    <p>
+                        {{count($insumo) > 1 ? 'Alterado' : 'Criado'}} por {{$item->user ? $item->user->name : null}} em {{$item->created_at->format('d/m/Y H:i')}}
+                    </p>
                 </div>
                 @php $array_insumos[] = $item->insumo_id; @endphp
             @endforeach
@@ -235,11 +233,11 @@ $count_insumos = 0;
     <script type="text/javascript">
         function mostrarReajustes(item, mostrar) {
             if(mostrar){
-                $('.bloco_mostrar_reajustes_'+item).css('display', '');
+                $('.bloco_mostrar_reajustes_'+item).removeClass('hidden');
                 $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 0)');
                 $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-minus');
             }else{
-                $('.bloco_mostrar_reajustes_'+item).css('display', 'none');
+                $('.bloco_mostrar_reajustes_'+item).addClass('hidden');
                 $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 1)');
                 $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-plus');
             }
