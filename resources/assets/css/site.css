@@ -206,6 +206,10 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
   margin-bottom: 0;
 }
 
+.form-group label + p, .form-group label + input, .form-group label + select, .form-group label + textarea {
+  margin-bottom: 0;
+}
+
 .form-control {
   font-family: 'Abel', sans-serif;
   font-size: 12px;
@@ -1095,6 +1099,8 @@ td> .table {
 .radio label, .checkbox label {
   padding-left: 0;
 }
+
+
 
 .label {
   font-weight: normal;
