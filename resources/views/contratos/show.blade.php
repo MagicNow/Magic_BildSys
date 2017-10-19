@@ -59,7 +59,7 @@
                     <div class="box-header with-border">
                         Enviar contrato assinado
                     </div>
-                    <div class="box-body">
+                    <div class="box-body contratos-table">
                         <div class="col-md-10">
                             {!! Form::file('arquivo',['class'=>'form-control']) !!}
                         </div>
@@ -163,7 +163,7 @@
                 </a>
                 @endshield
             </div>
-            <div class="box-body">
+            <div class="box-body contratos-table">
                 @include('pagamentos.table')
             </div>
         </div>
