@@ -13,34 +13,25 @@
 @stop
 
 @section('content')
-
     <section class="content-header">
-        <div class="modal-header">
-            <div class="col-md-12">
-                <div class="col-md-6">
-                    <h3 class="pull-left title">
-                        <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-                        Ordem de compra
-                        {{isset($ordemDeCompra->obra->nome) ? ' - ' . $ordemDeCompra->obra->nome : null}}
-                        <?php $ordemCompraSession = \Session::has('ordemCompra'); ?>
-                        {{isset($ordemCompraSession) ? '- O.C: ' . \Session::get('ordemCompra') : null}}
-                    </h3>
-                </div>
+        <h1>
+            <a href="/" type="button" class="btn btn-link">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
+            Ordem de compra
+            {{isset($ordemDeCompra->obra->nome) ? ' - ' . $ordemDeCompra->obra->nome : null}}
+            <?php $ordemCompraSession = \Session::has('ordemCompra'); ?>
+            {{isset($ordemCompraSession) ? '- O.C: ' . \Session::get('ordemCompra') : null}}
 
-                <div class="col-md-6 text-right">
-                    <a href="{{ url('compras/obrasInsumos?obra_id=' . $obra_id) }}" class="btn btn-default btn-lg btn-flat">
-                        Esqueci um item
-                    </a>
-                    <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
-                        Fechar O.C.
-                    </button>
-                    <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">
-                        Limpar O.C.
-                    </button>
-                </div>
+           <div class="pull-right text-right">
+                <a href="{{ url('compras/obrasInsumos?obra_id=' . $obra_id) }}" class="btn btn-default btn-lg btn-flat">Esqueci um item</a>
+                <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">Fechar O.C.</button>
+                <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">Limpar O.C.</button>
             </div>
-        </div>
+        </h1>
     </section>
+
+
     <div class="content">
         <div class="clearfix"></div>
 
