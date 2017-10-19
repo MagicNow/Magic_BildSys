@@ -178,7 +178,7 @@ $count_insumos = 0;
 
                     <div class="col-md-12" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                         <label>Insumo:</label>
-                        <div class="form-control">
+                        <div class="form-control overflowH">
                             {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
                         </div>
                     </div>
@@ -199,24 +199,24 @@ $count_insumos = 0;
                             <label>Valor unitário:</label>
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1">R$</span>
-                                <div class="form-control">{{$item->valor_unitario}}</div>
+                                <div class="form-control overflowH">{{$item->valor_unitario}}</div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Pedido quantidade mínima:</label>
-                            <div class="form-control">{{$item->pedido_minimo}}</div>
+                            <div class="form-control overflowH">{{$item->pedido_minimo}}</div>
                         </div>
                         <div class="col-md-2">
                             <label>Pedido múltiplo de:</label>
-                            <div class="form-control">{{$item->pedido_multiplo_de}}</div>
+                            <div class="form-control overflowH">{{$item->pedido_multiplo_de}}</div>
                         </div>
                         <div class="col-md-2">
                             <label>Período início:</label>
-                            <div class="form-control">{{$item->periodo_inicio ? $item->periodo_inicio->format('d/m/Y') : null}}</div>
+                            <div class="form-control overflowH">{{$item->periodo_inicio ? $item->periodo_inicio->format('d/m/Y') : null}}</div>
                         </div>
                         <div class="col-md-2">
                             <label>Período término:</label>
-                            <div class="form-control">{{$item->periodo_termino ? $item->periodo_termino->format('d/m/Y') : null}}</div>
+                            <div class="form-control overflowH">{{$item->periodo_termino ? $item->periodo_termino->format('d/m/Y') : null}}</div>
                         </div>
                     </div>
                 </div>
