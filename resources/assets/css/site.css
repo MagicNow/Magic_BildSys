@@ -328,14 +328,14 @@ select.input-sm {
 .btn, .btn-lg {
   padding: 5px 15px;
 }
-form .btn {
+table .btn {
   padding: 1px 3px;
   margin-left: 4px;
 }
-form .btn-group .btn {
+table .btn-group .btn {
   font-size: 12px;
 }
-form .btn-group .btn + .btn {
+table .btn-group .btn + .btn {
   margin-left: 4px;
 }
 .zoom-1 {
