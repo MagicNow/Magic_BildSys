@@ -9,17 +9,6 @@
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
-    <style type="text/css">
-        @media screen and (min-width: 768px) and (max-width: 1400px){
-            body {
-                zoom: 75%;
-            }
-        }
-        
-        .content-wrapper {
-            min-height: 881px !important;
-        }
-    </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
