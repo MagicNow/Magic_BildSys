@@ -1288,6 +1288,11 @@ input[type="file"].form-control {
   padding: 5px;
 }
 
+.btn-contrato-aprovacao {
+  padding: 0;
+  margin: 7px;
+}
+
 div.dataTables_wrapper div.dataTables_info {
     padding-top: 6px;
     display: inline-block;
