@@ -1395,5 +1395,5 @@ div.dataTables_wrapper div.dataTables_paginate {
 // }
 
 .list-group-item.estruturaClass .form-control {
-  height: 28px;
+  height: 28px !important;
 }
