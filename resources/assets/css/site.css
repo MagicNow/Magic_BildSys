@@ -1338,3 +1338,45 @@ div.dataTables_wrapper div.dataTables_paginate {
 .contratos-table .dataTables_filter .form-control {
   height: 24px;
 }
+
+.memoria .btn.btn-flat.btn-primary{
+   padding: 2px 15px;
+ }
+  .memoria .btn.btn-flat.btn-xs.btn-danger{
+        margin-top: 0px;
+    padding-top: 1px;
+
+  }
+   .memoria .btn.btn-flat.btn-xs.btn-warning{
+       margin-top: 0px;
+    padding-top: 1px;
+   }
+  .memoria .btn.btn-flat.btn-xs.btn-info{
+      margin-top: 0px;
+    padding-top: 1px;
+  }
+  .list-group-item {
+   
+    border: 0px solid #ddd;
+}
+.memoria .list-group {
+  
+    margin-bottom: 0px;
+}
+  .memoria .form-control {
+    margin-bottom: 0;
+    overflow-y: hidden;
+}
+   .memoria .col-sm-12 {
+    width: 100%;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+  .memoria .col-sm-8 {
+    width: 100%;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+        width: 66.66666667%;
+}
