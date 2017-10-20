@@ -1345,10 +1345,12 @@ div.dataTables_wrapper div.dataTables_paginate {
 .memoria .btn.btn-flat.btn-xs.btn-danger{
   margin-top: 0px;
   padding-top: 1px;
+  padding-bottom: 2px;
 }
 .memoria .btn.btn-flat.btn-xs.btn-warning{
   margin-top: 0px;
   padding-top: 1px;
+  padding-bottom: 2px;
 }
 .memoria .btn.btn-flat.btn-xs.btn-info{
   margin-top: 0px;
