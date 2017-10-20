@@ -1390,7 +1390,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 // }
 // .botao .btn-danger,.botao .btn.btn-flat{padding: 4px 10px;}
 
-#padrao + .icheckbox_square-green{
+.memoria .icheckbox_square-green{
   zoom:75%;
 }
 
