@@ -1407,11 +1407,11 @@ div.dataTables_wrapper div.dataTables_paginate {
   overflow: hidden;
 }
 
-.detalhes .panel:not(.panel-normal-table) table td {
-  font-size: 14px;
+.detalhe-compra-tabela table td {
+  font-size: 14px !important;
   font-weight: normal;
 }
 
-.detalhes table {
+.detalhe-compra-tabela table {
   margin-top: 10px;
 }

@@ -259,7 +259,7 @@
                 </h3>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default detalhe-compra-tabela">
             <div class="panel-body" style="padding:0px;">
                 <div class="col-md-12 table-responsive margem-topo">
                     {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}
