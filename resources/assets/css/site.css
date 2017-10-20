@@ -1342,41 +1342,56 @@ div.dataTables_wrapper div.dataTables_paginate {
 .memoria .btn.btn-flat.btn-primary{
    padding: 2px 15px;
  }
-  .memoria .btn.btn-flat.btn-xs.btn-danger{
-        margin-top: 0px;
-    padding-top: 1px;
+.memoria .btn.btn-flat.btn-xs.btn-danger{
+  margin-top: 0px;
+  padding-top: 1px;
+}
+.memoria .btn.btn-flat.btn-xs.btn-warning{
+  margin-top: 0px;
+  padding-top: 1px;
+}
+.memoria .btn.btn-flat.btn-xs.btn-info{
+  margin-top: 0px;
+  padding-top: 1px;
+  padding-bottom: 2px;
+}
 
-  }
-   .memoria .btn.btn-flat.btn-xs.btn-warning{
-       margin-top: 0px;
-    padding-top: 1px;
-   }
-  .memoria .btn.btn-flat.btn-xs.btn-info{
-      margin-top: 0px;
-    padding-top: 1px;
-  }
-  .list-group-item {
-   
-    border: 0px solid #ddd;
+.list-group-item {
+  border: 0px solid #ddd;
 }
+
 .memoria .list-group {
-  
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
-  .memoria .form-control {
-    margin-bottom: 0;
-    overflow-y: hidden;
+.memoria .form-control {
+  margin-bottom: 0;
+  overflow-y: hidden;
 }
-   .memoria .col-sm-12 {
-    width: 100%;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 14px;
+.memoria .col-sm-12 {
+  width: 100%;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
 }
-  .memoria .col-sm-8 {
-    width: 100%;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 14px;
-        width: 66.66666667%;
+.memoria .col-sm-8 {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  width: 66.66666667%;
+}
+.memoria .input-group strong{
+  padding: 0px 10px;
+}
+
+// .btn.btn-flat {
+// padding: 0px 10px;
+// }
+// .botao .btn-danger,.botao .btn.btn-flat{padding: 4px 10px;}
+
+// .icheckbox_square-green{
+//   zoom:75%;
+// }
+
+.list-group-item.estruturaClass .form-control {
+  height: 28px;
 }
