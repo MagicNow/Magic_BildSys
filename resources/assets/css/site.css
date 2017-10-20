@@ -1397,3 +1397,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 .list-group-item.estruturaClass .form-control {
   height: 28px !important;
 }
+
+.list-group-item.estruturaClass .select2-selection {
+  height: 26px !important;
+}
