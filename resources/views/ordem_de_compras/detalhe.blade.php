@@ -106,7 +106,7 @@
             </div>
 
             <div class="col-md-12">
-                <div class="panel panel-default panel-body" style="padding-bottom:0px;padding-top: 5px;margin-bottom: 0px;">
+                <div class="panel panel-default panel-body mb0 pt0 pb0" style="padding-bottom:0px;padding-top: 5px;margin-bottom: 0px;">
                     <h4 class="highlight mb0">Timeline</h4>
                     @if($alcadas_count)
                         @php $col_md = 12 / ($alcadas_count + 1); @endphp
@@ -115,7 +115,7 @@
                                 Criação
                                 {{ $ordemDeCompra->created_at->format('d/m/Y H:i') }}
                             </span>
-                            <div class="progress">
+                            <div class="progress mb0 mt6">
                                 <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                                     100%
                                 </div>
@@ -166,7 +166,7 @@
                                             @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
                                             @endif
-                                            <div class="progress" title="{{$faltam_aprovar_texto}}" data-toggle="tooltip" data-placement="top">
+                                            <div class="progress mb0 mt6" title="{{$faltam_aprovar_texto}}" data-toggle="tooltip" data-placement="top">
                                                 <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{$percentual}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentual}}%;">
                                                     {{$percentual}}%
                                                 </div>
@@ -178,7 +178,7 @@
                                             @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
                                             @endif
-                                            <div class="progress" title="{{$faltam_aprovar_texto}}" data-toggle="tooltip" data-placement="top">
+                                            <div class="progress mb0 mt6" title="{{$faltam_aprovar_texto}}" data-toggle="tooltip" data-placement="top">
                                                 <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
                                                     0%
                                                 </div>
@@ -194,7 +194,7 @@
                                                 <small>{{ $ordemDeCompra->updated_at->format('d/m/Y H:i') }}</small>
                                             </span>
                                         @endif
-                                        <div class="progress" title="Essa alçada não possuí aprovadores" data-toggle="tooltip" data-placement="top">
+                                        <div class="progress mb0 mt6" title="Essa alçada não possuí aprovadores" data-toggle="tooltip" data-placement="top">
                                             <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
                                                 0%
                                             </div>
@@ -209,7 +209,7 @@
                                     @if($i == $alcadas_count)
                                         <span class="pull-right">{{$oc_status}}</span>
                                     @endif
-                                    <div class="progress">
+                                    <div class="progress mb0 mt6">
                                         <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                                             100%
                                         </div>
