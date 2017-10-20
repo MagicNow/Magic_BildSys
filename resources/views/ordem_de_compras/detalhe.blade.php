@@ -16,9 +16,7 @@
             color: #4a4a4a;
             font-size: 22px;
         }
-        #totalInsumos{
-            margin-bottom: 20px;
-        }
+      
     </style>
 @stop
 @section('content')
@@ -27,8 +25,10 @@
             <a href="/" type="button" class="btn btn-link">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
-            Detalhe da Ordem de Compra
-            <div class="pull-right text-right">
+             Detalhe da Ordem de Compra
+        </h1>
+           
+            <div class="pull-left" style="margin-left:10px;">
                 <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat" style="padding-top: 2px;padding-bottom: 3px;">
                     Retroalimentação
                 </a>
@@ -82,7 +82,7 @@
                     @endif
                 @endif
             </div>
-        </h1>
+    
     </section>
 
     <div style="clear:both"></div>
@@ -227,13 +227,13 @@
         <div class="row" id="totalInsumos" style="margin-left:5px;">
             <div class="col-md-2 text-left">
                 <h3 class="fs18">Valor previsto no orçamento</h3>
-                <h3 class="fs18" style="margin-top: -8px;">R$
+                <h3 class="fs18 valores" style="margin-top: -8px;">R$
                     {{ number_format($orcamentoInicial,2,',','.') }}
                 </h3>
             </div>
             <div class="col-md-2 text-left" title="Até o momento em todos os itens desta O.C.">
                 <h3 class="fs18">Valor comprometido realizado</h3>
-                <h3 class="fs18" style="margin-top: -8px;">
+                <h3 class="fs18 valores" style="margin-top: -8px;">
                     R$ 0,00
                     {{---  @TODO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
                     {{--                    {{ number_format($realizado,2,',','.') }}--}}
@@ -241,14 +241,14 @@
             </div>
             <div class="col-md-2 text-left " title="Nos itens desta O.C." style="margin-left:10px;">
                 <h3 class="fs18">Valor comprometido à gastar</h3>
-                <h3 class="fs18" style="margin-top: -8px;">R$
+                <h3 class="fs18 valores" style="margin-top: -8px;">R$
                     {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
                     {{ number_format(floatval($valor_comprometido_a_gastar),2,',','.') }}
                 </h3>
             </div>
             <div  style="width: 170px;margin-left:5px;" class="col-md-2 text-left " title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h3 class="fs18">SALDO DE ORÇAMENTO</h3>
-                <h3 class="fs18" style="margin-top: -8px;">R$
+                <h3 class="fs18 valores" style="margin-top: -8px;">R$
                     {{ number_format($orcamentoInicial - floatval($valor_comprometido_a_gastar),2,',','.') }}
                     {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
                     {{--{{ number_format($saldo,2,',','.') }}--}}
@@ -256,13 +256,13 @@
             </div>
             <div class="col-md-2 text-left" style="width: 110px;">
                 <h3 class="fs18">VALOR DA OC</h3>
-                <h3 class="fs18" style="margin-top: -8px;">R$
+                <h3 class="fs18 valores" style="margin-top: -8px;">R$
                     {{ number_format($totalSolicitado,2,',','.') }}
                 </h3>
             </div>
             <div class="col-md-2 text-left " style="margin-left:5px;">
                 <h3 class="fs18">SALDO DISPONÍVEL APÓS O.C</h3>
-                <h3 class="fs18" style="margin-top: -8px;">R$
+                <h3 class="fs18 valores" style="margin-top: -8px;">R$
                     {{ number_format(($orcamentoInicial - floatval($valor_comprometido_a_gastar) - $totalSolicitado),2,',','.') }}
                 </h3>
             </div>
@@ -308,7 +308,8 @@
                                             '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
                                             '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                                             '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
-                                                " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                                                " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" 
+                                                style="border-radius: 9px !important;zoom:70%;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                             <i class="fa fa-info-circle" aria-hidden="true"></i>
                                         </button>';
                             }
@@ -395,7 +396,7 @@
                                     @endphp
                                     <i class="fa fa-circle {{ $calculos_servico['saldo_disponivel'] < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Análise">
-                                        <i class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
+                                        <i class="fa fa-info-circle text-info" style="font-size: 14px;"></i>
                                     </a>
                                 @else
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
@@ -456,7 +457,7 @@
                                                     @endif
                                                 @else
                                                     {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                                    <button style="line-height:0px;padding: 4px 10px;" type="button" title="{{ $workflowAprovacao['msg'] }}"
+                                                    <button style="line-height:0px;    padding: 4px 9px;" type="button" title="{{ $workflowAprovacao['msg'] }}"
                                                             onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
                                                             class="btn btn-default btn-sm btn-flat">
                                                         <i class="fa fa-info" aria-hidden="true"></i>
@@ -465,7 +466,7 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <button style="line-height:0px;padding: 4px 10px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
+                                    <button style="line-height:0px; padding-bottom: 4px;padding-top: 3px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
                                              onclick="showHideInfoExtra({{ $item->id }})">
                                         <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
