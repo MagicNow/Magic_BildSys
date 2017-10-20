@@ -9,8 +9,9 @@ $indexBloco = 0;
     }
 
     .table-bordered td {
-        border: 1px solid #5a5555 !important;
+        border: 1px solid #999 !important;
     }
+    
 </style>
 
 <!-- Nome Field -->
@@ -64,7 +65,7 @@ $indexBloco = 0;
                 }
                 ?>
                 @foreach($blocos as $indexBloco => $bloco)
-                    <li class="list-group-item estruturaClass" bloco="{{ $indexBloco }}"
+                    <li class="list-group-item estruturaClass" style="border-radius: 0;border-right:none;border-left:none;border-top:2px solid #3c8dbc;" bloco="{{ $indexBloco }}"
                         id="bloco_list_item_{{ $indexBloco }}">
                         <div class="row" style="margin-bottom: 10px">
                             <div class="col-sm-8"><i class="fa fa-th-large"></i> &nbsp; {{ $nomeEstrutura }}:
@@ -218,9 +219,9 @@ $indexBloco = 0;
 </div>
 
 <!-- Submit Field -->
-<div class="form-group col-sm-12">
+<div class="form-group col-sm-12 botao">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success  btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-danger btn-flat btn-lg "><i
+    <a href="{!! route('memoriaCalculos.index') !!}"  class="btn btn-danger btn-flat btn-lg "><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 @section('scripts')
