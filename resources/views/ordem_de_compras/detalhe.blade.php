@@ -107,10 +107,10 @@
 
             <div class="col-md-12">
                 <div class="panel panel-default panel-body" style="padding-bottom:0px;padding-top: 5px;margin-bottom: 0px;">
-                    <h4 class="highlight">Timeline</h4>
+                    <h4 class="highlight mb0">Timeline</h4>
                     @if($alcadas_count)
                         @php $col_md = 12 / ($alcadas_count + 1); @endphp
-                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                        <h4 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                             <span>
                                 Criação
                                 {{ $ordemDeCompra->created_at->format('d/m/Y H:i') }}
@@ -120,7 +120,7 @@
                                     100%
                                 </div>
                             </div>
-                        </h3>
+                        </h4>
                         @if(count($avaliado_reprovado))
                             @php
                                 $count = 0;
@@ -156,7 +156,7 @@
                                             }
                                         @endphp
 
-                                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <h4 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                                             <span>
                                                 {{$count}}ª alçada
                                                 @if(isset($alcada['data_inicio']))
@@ -171,9 +171,9 @@
                                                     {{$percentual}}%
                                                 </div>
                                             </div>
-                                        </h3>
+                                        </h4>
                                     @else
-                                        <h3 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <h4 class="fs18 col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                                             <span>{{$count}}ª alçada</span>
                                             @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
@@ -183,7 +183,7 @@
                                                     0%
                                                 </div>
                                             </div>
-                                        </h3>
+                                        </h4>
                                     @endif
                                 @else
                                     <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
@@ -222,7 +222,7 @@
             </div>
         </div>
        
-        <div class="row" id="totalInsumos" style="margin-left:5px;">
+        <div class="row total-header mb6" id="totalInsumos" style="margin-left:5px;">
             <div class="col-md-2 text-left">
                 <h3 class="fs15 mt6 mb0">Valor previsto no orçamento</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R${{ number_format($orcamentoInicial,2,',','.') }}</strong></h3>

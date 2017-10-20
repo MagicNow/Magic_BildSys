@@ -1406,3 +1406,12 @@ div.dataTables_wrapper div.dataTables_paginate {
 .js-datatable-filter-form .form-control {
   overflow: hidden;
 }
+
+.detalhes .panel:not(.panel-normal-table) table td {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.detalhes table {
+  margin-top: 10px;
+}
