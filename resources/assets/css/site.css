@@ -1392,6 +1392,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 
 .memoria .icheckbox_square-green{
   zoom:75%;
+  top: -3px;
 }
 
 .list-group-item.estruturaClass .form-control {
