@@ -375,7 +375,7 @@ $count_insumos = 0;
     @endif
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ),
     ['class' => 'btn btn-success pull-right btn-lg btn-flat', 'type'=>'submit']) !!}
-    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default btn-lg btn-flat"><i
+    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-danger btn-lg btn-flat"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
