@@ -28,8 +28,7 @@
                class="btn btn-lg btn-flat btn-warning pull-right" title="Baixar espelho do contrato">
                 <i class="fa fa-files-o"></i>
             </a>
-            <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
-               class="btn btn-lg btn-flat btn-success pull-right" title="Baixar contrato completo">
+            <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank" class="ml5 btn btn-lg btn-flat btn-success pull-right" title="Baixar contrato completo">
                 <i class="fa fa-print"></i>
             </a>
 
