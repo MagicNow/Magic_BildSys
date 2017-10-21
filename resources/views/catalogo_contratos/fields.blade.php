@@ -153,7 +153,7 @@
 </div>
 
 <div class="col-sm-12">
-    <h4>Regionais que estão permitidas neste acordo</h4>
+    <h2 class="ml15">Regionais que estão permitidas neste acordo</h2>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Escolha uma regional e adicione</span>
         @if(isset($catalogoContrato))
