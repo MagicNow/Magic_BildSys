@@ -232,11 +232,11 @@
                                     {!! Form::close() !!}
                                 </span>
                                 <span>
-                                    <button type="button" class="btn btn-flat btn-link"
+                                    <button type="button" class="btn btn-flat btn-link btn-success"
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
-                                    <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
+                                    <i class="fa fa-remove btn-danger" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
                                 </span>
                             </div>
                             <div class="dados-extras" style="display: none;">
