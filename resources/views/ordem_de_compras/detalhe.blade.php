@@ -222,7 +222,7 @@
             </div>
         </div>
        
-        <div class="row total-header mb6" id="totalInsumos">
+        <div class="clearfix total-header mb6" id="totalInsumos">
             <div class="col-md-2 text-left">
                 <h3 class="fs14 mt6 mb0">VALOR PREVISTO NO ORÇAMENTO</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R${{ number_format($orcamentoInicial,2,',','.') }}</strong></h3>
