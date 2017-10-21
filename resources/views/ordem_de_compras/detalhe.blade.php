@@ -222,26 +222,26 @@
             </div>
         </div>
        
-        <div class="row total-header mb6" id="totalInsumos" style="margin-left:5px;">
+        <div class="row total-header mb6" id="totalInsumos">
             <div class="col-md-2 text-left">
-                <h3 class="fs15 mt6 mb0">Valor previsto no orçamento</h3>
+                <h3 class="fs15 mt6 mb0">VALOR PREVISTO NO ORÇAMENTO</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R${{ number_format($orcamentoInicial,2,',','.') }}</strong></h3>
             </div>
             <div class="col-md-2 text-left" title="Até o momento em todos os itens desta O.C.">
-                <h3 class="fs15 mt6 mb0">Valor comprometido realizado</h3>
+                <h3 class="fs15 mt6 mb0">VALOR COMPROMETIDO REALIZADO</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R$ 0,00</strong>
                     {{---  @TODO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
                     {{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h3>
             </div>
-            <div class="col-md-2 text-left " title="Nos itens desta O.C." style="margin-left:10px;">
-                <h3 class="fs15 mt6 mb0">Valor comprometido à gastar</h3>
+            <div class="col-md-2 text-left " title="Nos itens desta O.C.">
+                <h3 class="fs15 mt6 mb0">VALOR COMPROMETIDO À GASTAR</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R$
                     {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
                     {{ number_format(floatval($valor_comprometido_a_gastar),2,',','.') }}</strong>
                 </h3>
             </div>
-            <div  style="width: 170px;margin-left:5px;" class="col-md-2 text-left " title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+            <div class="col-md-2 text-left" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h3 class="fs15 mt6 mb0">SALDO DE ORÇAMENTO</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R$
                     {{ number_format($orcamentoInicial - floatval($valor_comprometido_a_gastar),2,',','.') }}
@@ -249,11 +249,11 @@
                     {{--{{ number_format($saldo,2,',','.') }}--}}</strong>
                 </h3>
             </div>
-            <div class="col-md-2 text-left" style="width: 110px;">
+            <div class="col-md-2 text-left">
                 <h3 class="fs15 mt6 mb0">VALOR DA OC</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R${{ number_format($totalSolicitado,2,',','.') }}</strong></h3>
             </div>
-            <div class="col-md-2 text-left " style="margin-left:5px;">
+            <div class="col-md-2 text-left">
                 <h3 class="fs15 mt6 mb0">SALDO DISPONÍVEL APÓS O.C</h3>
                 <h3 class="fs17 mt0 mb0"><strong>R${{ number_format(($orcamentoInicial - floatval($valor_comprometido_a_gastar) - $totalSolicitado),2,',','.') }}</strong>
                 </h3>
