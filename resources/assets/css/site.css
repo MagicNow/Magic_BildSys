@@ -1453,3 +1453,13 @@ div.dataTables_wrapper div.dataTables_paginate {
   padding: 0;
   text-align: center;
 }
+
+.qc-equalizacao .icheckbox_square-green {
+  background-size: 160px 18px;
+  width: 16px;
+  height: 16px;
+}
+
+.qc-equalizacao .icheckbox_square-green.checked {
+  background-position: -64px 0;
+}

@@ -113,7 +113,7 @@ height: 36px;font-size:17px;
 <!-- Tipo Equalização Técnica Field -->
 <div class="form-group col-sm-6">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 qc-equalizacao">
            
             {!! Form::label('tiposEqualizacaoTecnicas', 'Equalização Técnica') !!}
             @if(count(\App\Models\TipoEqualizacaoTecnica::count()))
