@@ -413,7 +413,7 @@
                                             </span>
                                         @endif
                                     @else
-                                        <button style="line-height:0px;padding: 4px 6px;" type="button" title="Ver detalhes de aprovação"
+                                        <button type="button" title="Ver detalhes de aprovação"
                                                 class="btn btn-sm btn-default btn-flat ocItemTimeline"
                                                 data-id="{{ $item->id }}" data-workflow-tipo="1">
                                             <i class="fa fa-fw fa-hourglass-half"></i>
