@@ -523,7 +523,7 @@ $indexBloco = 0;
                     '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-xs btn-warning">' +
                     '<i class="fa fa-plus"></i> ' + nomeTrecho +
                     '</button>' +
-                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')"  data-toggle="tooltip" title="Remover '+ nomePavimento +'"  class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')"  data-toggle="tooltip" title="Remover '+ nomePavimento +'"  class="btn btn-flat btn-xs btn-danger ml5">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
