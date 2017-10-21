@@ -289,7 +289,7 @@ height: 36px;font-size:17px;
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-flat btn-default btn-lg pull-left" data-dismiss="modal">Cancelar
+                <button type="button" class="btn btn-flat btn-danger btn-lg pull-left" data-dismiss="modal">Cancelar
                 </button>
                 <button type="button" class="btn btn-flat btn-success btn-lg"
                         id="btn_add_eq" onclick="addEQitemSave();">

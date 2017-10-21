@@ -15,7 +15,7 @@
             border: 2px solid #f98d00 !important;
         }
     </style>
-    <section class="content-header">
+    <section class="content-header">/contratos/memoria_de_calculo/previsao.blade.php
         <div class="modal-header">
             <div class="col-md-12">
                 <span class="pull-left title">
@@ -403,7 +403,7 @@
                     <i class="fa fa-save"></i> Salvar
                 </button>
 
-                <button class="btn btn-default flat" onclick="history.go(-1);">
+                <button class="btn btn-danger flat" onclick="history.go(-1);">
                     <i class="fa fa-times"></i> Cancelar
                 </button>
             </div>

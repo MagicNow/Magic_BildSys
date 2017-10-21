@@ -200,7 +200,7 @@
             <div class="col-md-12 text-right">
                 @if(Request::has('qc'))
                         <a type="button" href="{{ url('/quadro-de-concorrencia/'.Request::get('qc').'/edit') }}"
-                           class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>
+                           class="btn btn-danger btn-flat btn-lg"><i class="fa fa-times"></i>
                             Cancelar
                         </a>
                 @endif

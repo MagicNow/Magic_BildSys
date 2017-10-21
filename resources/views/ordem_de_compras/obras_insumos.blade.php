@@ -173,7 +173,7 @@
                     <select class="js-example-data-array"></select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                     <a id="btnGoInsumos" href="" type="button" class="btn btn-primary">Prosseguir</a>
                 </div>
             </div>

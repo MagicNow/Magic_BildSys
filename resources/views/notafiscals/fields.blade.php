@@ -436,7 +436,7 @@ $mostrarAcoes = true;
     ]) !!}
     @endif
 
-    <a href="{!! route('notafiscals.index') !!}" class="btn btn-default">
+    <a href="{!! route('notafiscals.index') !!}" class="btn btn-danger">
         <i class="fa fa-times"></i>
         {{ ucfirst( trans('common.cancel') )}}
     </a>
