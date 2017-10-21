@@ -11,7 +11,10 @@ $indexBloco = 0;
     .table-bordered td {
         border: 1px solid #999 !important;
     }
-    
+
+    .list-group-item .input-group-btn button{
+        margin-left:5px !important;
+    }
 </style>
 
 <!-- Nome Field -->
