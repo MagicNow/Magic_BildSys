@@ -61,6 +61,10 @@ label {
   margin-bottom: 0 !important;
 }
 
+.mb10 {
+  margin-bottom: 10px !important;
+}
+
 .pb0 {
   padding-bottom: 0 !important;
 }
@@ -1417,7 +1421,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 }
 
 .detalhe-compra-tabela table {
-  margin-top: 10px;
+  margin-top: 7px;
 }
 
 .detalhe-compra-tabela .fa-circle {

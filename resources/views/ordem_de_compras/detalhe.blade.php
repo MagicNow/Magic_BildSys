@@ -261,7 +261,7 @@
         </div>
         <div class="panel panel-default detalhe-compra-tabela">
             <div class="panel-body" style="padding:0px;">
-                <div class="col-md-12 table-responsive margem-topo">
+                <div class="col-md-12 table-responsive mt10">
                     {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}&nbsp;{!! Form::label('perPage', ' RESULTADOS POR PÁGINA') !!}
                     <table class="table table-bordered table-striped">
                         <thead>
