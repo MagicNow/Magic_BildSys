@@ -134,7 +134,7 @@
                                             class="fa fa-shopping-basket"></i> Ordens de Compra</a>
                             </div>
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 compras-lembretes">
                                 <h3 class="fs20">Lembretes</h3>
                                 @include('ordem_de_compras.lembretes-home-table')
                             </div>

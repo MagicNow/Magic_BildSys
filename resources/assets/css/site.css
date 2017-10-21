@@ -1479,3 +1479,17 @@ div.dataTables_wrapper div.dataTables_paginate {
 .dataTables_filter input[type="search"] {
   height: 24px;
 }
+
+.compras-lembretes .btn-group {
+  zoom: 1;
+  -moz-transform: scale(1);
+}
+
+.compras-lembretes .btn-group .btn {
+  font-size: 9px;
+}
+
+.compras-lembretes .btn-group .btn-warning {
+  height: 20px;
+  line-height: 15px;
+}
