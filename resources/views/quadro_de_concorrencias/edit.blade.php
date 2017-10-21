@@ -7,8 +7,10 @@
     .col-md-7 button{
         margin:0 0 4px 4px;
     }
-    .tiposEqT .list-group-item a.btn{
-        padding:2px 3px;
+    .tiposEqT .list-group-item a.btn {
+        padding: 1px 3px 0px;
+        height: 21px;
+        margin-top: 3px;
     }
     .form-group .btn-default{
         background-color:#dd4b39;

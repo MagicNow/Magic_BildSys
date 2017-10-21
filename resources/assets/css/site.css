@@ -1467,3 +1467,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 .qc-equalizacao .icheckbox_square-green.hover {
   background-position: -32px 0;
 }
+
+.qc-equalizacao label {
+  font-size: 14px;
+}
