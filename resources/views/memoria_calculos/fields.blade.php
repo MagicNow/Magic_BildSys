@@ -191,7 +191,7 @@ $indexBloco = 0;
                                                                                         type="button"
                                                                                         onclick="removeTrecho({{ $indexBloco.','.$indexPavimento.','.$indexTrecho }})"
                                                                                         data-toggle="tooltip" title="Remover {{ $nomeTrecho }}"
-                                                                                        class="btn btn-flat btn-xs btn-danger"><i
+                                                                                        class="btn btn-flat btn-xs btn-danger ml5"><i
                                                                                             class="fa fa-times"></i> </button>
                                                                             </span>
                                                                     @endif
@@ -523,7 +523,7 @@ $indexBloco = 0;
                     '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-xs btn-warning">' +
                     '<i class="fa fa-plus"></i> ' + nomeTrecho +
                     '</button>' +
-                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')"  data-toggle="tooltip" title="Remover '+ nomePavimento +'"  class="btn btn-flat btn-xs btn-danger ml5">' +
+                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')"  data-toggle="tooltip" title="Remover '+ nomePavimento +'"  class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
