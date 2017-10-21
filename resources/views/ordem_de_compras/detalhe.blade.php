@@ -508,12 +508,12 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="text-center">Valor previsto no orçamento</th>
-                                                <th class="text-center">Valor comprometido realizado</th>
-                                                <th class="text-center">Valor comprometido à gastar</th>
-                                                <th class="text-center">Saldo de valor do orçamento</th>
-                                                <th class="text-center">Valor da O.C.</th>
-                                                <th class="text-center">Saldo de valor disponível após O.C.</th>
+                                                <th class="text-center">VALOR PREVISTO NO ORÇAMENTO</th>
+                                                <th class="text-center">VALOR COMPROMETIDO REALIZADO</th>
+                                                <th class="text-center">VALOR COMPROMETIDO À GASTAR</th>
+                                                <th class="text-center">SALDO DE VALOR DO ORÇAMENTO</th>
+                                                <th class="text-center">VVALOR DA O.C.</th>
+                                                <th class="text-center">SALDO DE VALOR DISPONÍVEL APÓS O.C.</th>
                                             </tr>
                                             </thead>
                                             <tbody>
