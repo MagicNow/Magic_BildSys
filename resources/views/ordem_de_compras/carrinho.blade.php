@@ -236,7 +236,10 @@
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
-                                    <i class="fa fa-remove btn-danger" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
+                                    <button type="button" class="btn btn-flat btn-link btn-danger"
+                                            style="font-size: 18px; margin-top: -7px" onclick="removeItem({{ $item->id }})" data-placement="top" title="Remover item">
+                                        <i class="fa fa-remove" data-toggle="tooltip" aria-hidden="true" ></i>
+                                    </button>
                                 </span>
                             </div>
                             <div class="dados-extras" style="display: none;">
