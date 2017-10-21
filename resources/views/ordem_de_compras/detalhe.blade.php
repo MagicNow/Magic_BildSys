@@ -16,6 +16,10 @@
             color: #4a4a4a;
             font-size: 22px;
         }
+
+        .perpage {
+            font-weight: 100;
+        }
       
     </style>
 @stop
@@ -262,7 +266,7 @@
         <div class="panel panel-default detalhe-compra-tabela">
             <div class="panel-body" style="padding:0px;">
                 <div class="col-md-12 table-responsive mt14">
-                    {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}&nbsp;{!! Form::label('perPage', ' RESULTADOS POR PÁGINA') !!}
+                    {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}&nbsp;{!! Form::label('perPage', ' RESULTADOS POR PÁGINA', ['class' => 'perpage']) !!}
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
