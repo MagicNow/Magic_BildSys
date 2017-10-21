@@ -101,7 +101,7 @@
                        <!-- Submit Field -->
                        <div class="form-group col-sm-12">
                            {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit', 'id' => 'btn-update-requisicao']) !!}
-                           <a href="{!! route('requisicao.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+                           <a href="{!! route('requisicao.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                        </div>
 
                    {!! Form::close() !!}
