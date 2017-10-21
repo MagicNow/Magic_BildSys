@@ -93,6 +93,10 @@ label {
   margin-top: 10px;
 }
 
+.mt14 {
+  margin-top: 10px !important;
+}
+
 .both {
   clear: both;
 }
@@ -1421,7 +1425,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 }
 
 .detalhe-compra-tabela table {
-  margin-top: 7px;
+  margin-top: 11px;
 }
 
 .detalhe-compra-tabela .fa-circle {
