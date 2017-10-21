@@ -24,7 +24,7 @@
             {{isset($ordemCompraSession) ? '- O.C: ' . \Session::get('ordemCompra') : null}}
 
            <div class="pull-right text-right">
-                <a href="{{ url('compras/obrasInsumos?obra_id=' . $obra_id) }}" class="btn btn-default btn-lg btn-flat">Esqueci um item</a>
+                <a href="{{ url('compras/obrasInsumos?obra_id=' . $obra_id) }}" class="btn btn-primary btn-lg btn-flat">Esqueci um item</a>
                 <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">Fechar O.C.</button>
                 <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">Limpar O.C.</button>
             </div>
