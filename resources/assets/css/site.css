@@ -381,7 +381,7 @@ textarea.form-control {
 }
 
 .content-wrapper {
-  min-height: calc(100vh - (50px * 0.75)) !important;
+  min-height: calc(100vh - (55px * 0.75)) !important;
 }
 
 button.dt-button, div.dt-button, a.dt-button {
