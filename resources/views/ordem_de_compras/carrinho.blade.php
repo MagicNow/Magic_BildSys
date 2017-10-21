@@ -233,11 +233,11 @@
                                 </span>
                                 <span>
                                     <button type="button" class="btn btn-flat btn-link btn-success"
-                                            style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
+                                            style="font-size: 18px; margin-top: -7px; color: white; padding: 5px 7px;" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" class="btn btn-flat btn-link btn-danger"
-                                            style="font-size: 18px; margin-top: -7px" onclick="removeItem({{ $item->id }})" data-placement="top" title="Remover item">
+                                            style="font-size: 18px; margin-top: -7px; color: white; padding: 5px 7px;" onclick="removeItem({{ $item->id }})" data-placement="top" title="Remover item">
                                         <i class="fa fa-remove" data-toggle="tooltip" aria-hidden="true" ></i>
                                     </button>
                                 </span>
