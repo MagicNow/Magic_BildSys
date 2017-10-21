@@ -559,7 +559,7 @@ $indexBloco = 0;
                     ' <input type="hidden" name="trecho_bloco_ordem[' + bloco + '][' + pavimento + '][' + trechosCount + ']" ' +
                     ' id="trecho_bloco_ordem_' + bloco + '_' + pavimento + '_' + trechosCount + '" value="">' +
                     '<span class="input-group-btn">' +
-                    '<button type="button" onclick="removeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')"  data-toggle="tooltip" title="Remover '+ nomeTrecho +'"  class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')"  data-toggle="tooltip" title="Remover '+ nomeTrecho +'"  class="btn btn-flat btn-xs btn-danger ml5">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' + '</span>' +
                     '</div>' +
