@@ -1475,3 +1475,7 @@ div.dataTables_wrapper div.dataTables_paginate {
 .qc-equalizacao .list-group-item {
   padding: 2px 7px;
 }
+
+.dataTables_filter input[type="search"] {
+  height: 24px;
+}
