@@ -396,7 +396,7 @@
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="left" data-container="body" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
                             </td>
-                            <td class="text-center" style="width: 10%">
+                            <td class="text-center acoes" style="width: 10%">
                                 <div class="btn-group" role="group" aria-label="...">
                                     @if(!is_null($item->aprovado))
                                         @if($item->aprovado)
@@ -457,7 +457,7 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <button style="padding-bottom: 4px;padding-top: 3px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
+                                    <button type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
                                              onclick="showHideInfoExtra({{ $item->id }})">
                                         <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                     </button>

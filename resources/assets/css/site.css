@@ -1420,11 +1420,11 @@ div.dataTables_wrapper div.dataTables_paginate {
   font-size: 10px;
 }
 
-.detalhe-compra-tabela .btn-group {
+.detalhe-compra-tabela .acoes .btn-group {
   zoom: 1;
 }
 
-.detalhe-compra-tabela .btn-group .btn + .btn-group {
+.detalhe-compra-tabela .acoes .btn-group {
   margin-left: 4px;
   margin-right: 0;
   height: 20px;
