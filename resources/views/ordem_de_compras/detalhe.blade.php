@@ -262,8 +262,7 @@
         <div class="panel panel-default detalhe-compra-tabela">
             <div class="panel-body" style="padding:0px;">
                 <div class="col-md-12 table-responsive margem-topo">
-                    {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}
-                    {!! Form::label('perPage', ' RESULTADOS POR PÁGINA') !!}
+                    {!! Form::select('perPage', [10=>10, 25=>25, 50=>50, 100=>100, 1000=>1000], null, ['class' => 'col-md-1', 'onchange'=>'perPage(this.value);']) !!}&nbsp;{!! Form::label('perPage', ' RESULTADOS POR PÁGINA') !!}
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
@@ -458,7 +457,7 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <button style="line-height:0px; padding-bottom: 4px;padding-top: 3px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
+                                    <button style="padding-bottom: 4px;padding-top: 3px;" type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
                                              onclick="showHideInfoExtra({{ $item->id }})">
                                         <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
