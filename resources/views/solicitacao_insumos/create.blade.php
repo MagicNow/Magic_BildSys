@@ -24,7 +24,7 @@
                                 <i class="fa fa-save"></i> Salvar
                             </button>
                             <a href="{{ route('solicitar_insumo.store') }}"
-                                class="btn btn-default"
+                                class="btn btn-danger"
                                 id="cancel">
                                 <i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}
                             </a>

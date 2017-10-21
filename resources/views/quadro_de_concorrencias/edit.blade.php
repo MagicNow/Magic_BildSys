@@ -115,7 +115,7 @@
                     @else
                         <div class="form-group col-sm-3 pull-left">
                             <a href="{!! route('quadroDeConcorrencias.index') !!}"
-                               class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>
+                               class="btn btn-danger btn-flat btn-lg"><i class="fa fa-times"></i>
                                 {{ ucfirst( trans('common.cancel') )}}
                             </a>
                         </div>
