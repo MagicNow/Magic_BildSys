@@ -1,7 +1,26 @@
 @extends('layouts.front')
 
 @section('content')
-
+<style type="text/css">
+h2{
+    font-size:22px!important;
+    font-weight:700!important;
+    text-transform:uppercase!important;
+}
+.ml15{
+    margin-top:0!important;
+    text-transform:uppercase;
+    margin-left:0!important;
+}
+.modal-header{
+    padding:15px 15px 0!important;
+    border:0!important;
+    margin-bottom: -10px!important;
+    display: inline-block;
+    margin-top: -32px;
+    text-transform:uppercase;
+}
+</style>
     <section class="content-header">
         <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">

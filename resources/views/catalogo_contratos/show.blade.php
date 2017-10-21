@@ -1,6 +1,10 @@
 @extends('layouts.front')
 @section('content')
 <style type="text/css">
+.modal-header h2,.ml15{
+    font-size:22px!important;
+    font-weight:700;
+}
 .ml15{
     margin-top:0!important;
     text-transform:uppercase;
