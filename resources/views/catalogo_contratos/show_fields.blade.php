@@ -117,7 +117,7 @@
 </div>
 
 <div class="col-sm-12">
-    <h4>Regionais que estão permitidas neste acordo</h4>
+    <h2 class="ml15">Regionais que estão permitidas neste acordo</h2>
     {{ Form::hidden('qtd_regionais',(!isset($catalogoContrato)?0:$catalogoContrato->regionais()->count()),['id'=>'qtd_regionais']) }}
 
     <ul class="list-group" id="regional_list">
