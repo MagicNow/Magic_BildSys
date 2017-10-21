@@ -1,6 +1,10 @@
 @extends('layouts.front')
 @section('content')
 <style type="text/css">
+.ml15{
+    margin-top:0!important;
+    text-transform:uppercase;
+}
 .content-header .pull-right{
     font-family: 'Abel', sans-serif;
     font-weight: bold;
@@ -14,9 +18,10 @@
 .modal-header{
     padding:15px 15px 0!important;
     border:0!important;
-    margin-bottom: -21px!important;
+    margin-bottom: -10px!important;
     display: inline-block;
-    margin-top: -42px;
+    margin-top: -32px;
+    text-transform:uppercase;
 }
 .border-separation{
     margin:4px 0!important;

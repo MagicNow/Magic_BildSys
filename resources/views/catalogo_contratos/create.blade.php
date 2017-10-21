@@ -1,6 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
+
     <section class="content-header">
         <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
